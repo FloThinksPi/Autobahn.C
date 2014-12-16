@@ -1,1 +1,41 @@
-empty
+{"Autobahn": {
+
+    "A1": {
+        "Name": "A1",
+        "Anfang": "Heilbronn",
+        "Ende": "Nuernberg",
+        "Leange": "232",
+        "StartGeschwindigkeit": "120",
+
+        "Baustellen":{
+
+        },
+
+        "Geschwindigkeiten":{
+
+        },
+
+
+        "Ausfahrten": {
+
+                "Heilbronn": {
+                    "Km": "12",
+                    "Geschwindigkeit": "120"
+
+                },
+
+        },
+
+        "Kreuze": {
+
+            "Kreuz Weinsberg": {
+                "Km": "15",
+                "Geschwindigkeit": "100",
+                "Kreuzt" : "A81"
+            }
+
+        }
+    }
+
+
+}}    
