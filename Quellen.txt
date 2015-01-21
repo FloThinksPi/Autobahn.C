@@ -1,0 +1,17 @@
+
+
+#########################C-Info######################################################
+
+http://www.programiz.com/c-programming                                                    -->  C Sprach Erklärung in Englisch
+
+
+
+http://stackoverflow.com/questions/7109964/creating-your-own-header-file-in-c             --> Erklärunge der .h Header Datei
+
+########################Libs#########################################################
+
+---
+
+########################Copyrights/Genutzter Quellcode###############################
+
+---

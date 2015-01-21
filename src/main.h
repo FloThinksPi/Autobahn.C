@@ -5,19 +5,10 @@
  * Created on 13. Januar 2015, 12:11
  */
 
-#ifndef MAIN_H
-#define	MAIN_H
 
-#ifdef	__cplusplus
-extern "C" {
+#ifndef _main_h
+#define _main_h
+
+int main(void);
+
 #endif
-
-
-
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* MAIN_H */
-
