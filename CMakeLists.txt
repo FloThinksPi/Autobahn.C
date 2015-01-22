@@ -8,9 +8,15 @@ set(
     ${CMAKE_HOME_DIRECTORY}/bin
     )
 
+#Source Dir
 FILE(GLOB SOURCE_FILES src/*.c)
-FILE(GLOB HEADER_FILES src/*.h)
+FILE(GLOB SOURCE_HEADER_FILES src/*.h)
 
-add_executable(Autobahn_C ${SOURCE_FILES} ${HEADER_FILES})
+#Menu Library
+FILE(GLOB LIB_MENU_FILES lib/menu/*.c)
+FILE(GLOB LIB_MENU_HEADER_FILES lib/menu/*.h)
+
+#Include
+add_executable(Autobahn_C ${SOURCE_FILES} ${HEADER_FILES} ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES})
 
 
