@@ -188,6 +188,7 @@ tLinkTableNode * GetLinkTableHead(tLinkTable *pLinkTable)
 /*
  * get next LinkTableNode
  */
+
 tLinkTableNode * GetNextLinkTableNode(tLinkTable *pLinkTable,tLinkTableNode * pNode)
 {
     if(pLinkTable == NULL || pNode == NULL)

@@ -41,5 +41,6 @@ void ResetAllCMDs();
 void showAllCMDHelp();
 void showSystemCMDHelp();
 void showUserCMDHelp();
+void SetMenuTitle(char *title);
 
 #endif

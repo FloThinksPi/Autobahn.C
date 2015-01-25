@@ -16,7 +16,12 @@ FILE(GLOB SOURCE_HEADER_FILES src/*.h)
 FILE(GLOB LIB_MENU_FILES lib/menu/*.c)
 FILE(GLOB LIB_MENU_HEADER_FILES lib/menu/*.h)
 
+#TextAusgabe Library(Selbstgeschrieben)
+FILE(GLOB LIB_PRINTUI_FILES lib/printui/*.c)
+FILE(GLOB LIB_PRINTUI_HEADER_FILES lib/printui/*.h)
+
 #Include
-add_executable(Autobahn_C ${SOURCE_FILES} ${HEADER_FILES} ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES})
+add_executable(Autobahn_C ${SOURCE_FILES} ${HEADER_FILES} ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES}
+                ${LIB_PRINTUI_FILES} ${LIB_PRINTUI_HEADER_FILES})
 
 

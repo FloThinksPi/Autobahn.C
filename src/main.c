@@ -12,19 +12,12 @@
 #include "main.h"
 #include "processing.h"
 #include "../lib/menu/menu.h"
-
-
-//Default CMD size : 80x25
-//Default Terminal size : 80x24
+#include "../lib/printui/printui.h"
 
 
 int main(void)
 {
 
-    //Beispiel für das anzeigen von spalten
-    /*printf("Column1    Column2   Column3\n");
-    printf("%7.1lf%11.0lf%10.3lf\n", 100.1, 1221.0, 9348.012);
-    printf("%7.1lf%11.0lf%10.3lf\n", 2.3, 211.0, 214.0);*/
 
     StartupMenu(0,NULL);
 
@@ -32,21 +25,43 @@ int main(void)
 
 }
 
+//Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
+int showTestTabel(int argc, char *argv[]){
+    printTabelHeader(5,"Col1","Col2","Col3","Colü4","Col5");
+    printTabelRow(5,"Erste Daten","1203","Heilbronn","123","NULL");
+    printTabelRow(5,"Erste Daten","1q23","Heilbronn","BLA","123");
+    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
+    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
+    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
+    printFooter();
+    printf("\n");
+    printTabelHeader(3,"Col1","Col2","Col3");
+    printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
+    printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
+    printFooter();
+    return 0;
+}
 
 
-//Bedienungserklärung zum Programmstart
 int StartupMenu(int argc, char *argv[]){
 
     system(CLEAR);
-
+    //ä,ö,ü,§,%
+    SetMenuTitle("Autobahn.C Startbildschirm");
     AddCMD("easteregg", "easteregg", NULL);
     AddCMD("", "", MainMenu);
 
     showSystemCMDHelp();
 
-    printf("Diese Befehle funktionieren Überall im Programm\nDrücken sie Enter um zu Starten\n");
+    printMenuItem("Diese Befehle funktionieren  Überall im Programm");
+    printMenuItem("Drücken sie Enter um zu  Starten");
+    printFooter();
+    printMenuItem("Dieses Programm wurde estellt von [...]");
+    printMenuItem("Es kommt in der menutzung dem terminal eines UNIX systems nahe");
+    printMenuItem("Viel Spaß");
+    printFooter();
 
-    //Alles mus vor CMD Start sein da dort eine endlosschleife restartet wird die erst bei eingabe endet
+    //Alles mus vor CMD Start sein da dort eine endlosschleife gestartet wird die erst bei eingabe endet
     StartCMDSystem();
 
     return 0;
@@ -66,7 +81,6 @@ int MainMenu(int argc, char *argv[]){
     showUserCMDHelp();
 
 
-
     return 0;
 
 }
@@ -78,7 +92,7 @@ int EditMenu(int argc, char *argv[]){
 
     ResetAllCMDs();
 
-    AddCMD("1", "um den Bearbeitungsmodus für Autobahnen zu öffnen", NULL);
+    AddCMD("1", "um den Bearbeitungsmodus für Autobahnen zu öffnen", showTestTabel);
     AddCMD("2", "um den Bearbeitungsmodus für Ausfahrten zu öffnen", NULL);
     AddCMD("3", "um den Bearbeitungsmodus für Kreuze zu öffnen", NULL);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);

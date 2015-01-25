@@ -25,6 +25,7 @@
 #include <string.h>
 #include "linktable.h"
 #include "menu.h"
+#include "../printui/printui.h"
 
 tLinkTable * head = NULL;
 
@@ -32,6 +33,9 @@ tLinkTable * head = NULL;
 #define CMD_MAX_ARGV_NUM 	32
 #define DESC_LEN    		1024
 #define CMD_NUM     		10
+
+//MenuTitle kann nur 80 lang sein da eine konsole 80 Buchstaben breit ist
+char *MenuTitle="Unnamed Menu";
 
 /* data struct and its operations */
 
@@ -87,26 +91,30 @@ int ShowAllCmd(tLinkTable * head)
 {
     tDataNode * pNode = (tDataNode*)GetLinkTableHead(head);
     int x=0;
+    printMenuHeader(MenuTitle);
+    printMenuItem("");
     while(pNode != NULL)
     {
-        if(x==0){
-            printf("------------------Autobahn Navigation--------------------\n");
-        }
 
+        char* ausgabe[100];
+        sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+        printMenuItem(ausgabe);
 
-        printf("Geben sie \"%s\" ein %s\n", pNode->cmd, pNode->desc);
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
 
 
         if(x==2){
             //Trennlinie zwischen Programm und Menu Basierten Kommandos
-            printf("--------------------------------------------\n");
+            printMenuItem("");
+            printFooter();
+            printMenuItem("");
         }
 
         x++;
 
     }
-    printf("--------------------------------------------\n");
+    printMenuItem("");
+    printFooter();
     return 0;
 }
 
@@ -115,19 +123,24 @@ int ShowUserCmd(tLinkTable * head)
 {
     tDataNode * pNode = (tDataNode*)GetLinkTableHead(head);
     int x=0;
-    printf("------------------Autobahn Navigation--------------------\n");
+    printMenuHeader(MenuTitle);
+    printMenuItem("");
     while(pNode != NULL)
     {
 
 
         if(x>2) {
-            printf("Geben sie \"%s\" ein %s\n", pNode->cmd, pNode->desc);
+            char* ausgabe[100];
+            sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+            printMenuItem(ausgabe);
         }
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
 
         x++;
 
     }
+    printMenuItem("");
+    printFooter();
     return 0;
 }
 
@@ -136,18 +149,22 @@ int ShowSystemCmd(tLinkTable * head)
 {
     tDataNode * pNode = (tDataNode*)GetLinkTableHead(head);
     int x=0;
-    printf("------------------Autobahn Navigation--------------------\n");
+    printMenuHeader(MenuTitle);
+    printMenuItem("");
     while(pNode != NULL)
     {
 
         if(x<3) {
-            printf("Geben sie \"%s\" ein %s\n", pNode->cmd, pNode->desc);
+            char* ausgabe[100];
+            sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+            printMenuItem(ausgabe);
         }
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
 
         x++;
     }
-    printf("--------------------------------------------\n");
+    printMenuItem("");
+    printFooter();
     return 0;
 }
 
@@ -164,6 +181,9 @@ void showSystemCMDHelp()
     ShowSystemCmd(head);
 }
 
+void SetMenuTitle(char *title){
+    MenuTitle=title;
+}
 
 /* add cmd to menu */
 int AddCMD(char *cmd, char *desc, int (*handler)())
@@ -202,6 +222,7 @@ void ResetAllCMDs(){
 
     head=NULL;
     tDataNode* pNode = NULL;
+    MenuTitle="Unnamed Menu";
 
 }
 
