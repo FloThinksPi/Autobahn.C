@@ -28,12 +28,9 @@ int main(void)
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
 int showTestTabel(int argc, char *argv[]){
 
-    printTabelHeader(5,"Col1","Col2","Col3","Colü4","Col5");
-    printTabelRow(5,"Erste Daten","1203","Heilbronn","123","NULL");
-    printTabelRow(5,"Erste Daten","1q23","Heilbronn","BLA","123");
-    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
-    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
-    printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
+    printTabelHeader(6,"Col1","Col2","Col3","Colü4","Col5","6.");
+    printTabelRow(6,"Erste Den","1203","Heilbrn","123","NULL","6.");
+
     printFooter();
 
     printf("\n");

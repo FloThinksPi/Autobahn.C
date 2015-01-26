@@ -16,6 +16,8 @@
 //Default Terminal size(Unix) : 80x24
 //INFOS----------------
 
+//TODO Püfen ob ausgame nicht zu lang ist als es dürfte , was zu verschiebung der zeichen führt
+//TODO Durch 3 teilbar modifizeren da es für 3 funktioniert aber nicht für 6,9, etc  es werden leerzeichen ausgegeben die unnnötig sind
 
 //Deklarationen
 
@@ -122,7 +124,7 @@ void center_print_menu(const char *s, int width)
 
 }
 
-//Zähler muss UTF-8 Konform sein wegen umlauten u.ä
+//Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt
 int countUTF8String(char *s) {
     int i = 0, j = 0;
     while (s[i]) {

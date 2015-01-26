@@ -27,4 +27,7 @@ void printFooter();
 void printMenuHeader(char text[]);
 void printMenuItem(char text[]);
 
+//Zählt Zeichen in einem String
+int countUTF8String(char *s);
+
 #endif
