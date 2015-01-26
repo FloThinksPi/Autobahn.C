@@ -36,6 +36,7 @@ tLinkTable * head = NULL;
 
 //MenuTitle kann nur 80 lang sein da eine konsole 80 Buchstaben breit ist
 char *MenuTitle="Unnamed Menu";
+char *PrintfFormat="Geben sie \"%s\" ein %s";
 
 /* data struct and its operations */
 
@@ -46,7 +47,6 @@ typedef struct DataNode
     char*   desc;
     int     (*handler)(int argc, char *argv[]);
 } tDataNode;
-
 
 
 int I_Quit(int argc, char *argv[]){
@@ -96,8 +96,9 @@ int ShowAllCmd(tLinkTable * head)
     while(pNode != NULL)
     {
 
-        char* ausgabe[100];
-        sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+
+        char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+        sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
         printMenuItem(ausgabe);
 
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
@@ -130,8 +131,8 @@ int ShowUserCmd(tLinkTable * head)
 
 
         if(x>2) {
-            char* ausgabe[100];
-            sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+            char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+            sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
             printMenuItem(ausgabe);
         }
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
@@ -155,8 +156,8 @@ int ShowSystemCmd(tLinkTable * head)
     {
 
         if(x<3) {
-            char* ausgabe[100];
-            sprintf(ausgabe,"Geben sie \"%s\" ein %s", pNode->cmd, pNode->desc);
+            char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+            sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
             printMenuItem(ausgabe);
         }
         pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
