@@ -27,6 +27,7 @@ int main(void)
 
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
 int showTestTabel(int argc, char *argv[]){
+
     printTabelHeader(5,"Col1","Col2","Col3","Colü4","Col5");
     printTabelRow(5,"Erste Daten","1203","Heilbronn","123","NULL");
     printTabelRow(5,"Erste Daten","1q23","Heilbronn","BLA","123");
@@ -34,11 +35,21 @@ int showTestTabel(int argc, char *argv[]){
     printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
     printTabelRow(5,"123 Daten","1203","412","BLA","NULL");
     printFooter();
+
     printf("\n");
+
     printTabelHeader(3,"Col1","Col2","Col3");
     printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
     printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
     printFooter();
+
+    printTabelHeader(2,"Spalte 1","Spalte 2");
+    printTabelRow(2,"123","dasd");
+    printTabelRow(2,"123","dasd");
+    printTabelRow(2,"123","dasd");
+    printTabelRow(2,"123","dasd");
+    printFooter();
+
     return 0;
 }
 
@@ -56,6 +67,7 @@ int StartupMenu(int argc, char *argv[]){
     printMenuItem("Diese Befehle funktionieren  Überall im Programm");
     printMenuItem("Drücken sie Enter um zu  Starten");
     printFooter();
+
     printMenuItem("Dieses Programm wurde estellt von [...]");
     printMenuItem("Es kommt in der menutzung dem terminal eines UNIX systems nahe");
     printMenuItem("Viel Spaß");
