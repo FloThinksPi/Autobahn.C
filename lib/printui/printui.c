@@ -32,82 +32,10 @@ static const char vc[] = "|";
 //Terminal Breite
 static const int terminalWidth = 80;
 
-
 //##############
-//### Menu Aufbau
-//##############
-
-//Gibt die Menuüberschrift aus
-void printMenuHeader(char *text){
-
-    center_print_menu_header(text, terminalWidth);
-
-}
-
-//Gibt einen menueintrag aus
-void printMenuItem(char *text){
-
-    center_print_menu(text, terminalWidth);
-
-}
-
-//##############
-//### Datenausgabe
+//### Formatierungs Berechnung / Ausgabefalse
 //##############
 
-//Gibt eine x Spaltige Tabelle Aus
-void printTabelHeader(int numCols,...){
-
-
-    va_list ap;
-    int i;
-
-    va_start(ap, numCols);
-    for(i = 0; i < numCols-1; i++) {
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, false);
-    }
-    if((numCols%3)>0){
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, true);
-    }else{
-        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, true, true);
-    }
-
-    va_end(ap);
-
-
-
-
-}
-void printTabelRow(char numCols,...){
-
-
-    va_list ap;
-    int i;
-
-    va_start(ap, numCols);
-    for(i = 0; i < numCols-1; i++) {
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, false);
-    }
-    if((numCols%3)>0){
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, true);
-    }else{
-        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, false, true);
-    }
-
-    va_end(ap);
-
-
-
-}
-
-//Allgemeine schlusszeile
-void printFooter(){
-    center_print_row_segment("", terminalWidth , true, true);
-}
-
-
-
-//Formatierungs Berechnung / Ausgabefalse
 
 void center_print_row_segment(const char *s, int width,bool isHeading,bool isLast)
 {
@@ -203,3 +131,77 @@ int countUTF8String(char *s) {
     }
     return j;
 }
+
+//##############
+//### Menu Aufbau
+//##############
+
+//Gibt die Menuüberschrift aus
+void printMenuHeader(char *text){
+
+    center_print_menu_header(text, terminalWidth);
+
+}
+
+//Gibt einen menueintrag aus
+void printMenuItem(char *text){
+
+    center_print_menu(text, terminalWidth);
+
+}
+
+//##############
+//### Datenausgabe
+//##############
+
+//Gibt eine x Spaltige Tabelle Aus
+void printTabelHeader(int numCols,...){
+
+
+    va_list ap;
+    int i;
+
+    va_start(ap, numCols);
+    for(i = 0; i < numCols-1; i++) {
+        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, false);
+    }
+    if((numCols%3)>0){
+        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, true);
+    }else{
+        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, true, true);
+    }
+
+    va_end(ap);
+
+
+
+
+}
+void printTabelRow(char numCols,...){
+
+
+    va_list ap;
+    int i;
+
+    va_start(ap, numCols);
+    for(i = 0; i < numCols-1; i++) {
+        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, false);
+    }
+    if((numCols%3)>0){
+        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, true);
+    }else{
+        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, false, true);
+    }
+
+    va_end(ap);
+
+
+
+}
+
+//Allgemeine schlusszeile
+void printFooter(){
+    center_print_row_segment("", terminalWidth , true, true);
+}
+
+
