@@ -16,9 +16,6 @@
 
 //X-Spaltige Tabelle Ausgeben ( numCols= Spaltenanzahl , gefolgt von genausovielen strings)
 //bsp. printTabelHeader(4,"1. Spalte","2. Spalte","3. Spalte","4.Spalte")
-
-#include <stdbool.h>
-
 void printTabelHeader(int numCols,...);
 void printTabelRow(char numCols,...);
 

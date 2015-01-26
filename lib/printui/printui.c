@@ -12,8 +12,8 @@
 /**************************************************************************************************/
 
 //INFOS----------------
-//Default CMD size : 80x25
-//Default Terminal size : 80x24
+//Default CMD size(Windows) : 80x25
+//Default Terminal size(Unix) : 80x24
 //INFOS----------------
 
 
@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
+
 
 //vc=VerticalCaracter | hc = horizontalCharacter
 static const char hc[] = "-";
