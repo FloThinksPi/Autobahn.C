@@ -25,7 +25,7 @@
 #include <string.h>
 #include "linktable.h"
 #include "menu.h"
-#include "printf.h"
+#include "../printui/printui.h"
 
 tLinkTable * head = NULL;
 
@@ -67,9 +67,9 @@ int SearchConditon(tLinkTableNode * pLinkTableNode,void * arg)
     tDataNode * pNode = (tDataNode *)pLinkTableNode;
     if(strcmp(pNode->cmd, cmd) == 0)
     {
-        return  SUCCESS;  
+        return  SUCCESS;
     }
-    return FAILURE;	       
+    return FAILURE;
 }
 /* find a cmd in the linklist and return the datanode pointer */
 tDataNode* FindCmd(tLinkTable * head, char * cmd)
@@ -79,7 +79,7 @@ tDataNode* FindCmd(tLinkTable * head, char * cmd)
     {
         if(!strcmp(pNode->cmd, cmd))
         {
-            return  pNode;  
+            return  pNode;
         }
         pNode = (tDataNode*)GetNextLinkTableNode(head,(tLinkTableNode *)pNode);
     }
@@ -214,9 +214,9 @@ int AddCMD(char *cmd, char *desc, int (*handler)())
     pNode = (tDataNode*)malloc(sizeof(tDataNode));
     pNode->cmd = cmd;
     pNode->desc = desc;
-    pNode->handler = handler; 
+    pNode->handler = handler;
     AddLinkTableNode(head,(tLinkTableNode *)pNode);
-    return 0; 
+    return 0;
 }
 
 void ResetAllCMDs(){
@@ -263,10 +263,10 @@ int StartCMDSystem()
             printf("Ungültiger Befehl\n");
             continue;
         }
-        
-        if(p->handler != NULL) 
-        { 
+
+        if(p->handler != NULL)
+        {
             p->handler(argc, argv);
         }
     }
-} 
+}

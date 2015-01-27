@@ -15,6 +15,7 @@
 #define WIN32ADAPT_H
 
 void RestartInUtf8Cmd();
+void ConfigureCMD();
 
 
 

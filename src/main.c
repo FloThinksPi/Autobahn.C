@@ -16,11 +16,23 @@
 
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
-    #include "../lib/win32adaption/win32adapt.h"
+
+#include "../lib/win32adaption/win32adapt.h"
+const char *skipParameter="\\CMDknowsUTF8";
 
 int main (int argc, char *argv[])
 {
-//TODO READ args , wenn -norestart dann normal ausführen , sonst den win32 fix aufrufen der alles in einem utf8 terminal neu startet
+    if(argv[1]!=NULL){
+        if(strcmp(argv[1],skipParameter)){
+            RestartInUtf8Cmd();
+        }else{
+            ConfigureCMD();
+            StartupMenu(0,NULL);
+        }
+    }else{
+    RestartInUtf8Cmd();
+    }
+
   return 0;
 }
 

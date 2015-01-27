@@ -43,9 +43,11 @@
 #################
 ## Code::Blocks
 #################
-
+*.cbp
 *.depend
 *.layout
+obj/
+nulstart
 
 ############
 ## Windows
