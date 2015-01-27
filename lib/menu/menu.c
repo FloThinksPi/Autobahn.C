@@ -25,7 +25,7 @@
 #include <string.h>
 #include "linktable.h"
 #include "menu.h"
-#include "../printui/printui.h"
+#include "printf.h"
 
 tLinkTable * head = NULL;
 

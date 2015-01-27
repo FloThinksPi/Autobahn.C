@@ -14,16 +14,33 @@
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
 
+//Wählt die richtige main für UNIX und Windows systeme
+#ifdef _WIN32
+    #include "../lib/win32adaption/win32adapt.h"
 
-int main(void)
-{
+    int main(void)
+    {
+
+        MakeCmdUtf8Compatible();
+
+        StartupMenu(0,NULL);
+
+        return 0;
+
+    }
+#else
+    int main(void)
+    {
 
 
-    StartupMenu(0,NULL);
+        StartupMenu(0,NULL);
 
-    return 0;
+        return 0;
 
-}
+    }
+#endif
+
+
 
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
 int showTestTabel(int argc, char *argv[]){
