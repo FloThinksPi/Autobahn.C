@@ -14,7 +14,8 @@
 #define CLEAR "clear"
 #endif
 
-int main(void);
+int main (int argc, char *argv[]);
+
 
 int MainMenu(int argc, char *argv[]);
 int EditMenu(int argc, char *argv[]);

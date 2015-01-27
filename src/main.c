@@ -18,26 +18,24 @@
 #ifdef _WIN32
     #include "../lib/win32adaption/win32adapt.h"
 
-    int main(void)
-    {
+int main (int argc, char *argv[])
+{
+  char buff[255];
+  printf ("path=%s\\%s\n", buff, argv[0]);
 
-        MakeCmdUtf8Compatible();
 
-        StartupMenu(0,NULL);
 
-        return 0;
+  return 0;
+}
 
-    }
 #else
-    int main(void)
-    {
+int main (int argc, char *argv[])
+{
+    char buff[255];
 
-
-        StartupMenu(0,NULL);
-
-        return 0;
-
-    }
+    printf ("path=%s\\%s\n", buff, argv[0]);
+    return 0;
+}
 #endif
 
 

@@ -18,21 +18,34 @@
 
 #ifdef _WIN32
 
-#include <locale.h>
-#include <iostream>
-#include <windows.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 
 void MakeCmdUtf8Compatible(){
 
-    setlocale(LC_ALL, ".65001");
+    setConsoleCP();
+    setConsoleOutputCP();
     system("mode con: cols=81 lines=30");//TODO /n auf windows systemen wieder löschen da sie einen extra buchstaben brauchen und das terminal so 81Zeichen breit sein muss damit nicht 2 umbrüche gemacht werden
 
-    HANDLE outcon = GetStdHandle(STD_OUTPUT_HANDLE);//you don't have to call this function every time
+    char *befehl = "@echo off"
+            "setlocal enableextensions disabledelayedexpansion"
+            "set \"consoleName=autobahn.c\""
+            ":: http://technet.microsoft.com/en-us/library/cc978570.aspx"
+            "(   reg add \"HKCU\\Console\\%consoleName%\" /f"
+            "        reg add \"HKCU\\Console\\%consoleName%\" /f /v \"FaceName\"         /t \"REG_SZ\"     /d \"Consolas\""
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"FontFamily\"       /t \"REG_DWORD\"  /d 0x00000036"
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"FontSize\"         /t \"REG_DWORD\"  /d 0x00080004"
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"FontWeight\"       /t \"REG_DWORD\"  /d 0x00000000"
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"QuickEdit\"        /t \"REG_DWORD\"  /d 0x00000000"
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"ScreenBufferSize\" /t \"REG_DWORD\"  /d 0x00200040"
+            "reg add \"HKCU\\Console\\%consoleName%\" /f /v \"WindowSize\"       /t \"REG_DWORD\"  /d 0x00200040"
+            ") > nul"
+            "start \"%consoleName%\" cmd.exe ";
 
-    CONSOLE_FONT_INFOEX font;//CONSOLE_FONT_INFOEX is defined in some windows header
-    GetCurrentConsoleFontEx(outcon, false, &font);//PCONSOLE_FONT_INFOEX is the same as CONSOLE_FONT_INFOEX*
-    font.FaceName = "Lucida Console";
-    SetCurrentConsoleFontEx(outcon, false, &font);
+    system(befehl);
 
 
 }
