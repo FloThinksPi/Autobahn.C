@@ -14,7 +14,7 @@
 #ifndef WIN32ADAPT_H
 #define WIN32ADAPT_H
 
-void MakeCmdUtf8Compatible();
+void RestartInUtf8Cmd();
 
 
 

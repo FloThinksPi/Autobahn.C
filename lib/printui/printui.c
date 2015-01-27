@@ -18,6 +18,8 @@
 
 //TODO Püfen ob ausgame nicht zu lang ist als es dürfte , was zu verschiebung der zeichen führt
 //TODO Durch 3 teilbar modifizeren da es für 3 funktioniert aber nicht für 6,9, etc  es werden leerzeichen ausgegeben die unnnötig sind
+//TODO /n löschen wenn win32 da dort /n einen character belegt und deswegen eine neue zeile beginnt.
+
 
 //Deklarationen
 

@@ -20,20 +20,16 @@
 
 int main (int argc, char *argv[])
 {
-  char buff[255];
-  printf ("path=%s\\%s\n", buff, argv[0]);
-
-
-
+//TODO READ args , wenn -norestart dann normal ausführen , sonst den win32 fix aufrufen der alles in einem utf8 terminal neu startet
   return 0;
 }
 
 #else
 int main (int argc, char *argv[])
 {
-    char buff[255];
 
-    printf ("path=%s\\%s\n", buff, argv[0]);
+    StartupMenu(0,NULL);
+
     return 0;
 }
 #endif

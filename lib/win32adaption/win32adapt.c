@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 
-void MakeCmdUtf8Compatible(){
+void RestartInUtf8Cmd(){
 
     setConsoleCP();
     setConsoleOutputCP();
@@ -47,7 +47,7 @@ void MakeCmdUtf8Compatible(){
 
     system(befehl);
 
-
+//TODO PFAD ZUR EXE FINDEN UND HINTER CMD:EXE HÄNGEN
 }
 
 #endif
