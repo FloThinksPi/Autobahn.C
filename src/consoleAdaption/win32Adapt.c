@@ -43,23 +43,32 @@ void RestartInUtf8Cmd(){
     system("reg add \"HKCU\\Console\\Autobahn\" /f");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FaceName\"         /t \"REG_SZ\"     /d \"Lucida Console\"");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontFamily\"       /t \"REG_DWORD\"  /d 0x00000036");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontSize\"         /t \"REG_DWORD\"  /d 0x00100004");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontWeight\"       /t \"REG_DWORD\"  /d 0x00000000");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontSize\"         /t \"REG_DWORD\"  /d 0x000F0000");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontWeight\"       /t \"REG_DWORD\"  /d 0x00000190");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"QuickEdit\"        /t \"REG_DWORD\"  /d 0x00000000");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"ScreenBufferSize\" /t \"REG_DWORD\"  /d 0x00200040");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"WindowSize\"       /t \"REG_DWORD\"  /d 0x00200040");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"ScreenBufferSize\" /t \"REG_DWORD\"  /d 0x0bb80078");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"WindowSize\"       /t \"REG_DWORD\"  /d 0x00320078");
     system(cmd);
-
 
 }
 
 void ConfigureCMD(){
 
+
     int width;
-    width = getTerminalWidth();
+    width = getTerminalWidth()+1;
     char buffer[50];
-    sprintf(buffer,"mode con: cols=%d lines=30",width);
+    sprintf(buffer,"mode con:cols=%d lines=50",width);
     system(buffer);
+
+    HANDLE StdHandle;
+    COORD mycoord;
+    mycoord.X=width;
+    mycoord.Y=10000;
+    StdHandle=GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleScreenBufferSize(StdHandle,mycoord);
+
+
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
 
