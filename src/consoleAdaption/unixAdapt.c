@@ -22,12 +22,20 @@
 //No Win32 Code
 #else
 
+
+#include <stdlib.h>
 #include <stdio.h>
+#include "../../lib/printui/printui.h"
 
 
 void ConfigureCMD(){
 
-//Confihure Linux Terminal Here
+
+    int width;
+    width = getTerminalWidth();
+    char buffer[50];
+    sprintf(buffer,"resize -s 30 %d",width);
+    system(buffer);
 
 }
 

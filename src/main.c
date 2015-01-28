@@ -13,12 +13,12 @@
 #include "processing.h"
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
-#include "../lib/consoleAdaption/win32Adapt.h"
+
 
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
 
-#include "../lib/consoleAdaption/win32Adapt.h"
+#include "consoleAdaption/win32Adapt.h"
 const char *skipParameter="\\CMDknowsUTF8";
 
 int main (int argc, char *argv[])
@@ -38,6 +38,9 @@ int main (int argc, char *argv[])
 }
 
 #else
+
+#include "consoleAdaption/unixAdapt.h"
+
 int main (int argc, char *argv[])
 {
     ConfigureCMD();
@@ -52,6 +55,13 @@ int main (int argc, char *argv[])
 
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
 int showTestTabel(int argc, char *argv[]){
+
+    printTabelHeader(9,"Col1","Col2","Col3","Colü4","Col5","6.","Col1","Col2","Col3");
+    printTabelRow(9,"Erste Den","1203","Heilbrn","123","NULL","6.","Col1","Col2","Col3");
+
+    printFooter();
+
+    printf("\n");
 
     printTabelHeader(6,"Col1","Col2","Col3","Colü4","Col5","6.");
     printTabelRow(6,"Erste Den","1203","Heilbrn","123","NULL","6.");

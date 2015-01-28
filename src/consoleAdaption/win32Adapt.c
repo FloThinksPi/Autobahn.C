@@ -25,6 +25,8 @@
 #include <Windows.h>
 #include "win32Adapt.h"
 
+//TODO SET Width from printui var
+
 
 const char *skipParam=" \\CMDknowsUTF8";
 
@@ -36,7 +38,7 @@ void RestartInUtf8Cmd(){
     char cmd[1024];
     snprintf(cmd, sizeof cmd, "%s%s%s", "start \"Autobahn\" cmd.exe /C ",buffer, skipParam);
 
-
+    //Einstellungen der autobahn konsole
     system("setlocal enableextensions disabledelayedexpansion");
     system("reg add \"HKCU\\Console\\Autobahn\" /f");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FaceName\"         /t \"REG_SZ\"     /d \"Lucida Console\"");

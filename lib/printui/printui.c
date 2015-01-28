@@ -17,15 +17,8 @@
 //INFOS----------------
 
 //TODO Püfen ob ausgame nicht zu lang ist als es dürfte , was zu verschiebung der zeichen führt
-//TODO Durch 3 teilbar modifizeren da es für 3 funktioniert aber nicht für 6,9, etc  es werden leerzeichen ausgegeben die unnnötig sind
 //TODO /n löschen wenn win32 da dort /n einen character belegt und deswegen eine neue zeile beginnt.
-//TODO Konsolenbreite in dieser lib setzen.
-
-//|----Col1---||----Col2---||----Col3---||----Colü4--||----Col5---||------6.-----|
-//|  Erste Den||    1203   ||   Heilbrn ||     123   ||    NULL   ||      6.     |
-//|------------------------------------------------------------------------------|
-//TODO Siehe erste spalte , ungleiche leerzeichenverteilung.
-
+//TODO Footer spalten zeichen (vertkal) hinzufügen
 
 
 //Code Begin
@@ -35,6 +28,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+
+
+
 //FunktionsDeklaration
 int countUTF8String(char *s);
 
@@ -42,15 +38,15 @@ int countUTF8String(char *s);
 static const char *hc = "-";
 static const char *vc = "|";
 
-//Terminal Breite
-static const int terminalWidth = 80;
+//Terminal Breite , terminal wird auf win32 und unix systemen resized siehe src/ConsoleAdaption
+static const int terminalWidth = 120;
 
 //New Line Char , bei windows muss sie wieder gelöscht werden da sie ein zeichen verbraucht
 
 #ifdef _WIN32
-static const char *nlc = "\n";
+unsigned char *nlc = "0x0A";
 #else
-static const char *nlc = "\n";
+unsigned char *nlc = "\n";
 #endif
 
 //##############
@@ -68,7 +64,7 @@ void center_print_row_segment(char *s, int width,bool isHeading,bool isLast)
     int length = countUTF8String(s);
     int i;
     fputs(vc, stdout);
-    for (i=1; i<=((width-length)/2); i++) {
+    for (i=1; i<((width-length)/2); i++) {
         if(isHeading){
             fputs(hc, stdout);
         }else{
@@ -189,11 +185,8 @@ void printTabelHeader(int numCols,...){
     for(i = 0; i < numCols-1; i++) {
         center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, false);
     }
-    if((numCols%3)>0){
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, true, true);
-    }else{
-        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, true, true);
-    }
+        center_print_row_segment(va_arg(ap, char *),(terminalWidth-i*(terminalWidth / numCols)), true, true);
+
 
     va_end(ap);
 
@@ -211,11 +204,7 @@ void printTabelRow(char numCols,...){
     for(i = 0; i < numCols-1; i++) {
         center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, false);
     }
-    if((numCols%3)>0){
-        center_print_row_segment(va_arg(ap, char *), terminalWidth / numCols, false, true);
-    }else{
-        center_print_row_segment(va_arg(ap, char *), (terminalWidth / numCols)+2, false, true);
-    }
+      center_print_row_segment(va_arg(ap, char *),(terminalWidth-i*(terminalWidth / numCols)), false, true);
 
     va_end(ap);
 
