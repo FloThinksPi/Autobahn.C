@@ -39,12 +39,12 @@ static const char *hc = "-";
 static const char *vc = "|";
 
 //Terminal Breite , terminal wird auf win32 und unix systemen resized siehe src/ConsoleAdaption
-static const int terminalWidth = 120;
+static const int terminalWidth = 80;
 
 //New Line Char , bei windows muss sie wieder gelöscht werden da sie ein zeichen verbraucht
 
 #ifdef _WIN32
-unsigned char *nlc = "0x0A";
+unsigned char *nlc = "\n";
 #else
 unsigned char *nlc = "\n";
 #endif
