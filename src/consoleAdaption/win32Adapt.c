@@ -55,9 +55,13 @@ void RestartInUtf8Cmd(){
 
 void ConfigureCMD(){
 
-system("mode con: cols=81 lines=30");
-SetConsoleCP(CP_UTF8);
-SetConsoleOutputCP(CP_UTF8);
+    int width;
+    width = getTerminalWidth();
+    char buffer[50];
+    sprintf(buffer,"mode con: cols=%d lines=30",width);
+    system(buffer);
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
 
 }
 
