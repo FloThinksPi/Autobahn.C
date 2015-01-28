@@ -1,3 +1,9 @@
-ID,Name,AutobahnID,Km,Referenz,POI
-0000001,Heilbronn,0000001,20,Neckarsulm|Offenau,Tankstelle
-0000002,Sinsheim,0000001,30,,Museum|Hallenbad|Tankstelle
+ID,Name,AutobahnID,Km
+01,Mosbach,01,0
+02,Köln,02,0
+03,Hamburg,03,0
+04,Kiel,04,0
+05,Berlin,05,0
+06,Heilbronn,06,0
+07,Stuttgart,07,0
+08,München,08,0

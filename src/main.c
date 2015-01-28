@@ -56,10 +56,6 @@ int main (int argc, char *argv[])
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
 int showTestTabel(int argc, char *argv[]){
 
-    printTabelHeader(9,"Col1","Col2","Col3","Colü4","Col5","6.","Col1","Col2","Col3");
-    printTabelRow(9,"Erste Den","1203","Heilbrn","123","NULL","6.","Col1","Col2","Col3");
-
-    printFooter();
 
     printf("\n");
 
@@ -91,7 +87,7 @@ int StartupMenu(int argc, char *argv[]){
     system(CLEAR);
     //ä,ö,ü,§,%
     SetMenuTitle("Autobahn.C Startbildschirm");
-    AddCMD("easteregg", "easteregg", NULL);
+    AddCMD("easteregg", "um das Easteregg zu öffnen.", NULL);
     AddCMD("", "", MainMenu);
 
     showSystemCMDHelp();
