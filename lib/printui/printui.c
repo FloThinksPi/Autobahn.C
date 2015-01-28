@@ -19,9 +19,16 @@
 //TODO Püfen ob ausgame nicht zu lang ist als es dürfte , was zu verschiebung der zeichen führt
 //TODO Durch 3 teilbar modifizeren da es für 3 funktioniert aber nicht für 6,9, etc  es werden leerzeichen ausgegeben die unnnötig sind
 //TODO /n löschen wenn win32 da dort /n einen character belegt und deswegen eine neue zeile beginnt.
+//TODO Konsolenbreite in dieser lib setzen.
+
+//|----Col1---||----Col2---||----Col3---||----Colü4--||----Col5---||------6.-----|
+//|  Erste Den||    1203   ||   Heilbrn ||     123   ||    NULL   ||      6.     |
+//|------------------------------------------------------------------------------|
+//TODO Siehe erste spalte , ungleiche leerzeichenverteilung.
 
 
-//Deklarationen
+
+//Code Begin
 
 #include <stdbool.h>
 #include <string.h>

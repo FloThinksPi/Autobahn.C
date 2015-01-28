@@ -52,7 +52,7 @@ void RestartInUtf8Cmd(){
 
 void ConfigureCMD(){
 
-system("mode con: cols=81 lines=30");//TODO /n auf windows systemen wieder löschen da sie einen extra buchstaben brauchen und das terminal so 81Zeichen breit sein muss damit nicht 2 umbrüche gemacht werden
+system("mode con: cols=81 lines=30");
 SetConsoleCP(CP_UTF8);
 SetConsoleOutputCP(CP_UTF8);
 
