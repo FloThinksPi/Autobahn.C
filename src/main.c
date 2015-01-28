@@ -13,11 +13,12 @@
 #include "processing.h"
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
+#include "../lib/consoleAdaption/win32Adapt.h"
 
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
 
-#include "../lib/win32adaption/win32adapt.h"
+#include "../lib/consoleAdaption/win32Adapt.h"
 const char *skipParameter="\\CMDknowsUTF8";
 
 int main (int argc, char *argv[])
@@ -39,6 +40,7 @@ int main (int argc, char *argv[])
 #else
 int main (int argc, char *argv[])
 {
+    ConfigureCMD();
 
     StartupMenu(0,NULL);
 

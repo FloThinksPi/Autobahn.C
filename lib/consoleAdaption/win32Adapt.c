@@ -1,13 +1,13 @@
 /**************************************************************************************************/
 /* Copyright (C) mc2lab.com, SSE@USTC, 2014-2015                                                  */
 /*                                                                                                */
-/*  FILE NAME             :  printui.C                                                            */
+/*  FILE NAME             :  win32Adapt.C                                                         */
 /*  PRINCIPAL AUTHOR      :  Florian Braun                                                        */
-/*  SUBSYSTEM NAME        :  printu                                                               */
-/*  MODULE NAME           :  printui                                                              */
+/*  SUBSYSTEM NAME        :  consoleAdaption                                                      */
+/*  MODULE NAME           :  win32Adapt                                                           */
 /*  LANGUAGE              :  C                                                                    */
 /*  TARGET ENVIRONMENT    :  ANY (C99)                                                            */
-/*  DATE OF FIRST RELEASE :  2015/01/25                                                           */
+/*  DATE OF FIRST RELEASE :  2015/01/26                                                           */
 /*  DESCRIPTION           :  Programm to print nice output in a window                            */
 /**************************************************************************************************/
 
@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <Windows.h>
+#include "win32Adapt.h"
 
 
 const char *skipParam=" \\CMDknowsUTF8";

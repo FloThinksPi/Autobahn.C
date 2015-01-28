@@ -20,9 +20,9 @@ FILE(GLOB LIB_MENU_HEADER_FILES lib/menu/*.h)
 FILE(GLOB LIB_PRINTUI_FILES lib/printui/*.c)
 FILE(GLOB LIB_PRINTUI_HEADER_FILES lib/printui/*.h)
 
-#TextAusgabe Library(Selbstgeschrieben)
-FILE(GLOB LIB_WIN32ADAPTER_FILES lib/win32adaption/*.c)
-FILE(GLOB LIB_WIN32ADAPTER_HEADER_FILES lib/win32adaption/*.h)
+#CMD/Terminal Anpassungs Library(Selbstgeschrieben)
+FILE(GLOB LIB_WIN32ADAPTER_FILES lib/consoleAdaption/*.c)
+FILE(GLOB LIB_WIN32ADAPTER_HEADER_FILES lib/consoleAdaption/*.h)
 
 
 #Include

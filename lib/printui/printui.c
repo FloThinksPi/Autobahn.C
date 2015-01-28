@@ -35,20 +35,33 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+//FunktionsDeklaration
+int countUTF8String(char *s);
 
 //vc=VerticalCaracter | hc = horizontalCharacter
-static const char hc[] = "-";
-static const char vc[] = "|";
+static const char *hc = "-";
+static const char *vc = "|";
 
 //Terminal Breite
 static const int terminalWidth = 80;
+
+//New Line Char , bei windows muss sie wieder gelöscht werden da sie ein zeichen verbraucht
+
+#ifdef _WIN32
+static const char *nlc = "\n";
+#else
+static const char *nlc = "\n";
+#endif
 
 //##############
 //### Formatierungs Berechnung / Ausgabefalse
 //##############
 
+int getTerminalWidth(){
+    return terminalWidth;
+}
 
-void center_print_row_segment(const char *s, int width,bool isHeading,bool isLast)
+void center_print_row_segment(char *s, int width,bool isHeading,bool isLast)
 {
 
 
@@ -77,7 +90,7 @@ void center_print_row_segment(const char *s, int width,bool isHeading,bool isLas
 
 
     if(isLast) {
-        fputs("\n", stdout);
+        fputs(nlc, stdout);
     }
 
 
@@ -85,7 +98,7 @@ void center_print_row_segment(const char *s, int width,bool isHeading,bool isLas
 
 
 
-void center_print_menu_header(const char *s, int width)
+void center_print_menu_header(char *s, int width)
 {
 
     int length = countUTF8String(s);
@@ -103,12 +116,12 @@ void center_print_menu_header(const char *s, int width)
         fputs(hc, stdout);
     }
     fputs(vc,stdout);
-    fputs("\n", stdout);
+    fputs(nlc, stdout);
 
 
 }
 
-void center_print_menu(const char *s, int width)
+void center_print_menu(char *s, int width)
 {
 
     int length = countUTF8String(s);
@@ -128,7 +141,7 @@ void center_print_menu(const char *s, int width)
 
     fputs(vc, stdout);
     //printf("%d",(width-length)%2);
-    fputs("\n",stdout);
+    fputs(nlc,stdout);
 
 
 }

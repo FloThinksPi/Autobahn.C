@@ -30,4 +30,7 @@ void printMenuItem(char text[]);
 //Zählt Zeichen in einem String
 int countUTF8String(char *s);
 
+//Gibt die Terminalbreite zurück die hier gewählt wird
+int getTerminalWidth();
+
 #endif
