@@ -8,6 +8,6 @@
 #ifndef PROCESSING_H
 #define PROCESSING_H
 
-
+int start(int argc, char** argv);
 
 #endif

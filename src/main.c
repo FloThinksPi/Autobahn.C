@@ -46,6 +46,7 @@ int main (int argc, char *argv[])
     ConfigureCMD();
 
     StartupMenu(0,NULL);
+   // start(0,NULL);
 
     return 0;
 }
