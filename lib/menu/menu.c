@@ -34,7 +34,7 @@ tLinkTable * head = NULL;
 #define DESC_LEN    		1024
 #define CMD_NUM     		10
 
-//MenuTitle kann nur 80 lang sein da eine konsole 80 Buchstaben breit ist
+
 char *MenuTitle="Unnamed Menu";
 char *PrintfFormat="Geben sie \"%s\" ein %s";
 

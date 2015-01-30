@@ -45,8 +45,8 @@ int main (int argc, char *argv[])
 {
     ConfigureCMD();
 
-    StartupMenu(0,NULL);
-   // start(0,NULL);
+    //StartupMenu(0,NULL);
+    start();
 
     return 0;
 }
@@ -62,7 +62,6 @@ int showTestTabel(int argc, char *argv[]){
 
     printTabelHeader(6,"Col1","Col2","Col3","Colü4","Col5","6.");
     printTabelRow(6,"Erste Den","1203","Heilbrn","123","NULL","6.");
-
     printFooter();
 
     printf("\n");
