@@ -46,8 +46,9 @@ int main (int argc, char *argv[])
 {
     ConfigureCMD();
 
-    StartupMenu(0,NULL);
+    //StartupMenu(0,NULL);
     //start();
+    loadDatabase();
 
 
 

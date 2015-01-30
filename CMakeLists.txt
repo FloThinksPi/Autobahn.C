@@ -28,12 +28,17 @@ FILE(GLOB LIB_WIN32ADAPTER_HEADER_FILES src/consoleAdaption/*.h)
 FILE(GLOB LIB_Leven_FILES lib/levenshtein/*.c)
 FILE(GLOB LIB_Leven_HEADER_FILES lib/levenshtein/*.h)
 
+#mxml
+FILE(GLOB LIB_mxml_FILES lib/mxml/*.c)
+FILE(GLOB LIB_mxml_HEADER_FILES lib/mxml/*.h)
+
 #Include
 add_executable(Autobahn_C
                 ${SOURCE_FILES} ${HEADER_FILES}
                 ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES}
                 ${LIB_PRINTUI_FILES} ${LIB_PRINTUI_HEADER_FILES}
                 ${LIB_WIN32ADAPTER_FILES} ${LIB_WIN32ADAPTER_HEADER_FILES}
-                ${LIB_Leven_FILES} ${LIB_Leven_HEADER_FILES})
+                ${LIB_Leven_FILES} ${LIB_Leven_HEADER_FILES}
+                ${LIB_mxml_FILES} ${LIB_mxml_HEADER_FILES})
 
 

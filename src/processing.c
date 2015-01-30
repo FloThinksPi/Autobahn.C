@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "../lib/levenshtein/levenshtein.h"
+
 
 
 //Anzahl der Knoten
@@ -14,6 +14,8 @@ int AnzahlKnoten = NULL;
 
 struct Knoten {
     int ID;
+    int AID;
+    char *AutobahnName;
     char *Name;
     bool besucht;
     struct Knoten *knotenZurueck;
@@ -23,7 +25,6 @@ struct Knoten {
 };
 
 struct Wege {
-    struct Knoten *von; //TODO von nicht nötig da info in dem vorhandensein des eintrags beim knoten steckt -> löschen
     struct Knoten *nach;
     double laenge;
 };
@@ -42,11 +43,11 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
     meineKnoten[Knoten1]->Wege[numWegezuKnoten1]=W1;
     meineKnoten[Knoten2]->Wege[numWegezuKnoten2]=W2;
 
-    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->von=meineKnoten[Knoten1];
+
     meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->nach=meineKnoten[Knoten2];
     meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->laenge=leange;
 
-    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->von=meineKnoten[Knoten2];
+
     meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->nach=meineKnoten[Knoten1];
     meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->laenge=leange;
 
@@ -56,7 +57,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 
 }
 
-void setzeKnotenName(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName){
+void setzeKnotenName(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,int AutobahnNummer,int AutobahnName){
 
 
     struct Knoten *K =  malloc(sizeof(struct Knoten));
@@ -64,6 +65,8 @@ void setzeKnotenName(struct Knoten *meineKnoten[], int KnotenNummer, char *Knote
     meineKnoten[KnotenNummer]=K;
     meineKnoten[KnotenNummer]->Name=KnotenName;
     meineKnoten[KnotenNummer]->ID=KnotenNummer;
+    meineKnoten[KnotenNummer]->AutobahnName=AutobahnName;
+    meineKnoten[KnotenNummer]->AID=AutobahnNummer;
 
 
 }
@@ -188,8 +191,6 @@ int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
     }
 }
 
-//Erstellt / Läd das datenmodell mit den daten aus der Datenbank
-struct Knoten ladeDaten();//TODO Hier wird von dbio die daten geholt und in das struct geschrieben , wird schon beim öffnen des menus ausgeführt.
 
 //Berechnet alle Pfade zu allen zielen
 void Berechne();
@@ -209,19 +210,6 @@ int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und ve
     struct Knoten *meineKnoten[AnzahlKnoten];
 
 
-    //TESTDATEN VON http://www.geeksforgeeks.org/greedy-algorithms-set-6-dijkstras-shortest-path-algorithm/
-
-    //Es müssen "AnzahlKnoten" mal Knoten erstellt werden sonst kommt es zum Speicherzugriffsfehler parameter(PointerZumKnotenarray,int ID des Knotens, Name des Knotens)
-    setzeKnotenName(meineKnoten, 0, "Null");
-    setzeKnotenName(meineKnoten, 1, "Eins");
-    setzeKnotenName(meineKnoten, 2, "Zwei");
-    setzeKnotenName(meineKnoten, 3, "Drei");
-    setzeKnotenName(meineKnoten, 4, "Vier");
-    setzeKnotenName(meineKnoten, 5, "Fünf");
-    setzeKnotenName(meineKnoten, 6, "Sechs");
-    setzeKnotenName(meineKnoten, 7, "Sieben");
-    setzeKnotenName(meineKnoten, 8, "Acht");
-    setzeKnotenName(meineKnoten, 9, "N/R Knoten");
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){

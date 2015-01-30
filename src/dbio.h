@@ -8,6 +8,6 @@
 #ifndef DBIO_H
 #define DBIO_H
 
-
+void loadDatabase();
 
 #endif
