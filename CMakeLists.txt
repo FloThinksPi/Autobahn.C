@@ -24,10 +24,16 @@ FILE(GLOB LIB_PRINTUI_HEADER_FILES lib/printui/*.h)
 FILE(GLOB LIB_WIN32ADAPTER_FILES src/consoleAdaption/*.c)
 FILE(GLOB LIB_WIN32ADAPTER_HEADER_FILES src/consoleAdaption/*.h)
 
+#Damerau-Levenshtein Algorythmus
+FILE(GLOB LIB_Leven_FILES lib/levenshtein/*.c)
+FILE(GLOB LIB_Leven_HEADER_FILES lib/levenshtein/*.h)
 
 #Include
-add_executable(Autobahn_C ${SOURCE_FILES} ${HEADER_FILES} ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES}
+add_executable(Autobahn_C
+                ${SOURCE_FILES} ${HEADER_FILES}
+                ${LIB_MENU_FILES} ${LIB_MENU_HEADER_FILES}
                 ${LIB_PRINTUI_FILES} ${LIB_PRINTUI_HEADER_FILES}
-                ${LIB_WIN32ADAPTER_FILES} ${LIB_WIN32ADAPTER_HEADER_FILES})
+                ${LIB_WIN32ADAPTER_FILES} ${LIB_WIN32ADAPTER_HEADER_FILES}
+                ${LIB_Leven_FILES} ${LIB_Leven_HEADER_FILES})
 
 

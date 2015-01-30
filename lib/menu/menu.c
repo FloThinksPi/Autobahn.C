@@ -26,6 +26,7 @@
 #include "linktable.h"
 #include "menu.h"
 #include "../printui/printui.h"
+#include "../levenshtein/levenshtein.h"
 
 tLinkTable * head = NULL;
 
@@ -49,17 +50,6 @@ typedef struct DataNode
 } tDataNode;
 
 
-int I_Quit(int argc, char *argv[]){
-    system(CLEAR);
-    exit(0);
-}
-int I_Clear(int argc, char *argv[]){
-    system(CLEAR);
-}
-int I_Help(int argc, char *argv[]){
-    system(CLEAR);
-    ShowAllCmd(head);
-}
 
 int SearchConditon(tLinkTableNode * pLinkTableNode,void * arg)
 {
@@ -186,6 +176,19 @@ void SetMenuTitle(char *title){
     MenuTitle=title;
 }
 
+int I_Quit(int argc, char *argv[]){
+    system(CLEAR);
+    exit(0);
+}
+int I_Clear(int argc, char *argv[]){
+    system(CLEAR);
+}
+int I_Help(int argc, char *argv[]){
+    system(CLEAR);
+    ShowAllCmd(head);
+}
+
+
 /* add cmd to menu */
 int AddCMD(char *cmd, char *desc, int (*handler)())
 {
@@ -227,6 +230,48 @@ void ResetAllCMDs(){
 
 }
 
+/* show all cmd in listlist */
+int FindSimilarCommands(tLinkTable * head,char *CMD)
+{
+    tDataNode * pNode = (tDataNode*)GetLinkTableHead(head);
+    int x=0;
+    int p=0;
+    while(pNode != NULL)
+    {
+
+
+        if(levenshtein(CMD, pNode->cmd)<=2 && countUTF8String(pNode->cmd)>2){
+            if(p==0){
+                printf("\n");
+                printMenuHeader("Ungültiger Befehl , Meinten sie vieleicht");
+                p=1;
+            }
+            printMenuItem(pNode->cmd);
+        }
+
+        if(levenshtein(CMD, pNode->cmd)<2 && countUTF8String(pNode->cmd)<=2){
+            if(p==0){
+                printf("\n");
+                printMenuHeader("Ungültiger Befehl , Meinten sie vieleicht");
+                p=1;
+            }
+            printMenuItem(pNode->cmd);
+        }
+
+        pNode = (tDataNode *) GetNextLinkTableNode(head, (tLinkTableNode *) pNode);
+
+        x++;
+    }
+    if(p==0){
+
+        printf("!!Ungültiger Befehl!!\n\n");
+    }else{
+        printFooter();
+    }
+    return 0;
+}
+
+
 /* Menu Engine Execute */
 int StartCMDSystem()
 {
@@ -258,9 +303,9 @@ int StartCMDSystem()
             *(argv[0] + len - 1) = '\0';
         }
         tDataNode *p = (tDataNode*)SearchLinkTableNode(head,SearchConditon,(void*)argv[0]);
-        if( p == NULL)
-        {
-            printf("Ungültiger Befehl\n");
+        if(p == NULL){
+            FindSimilarCommands(head,cmd);
+            //printf("%s\n",cmd);
             continue;
         }
 
@@ -268,5 +313,6 @@ int StartCMDSystem()
         {
             p->handler(argc, argv);
         }
+
     }
 }

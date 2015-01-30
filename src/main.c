@@ -13,7 +13,7 @@
 #include "processing.h"
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
-
+#include "consoleAdaption/unixAdapt.h"
 
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
@@ -39,14 +39,17 @@ int main (int argc, char *argv[])
 
 #else
 
-#include "consoleAdaption/unixAdapt.h"
+
+
 
 int main (int argc, char *argv[])
 {
     ConfigureCMD();
 
-    //StartupMenu(0,NULL);
-    start();
+    StartupMenu(0,NULL);
+    //start();
+
+
 
     return 0;
 }

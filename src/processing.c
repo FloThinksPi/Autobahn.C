@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
+#include "../lib/levenshtein/levenshtein.h"
 
 
 //Anzahl der Knoten
@@ -188,16 +188,22 @@ int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
     }
 }
 
+//Erstellt / Läd das datenmodell mit den daten aus der Datenbank
+struct Knoten ladeDaten();//TODO Hier wird von dbio die daten geholt und in das struct geschrieben , wird schon beim öffnen des menus ausgeführt.
 
-void ladeDaten();//TODO Hier wird von dbio die daten geholt und in das struct geschrieben , wird schon beim öffnen des menus ausgeführt.
+//Berechnet alle Pfade zu allen zielen
+void Berechne();
 
-int start()//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingabe muss in ladedaten();
+//Löscht die berechneten werte , behält aber die dateistruktur d.h sich nicht ändernde daten
+void saubereDaten();
+
+//Finden und ausgabe des weges zwischen a und b
+int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingabe muss in ladedaten();
 {
 
     //Anzahl an Knoten wird festgelegt
     AnzahlKnoten=10;
-    //Lege Startknoten Fest
-    int StartKnoten=5;
+
 
     //Ein array mit "AnzahlKnoten" einträgen , aus Knoten wird erstellt und somit speicher zugewiesen
     struct Knoten *meineKnoten[AnzahlKnoten];
@@ -245,6 +251,8 @@ int start()//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingab
 
     //TODO Ausgaben schreiben , mit printui tabellen
     printAllPaths(meineKnoten,StartKnoten);
+
+
 
     return 0;
 }
