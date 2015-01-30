@@ -57,7 +57,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 
 }
 
-void setzeKnotenName(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,int AutobahnNummer,int AutobahnName){
+void setzeKnoten(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,int AutobahnNummer,char *AutobahnName){
 
 
     struct Knoten *K =  malloc(sizeof(struct Knoten));
@@ -216,6 +216,7 @@ int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und ve
         meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ,meineKnoten[i]->numWege=0;
         meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten));
     }
+
 
     //Hier werden die verbindungen zwischen den knoten erstellt , sie sind immmer bidirektional d.h. in beide richtungen ,die reihenfolge der knoten ist somit egal.
     //parameter(PointerZumKnotenarray,int ID des ersten Knotens,int ID des zweiten Knotens,entfernung zwischen den knoten)
