@@ -14,14 +14,13 @@ int AnzahlKnoten = NULL;
 
 struct Knoten {
     int ID;
-    int AID;
     char *AutobahnName;
     char *Name;
     bool besucht;
     struct Knoten *knotenZurueck;
     double entfernungZumUrsprung;
     int numWege;
-    struct Wege *Wege[20];
+    struct Wege *Wege[];
 };
 
 struct Wege {
@@ -57,7 +56,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 
 }
 
-void setzeKnoten(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,int AutobahnNummer,char *AutobahnName){
+void setzeKnoten(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,char *AutobahnName){
 
 
     struct Knoten *K =  malloc(sizeof(struct Knoten));
@@ -66,7 +65,6 @@ void setzeKnoten(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenNam
     meineKnoten[KnotenNummer]->Name=KnotenName;
     meineKnoten[KnotenNummer]->ID=KnotenNummer;
     meineKnoten[KnotenNummer]->AutobahnName=AutobahnName;
-    meineKnoten[KnotenNummer]->AID=AutobahnNummer;
 
 
 }

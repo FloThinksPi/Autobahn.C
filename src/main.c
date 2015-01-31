@@ -48,7 +48,11 @@ int main (int argc, char *argv[])
 
     //StartupMenu(0,NULL);
     //start();
-    loadDatabase();
+
+
+    struct Knoten *meineKnoten[getNumKnoten()];
+
+    loadDatabaseFiletoStruct(meineKnoten);
 
 
 
