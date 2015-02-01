@@ -189,7 +189,14 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     {
         for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
-                ErstelleWegBidirektional(meineKnoten, i, j, 0.0000000001);
+                char *Buffer= malloc(sizeof(char*));
+                ErstelleWegBidirektional(meineKnoten, i, j, 0.000000001);
+
+                sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
+                memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer));
+
+                sprintf(Buffer,"%s(%s)",meineKnoten[j]->Name,meineKnoten[j]->AutobahnName);
+                memcpy(meineKnoten[j]->Name, Buffer, countUTF8String(Buffer));
 
                 break;
             }

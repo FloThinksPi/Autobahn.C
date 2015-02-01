@@ -5,14 +5,22 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "processing.h"
-
+#include "../lib/printui/printui.h"
 
 
 //Anzahl der Knoten
 int AnzahlKnoten = NULL;
 
-
+double my_round(double x, unsigned int digits) {
+    if (digits > 0) {
+        return my_round(x*10.0, digits-1)/10.0;
+    }
+    else {
+        return x;
+    }
+}
 
 double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
@@ -21,7 +29,8 @@ double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
 
         if(meineKnoten[u]->Wege[i]->nach==meineKnoten[v]){
-            return meineKnoten[u]->Wege[i]->laenge;
+            double ret = my_round(meineKnoten[u]->Wege[i]->laenge,2);
+            return ret;
         }
 
         i++;
@@ -97,32 +106,53 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
 
 
 // Gibt Alle möglichen Ziele mit gegangenem Weg aus
-int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
+int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten)
 {
+    char* buffer= malloc(sizeof(char*));
+    char* BewegungsArray[AnzahlKnoten];
+
+
     for (int i = 0; i < AnzahlKnoten; i++){
         int v=i;
-        char Verlauf[AnzahlKnoten*500];//TODO AUSGABE MIT PRINTUI LIB , Verlauf muss anderst speicher belegen!
 
+        int AnzahlBewegungen=0;
         while(meineKnoten[v]->knotenZurueck->Name!=NULL){
 
+            if(gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)!=0.00000){//TODO Zeile geht nicht , Kreuzüberfahrten nicht anzeigen -> distanz 0km ausbelnden
+                BewegungsArray[AnzahlBewegungen*3]= malloc(sizeof(char*));
+                BewegungsArray[AnzahlBewegungen*3+1]= malloc(sizeof(char*));
+                BewegungsArray[AnzahlBewegungen*3+2]= malloc(sizeof(char*));
 
+                sprintf(buffer,"------(%4.2f Km)----->",gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
-            sprintf(Verlauf,"%s | %s -> %s (%.2f)",Verlauf,meineKnoten[v]->knotenZurueck->Name,meineKnoten[v]->Name, gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
-            v=meineKnoten[v]->knotenZurueck->ID;
+                memcpy(BewegungsArray[AnzahlBewegungen*3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name));
+                memcpy(BewegungsArray[AnzahlBewegungen*3+1], buffer, countUTF8String(buffer));
+                memcpy(BewegungsArray[AnzahlBewegungen*3+2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name));
 
-
-
+                v=meineKnoten[v]->knotenZurueck->ID;
+                AnzahlBewegungen++;
+            }
 
         }
-
-        printf("%s",Verlauf);
 
 
         if(meineKnoten[i]->ID!=meineKnoten[StartKnoten]->ID){
             if(meineKnoten[i]->entfernungZumUrsprung== INT_MAX){
-                printf("\"%s\" ist nicht Erreichbar\n",meineKnoten[i]->Name);
+                sprintf(buffer,"\"%s\" ist von \"%s\" aus nicht Erreichbar",meineKnoten[i]->Name,meineKnoten[StartKnoten]->Name);
+                printMenuHeader(buffer);
+                puts("\n");
             }else {
-                printf("  Gesamt: %.2f \n",meineKnoten[i]->entfernungZumUrsprung);
+                sprintf(buffer,"Weg von \"%s\" nach \"%s\" ",meineKnoten[StartKnoten]->Name,meineKnoten[i]->Name);
+                printMenuHeader(buffer);
+
+                printTabelHeader(3,"Von","Strecke","Nach");
+                for(int x=AnzahlBewegungen-1;x>=0;x--){
+                    printTabelRow(3,BewegungsArray[x*3],BewegungsArray[x*3+1],BewegungsArray[x*3+2]);
+                }
+
+                sprintf(buffer,"  Gesamt: %0.2f ",meineKnoten[i]->entfernungZumUrsprung);
+                printMenuHeader(buffer);
+                puts("\n");
             }
         }
 
@@ -152,7 +182,7 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
     dijkstra(meineKnoten, StartKnoten);
 
     //TODO Ausgaben schreiben , mit printui tabellen
-    printAllPaths(meineKnoten,StartKnoten);
+    printPathToTarget(meineKnoten,StartKnoten,ZielKnoten);
 
 
 

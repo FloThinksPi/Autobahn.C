@@ -27,8 +27,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-
-
+#include <stdlib.h>
 
 
 //FunktionsDeklaration
@@ -145,9 +144,11 @@ void center_print_menu(char *s, int width)
 //Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt
 int countUTF8String(char *s) {
     int i = 0, j = 0;
+
     while (s[i]) {
         if ((s[i] & 0xc0) != 0x80) j++;
         i++;
+
     }
     return j;
 }
@@ -207,7 +208,6 @@ void printTabelRow(char numCols,...){
       center_print_row_segment(va_arg(ap, char *),(terminalWidth-i*(terminalWidth / numCols)), false, true);
 
     va_end(ap);
-
 
 
 }
