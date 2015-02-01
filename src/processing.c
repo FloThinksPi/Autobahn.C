@@ -14,13 +14,14 @@ int AnzahlKnoten = NULL;
 
 struct Knoten {
     int ID;
+    double AutobahnKM;
     char *AutobahnName;
     char *Name;
     bool besucht;
     struct Knoten *knotenZurueck;
     double entfernungZumUrsprung;
     int numWege;
-    struct Wege *Wege[];
+    struct Wege *Wege[4];//MAximal 4 Wege sind möglich
 };
 
 struct Wege {
@@ -29,45 +30,8 @@ struct Wege {
 };
 
 
-void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,int leange){
-
-    int numWegezuKnoten1 = meineKnoten[Knoten1]->numWege;
-    int numWegezuKnoten2 = meineKnoten[Knoten2]->numWege;
-
-    //TODO Püfen ob weg schon existiert
-
-    struct Wege *W1 =  malloc(sizeof(struct Wege));
-    struct Wege *W2 =  malloc(sizeof(struct Wege));
-
-    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]=W1;
-    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]=W2;
 
 
-    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->nach=meineKnoten[Knoten2];
-    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->laenge=leange;
-
-
-    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->nach=meineKnoten[Knoten1];
-    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->laenge=leange;
-
-    meineKnoten[Knoten1]->numWege++;
-    meineKnoten[Knoten2]->numWege++;
-
-
-}
-
-void setzeKnoten(struct Knoten *meineKnoten[], int KnotenNummer, char *KnotenName,char *AutobahnName){
-
-
-    struct Knoten *K =  malloc(sizeof(struct Knoten));
-
-    meineKnoten[KnotenNummer]=K;
-    meineKnoten[KnotenNummer]->Name=KnotenName;
-    meineKnoten[KnotenNummer]->ID=KnotenNummer;
-    meineKnoten[KnotenNummer]->AutobahnName=AutobahnName;
-
-
-}
 
 
 double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
@@ -216,22 +180,6 @@ int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und ve
     }
 
 
-    //Hier werden die verbindungen zwischen den knoten erstellt , sie sind immmer bidirektional d.h. in beide richtungen ,die reihenfolge der knoten ist somit egal.
-    //parameter(PointerZumKnotenarray,int ID des ersten Knotens,int ID des zweiten Knotens,entfernung zwischen den knoten)
-    ErstelleWegBidirektional(meineKnoten,0,1,4);
-    ErstelleWegBidirektional(meineKnoten,0,7,8);
-    ErstelleWegBidirektional(meineKnoten,1,7,11);
-    ErstelleWegBidirektional(meineKnoten,1,2,8);
-    ErstelleWegBidirektional(meineKnoten,2,8,2);
-    ErstelleWegBidirektional(meineKnoten,2,3,7);
-    ErstelleWegBidirektional(meineKnoten,2,5,4);
-    ErstelleWegBidirektional(meineKnoten,3,4,9);
-    ErstelleWegBidirektional(meineKnoten,3,5,14);
-    ErstelleWegBidirektional(meineKnoten,4,5,10);
-    ErstelleWegBidirektional(meineKnoten,5,6,2);
-    ErstelleWegBidirektional(meineKnoten,6,8,6);
-    ErstelleWegBidirektional(meineKnoten,6,7,1);
-    ErstelleWegBidirektional(meineKnoten,7,8,7);
 
     //Algorythmus wird gestartet
     dijkstra(meineKnoten, StartKnoten);

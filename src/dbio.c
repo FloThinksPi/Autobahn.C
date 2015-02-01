@@ -8,6 +8,32 @@
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
 const int Datenleange=50;//Maximale länge eines Datensatzes in einer zeile ( durch kommas getrennter bereich)
 
+void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,int leange){
+
+    int numWegezuKnoten1 = meineKnoten[Knoten1]->numWege;
+    int numWegezuKnoten2 = meineKnoten[Knoten2]->numWege;
+
+    //TODO Püfen ob weg schon existiert
+
+    struct Wege *W1 =  malloc(sizeof(struct Wege));
+    struct Wege *W2 =  malloc(sizeof(struct Wege));
+
+    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]=W1;
+    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]=W2;
+
+
+    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->nach=meineKnoten[Knoten2];
+    meineKnoten[Knoten1]->Wege[numWegezuKnoten1]->laenge=leange;
+
+
+    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->nach=meineKnoten[Knoten1];
+    meineKnoten[Knoten2]->Wege[numWegezuKnoten2]->laenge=leange;
+
+    meineKnoten[Knoten1]->numWege++;
+    meineKnoten[Knoten2]->numWege++;
+
+
+}
 
 int getNumKnoten(){
 
@@ -50,13 +76,13 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[]){
         Data=strtok_r(line,",",&Buffer);
         int u= 0;
         int dist;
-        meineKnoten[i];
+        meineKnoten[i]= malloc(sizeof(struct Knoten));
         while(1){
 
             switch(u) {
                 case 0: meineKnoten[i]->Name=Data;meineKnoten[i]->ID=i; break;
                 case 1: meineKnoten[i]->AutobahnName=Data; break;
-                case 2: sscanf(Data, "%d", &dist); meineKnoten[i]->entfernungZumUrsprung=dist; break;
+                case 2: sscanf(Data, "%d", &dist); meineKnoten[i]=dist; break;
             }
 
 
@@ -68,6 +94,8 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[]){
         i++;
 
     }
+
+
 
     return NULL;
 }

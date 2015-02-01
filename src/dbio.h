@@ -8,7 +8,9 @@
 #ifndef DBIO_H
 #define DBIO_H
 
-void loadDatabaseFiletoStruct(struct Knoten*);
+#include "processing.h"
+
+int loadDatabaseFiletoStruct(struct Knoten*[]);
 int getNumKnoten();
 
 #endif
