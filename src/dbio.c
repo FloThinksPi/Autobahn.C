@@ -2,13 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "processing.h"
+#include "../lib/printui/printui.h"
+
+
 
 
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
 const int Datenleange=50;//Maximale länge eines Datensatzes in einer zeile ( durch kommas getrennter bereich)
 
-void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,int leange){
+void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,double leange){
 
     int numWegezuKnoten1 = meineKnoten[Knoten1]->numWege;
     int numWegezuKnoten2 = meineKnoten[Knoten2]->numWege;
@@ -41,7 +45,7 @@ int getNumKnoten(){
     FILE *fp = fopen("data/knoten.csv", "r");
     if (fp == NULL) {
         perror("Fehler \"data/knoten.csv");
-        return NULL;
+        return 0;
     }
     //Datei zeilenweise lesen
     int countlines=0;
@@ -61,13 +65,55 @@ int getNumKnoten(){
     return countlines;
 }
 
-int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[]){
-//TODO DA kreuze doppekl sind , aber speicherplatz reserviert wird , verschwendet man diesen -> fix
+
+void printarray(struct Knoten *meineKnoten[],int AnzahlKnoten)
+{
+    for (int z = 0; z < AnzahlKnoten; z++)
+        printf("%d: %s -> %s -> %f\n",meineKnoten[z]->ID,meineKnoten[z]->Name,meineKnoten[z]->AutobahnName,meineKnoten[z]->AutobahnKM);
+}
+
+int compare(const void *s1, const void *s2) {
+    struct Knoten* K1 = *(struct Knoten **) s1;
+    struct Knoten* K2 = *(struct Knoten **) s2;
+
+    return K1->AutobahnKM - K2->AutobahnKM;
+}
+
+char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
+
+    char** Autobahnen = malloc(sizeof(char*));
+    int AnzahlAutobahnen=0;
+
+
+    for(int i=0;i<AnzahlKnoten;i++){
+
+        int inArray=0;
+
+        for(int u=1;u<AnzahlAutobahnen+1;u++){
+            if( strcmp(Autobahnen[u],meineKnoten[i]->AutobahnName) == 0 ){inArray=1; break;}
+        }
+
+        if(inArray==0){
+            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char*));
+            Autobahnen[AnzahlAutobahnen+1]=meineKnoten[i]->AutobahnName;
+            AnzahlAutobahnen++;
+        }
+
+    }
+
+    Autobahnen[0]=malloc(sizeof(char));
+    sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
+
+    return Autobahnen;
+}
+
+int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
     FILE *fp = fopen("data/knoten.csv", "r");
     char *line= malloc(sizeof(char)*ZeilenLeange);
     int i=0;
+
     while (1) {
         if (fgets(line,ZeilenLeange, fp) == NULL) break;
 
@@ -76,13 +122,16 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[]){
         Data=strtok_r(line,",",&Buffer);
         int u= 0;
         int dist;
-        meineKnoten[i]= malloc(sizeof(struct Knoten));
+        meineKnoten[i] = malloc(sizeof(struct Knoten));
+
         while(1){
 
+
             switch(u) {
-                case 0: meineKnoten[i]->Name=Data;meineKnoten[i]->ID=i; break;
-                case 1: meineKnoten[i]->AutobahnName=Data; break;
-                case 2: sscanf(Data, "%d", &dist); meineKnoten[i]=dist; break;
+                case 0: meineKnoten[i]->Name= malloc(sizeof(char));memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data));meineKnoten[i]->ID=i; break;
+                case 1: meineKnoten[i]->AutobahnName= malloc(sizeof(char)); memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)); break;
+                case 2: sscanf(Data, "%d", &dist); meineKnoten[i]->AutobahnKM=dist; break;
+                default : break;
             }
 
 
@@ -90,15 +139,65 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[]){
             u++;
             if(Data==0) break;
         }
-        printf("%s\n",meineKnoten[i]->Name);
         i++;
 
     }
 
+    printf("List before sorting:\n");
+    printarray(meineKnoten,AnzahlKnoten);
+
+    //Sortiere Struct
+
+    qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),compare);
+
+    //Gleiche IDs der Knoten der richtigen reihenfolge an
+    for(int x=0;x<AnzahlKnoten;x++){
+        meineKnoten[x]->ID=x;
+        meineKnoten[x]->numWege=0;
+    }
+
+    printf("\nList after sorting:\n");
+    printarray(meineKnoten,AnzahlKnoten);
+
+    //Lese Welche Autobahenen es gibt
+    char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
+
+    //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze , sie haben am anfang nur zwei wege , also wie normale abfahrten
+    for(int x=1;x<=atol(Autobahnen[0]);x++){//TODO Atol depriciated
+
+        printf("%s\n",Autobahnen[x]);
+
+        int lastNode=INT_MAX;
+
+        for(int u=0;u<AnzahlKnoten;u++){
+
+            if(strcmp(meineKnoten[u]->AutobahnName, Autobahnen[x])==0){
+                if(lastNode!=INT_MAX){
+                    ErstelleWegBidirektional(meineKnoten, lastNode, u, meineKnoten[u]->AutobahnKM - meineKnoten[lastNode]->AutobahnKM);
+                }
+                lastNode=u;
+            }
+
+        }
+
+    }
+
+    //Verbinde alle Knoten mit gleichen namen mitteinander mit der entfernung 0 , (Kreuze werden verknüpft)
 
 
-    return NULL;
+
+    for (int i = 0; i < AnzahlKnoten; ++i)
+    {
+        for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
+            {
+                ErstelleWegBidirektional(meineKnoten, i, j, 0.0000000001);
+
+                break;
+            }
+    }
+
+
+    return 0;
 }
-
 
 

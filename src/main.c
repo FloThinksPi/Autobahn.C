@@ -39,7 +39,7 @@ int main (int argc, char *argv[])
 
 #else
 
-
+int AnzahlKnoten;
 
 
 int main (int argc, char *argv[])
@@ -49,11 +49,13 @@ int main (int argc, char *argv[])
     //StartupMenu(0,NULL);
     //start();
 
+    AnzahlKnoten=getNumKnoten();
+    struct Knoten *meineKnoten[AnzahlKnoten];
 
-    struct Knoten *meineKnoten[getNumKnoten()];
+    loadDatabaseFiletoStruct(meineKnoten,AnzahlKnoten);
 
-    loadDatabaseFiletoStruct(meineKnoten);
 
+    findeWeg(meineKnoten,AnzahlKnoten, 3, 5);
 
 
     return 0;

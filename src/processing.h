@@ -12,14 +12,14 @@
 
 struct Knoten {
     int ID;
-    int AID;
+    double AutobahnKM;
     char *AutobahnName;
     char *Name;
     bool besucht;
     struct Knoten *knotenZurueck;
     double entfernungZumUrsprung;
     int numWege;
-    struct Wege *Wege[20];
+    struct Wege *Wege[3];//MAximal 3 Wege sind möglich (2 bei Ausfahrten und 3 bei kreuzen , da sich die kreuze von 2 autobahnen mit einer kante der länge 0 verbinden)
 };
 
 struct Wege {
@@ -27,6 +27,6 @@ struct Wege {
     double laenge;
 };
 
-int findeWeg(int StartKnoten,int ZielKnoten);
+int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten);
 
 #endif

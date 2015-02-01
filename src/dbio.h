@@ -10,7 +10,7 @@
 
 #include "processing.h"
 
-int loadDatabaseFiletoStruct(struct Knoten*[]);
+int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
 int getNumKnoten();
 
 #endif

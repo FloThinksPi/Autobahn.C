@@ -5,32 +5,12 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
+#include "processing.h"
+#include "../lib/printui/printui.h"
 
 
 //Anzahl der Knoten
 int AnzahlKnoten = NULL;
-
-
-struct Knoten {
-    int ID;
-    double AutobahnKM;
-    char *AutobahnName;
-    char *Name;
-    bool besucht;
-    struct Knoten *knotenZurueck;
-    double entfernungZumUrsprung;
-    int numWege;
-    struct Wege *Wege[4];//MAximal 4 Wege sind möglich
-};
-
-struct Wege {
-    struct Knoten *nach;
-    double laenge;
-};
-
-
-
 
 
 
@@ -121,24 +101,19 @@ int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
 {
     for (int i = 0; i < AnzahlKnoten; i++){
         int v=i;
-        char *Verlauf[AnzahlKnoten];
-        int CountWays=0;
+
+        printTabelHeader(3,"Von","Entfernung","Nach");
         while(meineKnoten[v]->knotenZurueck->Name!=NULL){
 
-            char *buffer=malloc(sizeof(LONG_MAX));
-
-            sprintf(buffer,"%s -> %s (%.2f)",meineKnoten[v]->knotenZurueck->Name,meineKnoten[v]->Name, gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
+            char *Temp =
+            printTabelRow(3,meineKnoten[v]->knotenZurueck->Name,meineKnoten[v]->Name,;
             v=meineKnoten[v]->knotenZurueck->ID;
-            Verlauf[CountWays]= malloc(sizeof(LONG_MAX));
-            Verlauf[CountWays]=buffer;
 
-            CountWays++;
 
         }
 
-        for(int u=CountWays;u>0;u--){
-                printf("%s | ",Verlauf[u-1]);
-        }
+
+
 
         if(meineKnoten[i]->ID!=meineKnoten[StartKnoten]->ID){
             if(meineKnoten[i]->entfernungZumUrsprung== INT_MAX){
@@ -153,29 +128,18 @@ int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
     }
 }
 
-
-//Berechnet alle Pfade zu allen zielen
-void Berechne();
-
-//Löscht die berechneten werte , behält aber die dateistruktur d.h sich nicht ändernde daten
-void saubereDaten();
-
 //Finden und ausgabe des weges zwischen a und b
-int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingabe muss in ladedaten();
+int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingabe muss in ladedaten();
 {
 
     //Anzahl an Knoten wird festgelegt
-    AnzahlKnoten=10;
-
-
-    //Ein array mit "AnzahlKnoten" einträgen , aus Knoten wird erstellt und somit speicher zugewiesen
-    struct Knoten *meineKnoten[AnzahlKnoten];
+    AnzahlKnoten=AnzahlNodes;
 
 
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){
-        meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ,meineKnoten[i]->numWege=0;
+        meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ;
         meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten));
     }
 
@@ -189,5 +153,5 @@ int findeWeg(int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und ve
 
 
 
-    return 0;
+    return 1;
 }
