@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "processing.h"
-#include "../lib/printui/printui.h"
+
 
 
 //Anzahl der Knoten
@@ -101,18 +101,21 @@ int printAllPaths(struct Knoten *meineKnoten[],int StartKnoten)
 {
     for (int i = 0; i < AnzahlKnoten; i++){
         int v=i;
+        char Verlauf[AnzahlKnoten*500];//TODO AUSGABE MIT PRINTUI LIB , Verlauf muss anderst speicher belegen!
 
-        printTabelHeader(3,"Von","Entfernung","Nach");
         while(meineKnoten[v]->knotenZurueck->Name!=NULL){
 
-            char *Temp =
-            printTabelRow(3,meineKnoten[v]->knotenZurueck->Name,meineKnoten[v]->Name,;
+
+
+            sprintf(Verlauf,"%s | %s -> %s (%.2f)",Verlauf,meineKnoten[v]->knotenZurueck->Name,meineKnoten[v]->Name, gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
             v=meineKnoten[v]->knotenZurueck->ID;
+
+
 
 
         }
 
-
+        printf("%s",Verlauf);
 
 
         if(meineKnoten[i]->ID!=meineKnoten[StartKnoten]->ID){
