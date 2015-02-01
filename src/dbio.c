@@ -118,8 +118,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         if (fgets(line,ZeilenLeange, fp) == NULL) break;
 
         char *Data;
-        char *Buffer;
-        Data=strtok_r(line,",",&Buffer);
+        Data=strtok(line,",");
         int u= 0;
         int dist;
         meineKnoten[i] = malloc(sizeof(struct Knoten));
@@ -135,7 +134,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
             }
 
 
-            Data = strtok_r(NULL,",",&Buffer);
+            Data = strtok(NULL,",");
             u++;
             if(Data==0) break;
         }
@@ -182,7 +181,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
     }
 
-    //Verbinde alle Knoten mit gleichen namen mitteinander mit der entfernung 0 , (Kreuze werden verknüpft)
+    //Verbinde alle Knoten mit gleichen namen mitteinander mit der entfernung 0.000001(wird zu 0 wegen ungenauigkeit) , (Kreuze werden verknüpft)
 
 
 
