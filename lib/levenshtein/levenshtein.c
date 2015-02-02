@@ -1,8 +1,11 @@
 # include <string.h>
 # include <stdlib.h>
 
+#define LEV_CASE_INSENSITIVE
 # ifdef LEV_CASE_INSENSITIVE
 # include <ctype.h>
+#include "../printui/printui.h"
+
 # define eq(x, y) (tolower(x) == tolower(y))
 # else
 # define eq(x, y) ((x) == (y))
@@ -10,10 +13,10 @@
 
 # define min(x, y) ((x) < (y) ? (x) : (y))
 
-unsigned int levenshtein (const char *word1, const char *word2) {
-    unsigned int len1 = strlen(word1),
-                 len2 = strlen(word2);
-    unsigned int *v = calloc(len2 + 1, sizeof(unsigned int));
+unsigned int levenshtein ( char *word1,  char *word2) {
+    unsigned int len1 = countUTF8String(word1),
+                 len2 = countUTF8String(word2);
+    unsigned int *v = malloc((len2 + 1)* sizeof(unsigned int*));
     unsigned int i, j, current, next, cost;
 
     /* strip common prefixes */
@@ -51,6 +54,7 @@ unsigned int levenshtein (const char *word1, const char *word2) {
         /* keep the final cost at the bottom of the column */
         v[len2] = next;
     }
-    free(v);
+    v = malloc(0);
+    //free(v);
     return next;
 }

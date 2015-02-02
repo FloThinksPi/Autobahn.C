@@ -299,7 +299,7 @@ int StartCMDSystem()
 		}
         if(argc == 1)
         {
-            int len = strlen(argv[0]);
+            int len = countUTF8String(argv[0]);
             *(argv[0] + len - 1) = '\0';
         }
         tDataNode *p = (tDataNode*)SearchLinkTableNode(head,SearchConditon,(void*)argv[0]);

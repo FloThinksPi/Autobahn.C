@@ -28,8 +28,8 @@ double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
     while(i < meineKnoten[u]->numWege){
 
 
-        if(meineKnoten[u]->Wege[i]->nach==meineKnoten[v]){
-            double ret = my_round(meineKnoten[u]->Wege[i]->laenge,2);
+        if(meineKnoten[u]->Wege[i]->nach->ID==meineKnoten[v]->ID){
+            double ret = meineKnoten[u]->Wege[i]->laenge;
             return ret;
         }
 
@@ -102,6 +102,8 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
 
     }
 
+
+
 }
 
 
@@ -113,61 +115,63 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
     for (int i = 0; i < AnzahlKnoten; i++){
-        int v=i;
+        if(meineKnoten[i]->ID==Endknoten) {
 
-        int AnzahlBewegungen=0;
-        while(meineKnoten[v]->knotenZurueck->Name!=NULL){
+            int v = i;
+            int AnzahlBewegungen = 0;
 
-            if(gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)!=0.00000){//TODO Zeile geht nicht , Kreuzüberfahrten nicht anzeigen -> distanz 0km ausbelnden
-                BewegungsArray[AnzahlBewegungen*3]= malloc(sizeof(char*));
-                BewegungsArray[AnzahlBewegungen*3+1]= malloc(sizeof(char*));
-                BewegungsArray[AnzahlBewegungen*3+2]= malloc(sizeof(char*));
-
-                sprintf(buffer,"------(%4.2f Km)----->",gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
-
-                memcpy(BewegungsArray[AnzahlBewegungen*3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name));
-                memcpy(BewegungsArray[AnzahlBewegungen*3+1], buffer, countUTF8String(buffer));
-                memcpy(BewegungsArray[AnzahlBewegungen*3+2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name));
-
-                v=meineKnoten[v]->knotenZurueck->ID;
-                AnzahlBewegungen++;
-            }
-
-        }
+            while (meineKnoten[v]->knotenZurueck->Name != NULL) {
 
 
-        if(meineKnoten[i]->ID!=meineKnoten[StartKnoten]->ID){
-            if(meineKnoten[i]->entfernungZumUrsprung== INT_MAX){
-                sprintf(buffer,"\"%s\" ist von \"%s\" aus nicht Erreichbar",meineKnoten[i]->Name,meineKnoten[StartKnoten]->Name);
-                printMenuHeader(buffer);
-                puts("\n");
-            }else {
-                sprintf(buffer,"Weg von \"%s\" nach \"%s\" ",meineKnoten[StartKnoten]->Name,meineKnoten[i]->Name);
-                printMenuHeader(buffer);
+                if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
+                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char *));
+                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char *));
+                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char *));
 
-                printTabelHeader(3,"Von","Strecke","Nach");
-                for(int x=AnzahlBewegungen-1;x>=0;x--){
-                    printTabelRow(3,BewegungsArray[x*3],BewegungsArray[x*3+1],BewegungsArray[x*3+2]);
+                    sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
+
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name));
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer));
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name));
+
+                    v = meineKnoten[v]->knotenZurueck->ID;
+                    AnzahlBewegungen++;
                 }
 
-                sprintf(buffer,"  Gesamt: %0.2f ",meineKnoten[i]->entfernungZumUrsprung);
-                printMenuHeader(buffer);
-                puts("\n");
             }
+
+
+            if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
+                if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
+                    sprintf(buffer, "\n\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    printMenuHeader(buffer);
+                    puts("\n");
+                } else {
+                    sprintf(buffer, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
+                    printMenuHeader(buffer);
+
+                    printTabelHeader(3, "Von", "Strecke", "Nach");
+                    for (int x = AnzahlBewegungen - 1; x >= 0; x--) {
+                        printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
+                    }
+
+                    sprintf(buffer, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
+                    printMenuHeader(buffer);
+                    puts("\n");
+                }
+            }
+
         }
-
-
 
     }
 }
 
 //Finden und ausgabe des weges zwischen a und b
-int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten)//TODO PARAMETER Verarbeitung und verknüpfung mit menu , Dateneingabe muss in ladedaten();
+int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten)
 {
 
     //Anzahl an Knoten wird festgelegt
     AnzahlKnoten=AnzahlNodes;
-
 
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
@@ -183,7 +187,6 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
 
     //TODO Ausgaben schreiben , mit printui tabellen
     printPathToTarget(meineKnoten,StartKnoten,ZielKnoten);
-
 
 
     return 1;

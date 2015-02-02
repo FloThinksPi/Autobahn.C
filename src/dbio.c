@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
 #include "processing.h"
 #include "../lib/printui/printui.h"
-
-
+#include "dbio.h"
+#include "../lib/levenshtein/levenshtein.h"
 
 
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
@@ -205,5 +206,114 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
     return 0;
 }
+
+int strcompCaseInsensitive(char const *a, char const *b)
+{
+    for (;; a++, b++) {
+        int d = tolower(*a) - tolower(*b);
+        if (d != 0 || !*a)
+            return d;
+    }
+}
+
+int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName)
+{
+
+    int p=0;
+    char *buffer= malloc(sizeof(char*));
+    for(int i=0;i<AnzahlKnoten;i++)
+    {
+
+        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)>2){
+            if(p==0){
+                printf("\n");
+                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
+                printMenuHeader(buffer);
+                p=1;
+            }
+            printMenuItem(meineKnoten[i]->Name);
+        }
+
+
+  /*      if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)>2){
+            if(p==0){
+                printf("\n");
+                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
+                printMenuHeader(buffer);
+                p=1;
+            }
+            printMenuItem(meineKnoten[i]->Name);
+        }
+*/
+
+
+
+    }
+    if(p==0){
+        sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden",KnotenName);
+        printf(buffer);
+    }else{
+        printFooter();
+    }
+    return 0;
+}
+
+
+int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName){
+
+
+    if(strstr(KnotenName,"\n")){
+       strtok(KnotenName,"\n");//Löscht \n am falls vorhanden
+    }
+
+    for(int i=0;i<AnzahlKnoten;i++){
+        if(strcompCaseInsensitive(meineKnoten[i]->Name,KnotenName)==0){
+            return meineKnoten[i]->ID;
+        }
+
+    }
+
+    FindSimilarNode(meineKnoten, AnzahlKnoten, KnotenName);
+
+    return INT_MAX;
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

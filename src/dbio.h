@@ -11,6 +11,7 @@
 #include "processing.h"
 
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
+int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName);
 int getNumKnoten();
 
 #endif
