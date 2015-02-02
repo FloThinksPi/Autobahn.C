@@ -66,13 +66,6 @@ int getNumKnoten(){
     return countlines;
 }
 
-
-void printarray(struct Knoten *meineKnoten[],int AnzahlKnoten)
-{
-    for (int z = 0; z < AnzahlKnoten; z++)
-        printf("%d: %s -> %s -> %f\n",meineKnoten[z]->ID,meineKnoten[z]->Name,meineKnoten[z]->AutobahnName,meineKnoten[z]->AutobahnKM);
-}
-
 int compare(const void *s1, const void *s2) {
     struct Knoten* K1 = *(struct Knoten **) s1;
     struct Knoten* K2 = *(struct Knoten **) s2;
@@ -143,8 +136,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
     }
 
-    printf("List before sorting:\n");
-    printarray(meineKnoten,AnzahlKnoten);
+
 
     //Sortiere Struct
 
@@ -156,8 +148,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         meineKnoten[x]->numWege=0;
     }
 
-    printf("\nList after sorting:\n");
-    printarray(meineKnoten,AnzahlKnoten);
+
 
     //Lese Welche Autobahenen es gibt
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
@@ -191,7 +182,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
                 char *Buffer= malloc(sizeof(char*));
-                ErstelleWegBidirektional(meineKnoten, i, j, 0.000000001);
+                ErstelleWegBidirektional(meineKnoten, i, j, 0.00000000001);
 
                 sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
                 memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer));
@@ -224,7 +215,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
     for(int i=0;i<AnzahlKnoten;i++)
     {
 
-        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)>2){
+        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=4 && countUTF8String(meineKnoten[i]->Name)>3){
             if(p==0){
                 printf("\n");
                 sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
@@ -233,25 +224,13 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
             }
             printMenuItem(meineKnoten[i]->Name);
         }
-
-
-  /*      if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)>2){
-            if(p==0){
-                printf("\n");
-                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
-                printMenuHeader(buffer);
-                p=1;
-            }
-            printMenuItem(meineKnoten[i]->Name);
-        }
-*/
-
 
 
     }
     if(p==0){
+        puts("\n");
         sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden",KnotenName);
-        printf(buffer);
+        printMenuHeader(buffer);
     }else{
         printFooter();
     }
@@ -261,10 +240,6 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
 
 int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName){
 
-
-    if(strstr(KnotenName,"\n")){
-       strtok(KnotenName,"\n");//Löscht \n am falls vorhanden
-    }
 
     for(int i=0;i<AnzahlKnoten;i++){
         if(strcompCaseInsensitive(meineKnoten[i]->Name,KnotenName)==0){

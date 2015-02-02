@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 #include "dbio.h"
 #include "main.h"
 #include "processing.h"
@@ -55,16 +56,7 @@ int main (int argc, char *argv[])
 {
     ConfigureCMD();
 
-
     StartupMenu(0,NULL);
-
-
-    //findeWeg(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer, K2Nummer);
-
-
-
-    //findeWeg(meineKnoten,AnzahlKnoten, 3, 5);
-
 
     return 0;
 }
@@ -99,28 +91,36 @@ int showTestTabel(int argc, char *argv[]){
     return 0;
 }
 
+void chop(char *str) {
+    size_t p=strlen(str);
+    str[p-1] = '\0';
+}
 
 int Search(int argc, char *argv[]){
 
-    char *Typo="Usage: %s [StartAusfahrt] [ZielAusfahrt] [-i] %s\n";
+    char *Typo="Usage: Search [StartAusfahrt] [ZielAusfahrt] [-i(Optional)] \n";
 
     if(argc>=3&&argc<=4) {
-        bool isCaseInsensitive = false;
 
+        int hasparam=0;
         size_t optind;
         for (optind = 3; optind < argc && argv[optind][0] == '-'; optind++) {
             switch (argv[optind][1]) {
                 case 'i':
-                    isCaseInsensitive = true;
-                    printf("I Detected");
+                    hasparam=1;
                     break;
                 default:
-                    fprintf(stderr,Typo, argv[0],"");
+                    puts("\n");
+                    printMenuItem(Typo);
             }
         }
 
         char *K1 = argv[1];
         char *K2 = argv[2];
+
+        if(hasparam==0){
+            chop(K2);
+        }
 
         int K1Nummer=findeKnotenByName(ArrayHack->meineKnoten,AnzahlKnoten,K1);
         int K2Nummer=findeKnotenByName(ArrayHack->meineKnoten,AnzahlKnoten,K2);
@@ -130,7 +130,8 @@ int Search(int argc, char *argv[]){
         }
 
     }else{
-        fprintf(stderr,Typo, argv[0],"-----> Die anzahl der Parameter war Ungültig");
+        puts("\n");
+        printMenuItem(Typo);
     }
 
 }
@@ -174,7 +175,6 @@ int MainMenu(int argc, char *argv[]){
 
     showUserCMDHelp();
 
-
     return 0;
 
 }
@@ -199,13 +199,15 @@ int EditMenu(int argc, char *argv[]){
 //Navigations / Benutzungs Menu
 int NavMenu(int argc, char *argv[]){
 
-    system(CLEAR);
+
 
     AnzahlKnoten=getNumKnoten();
 
     ArrayHack = malloc(sizeof (struct UndefArrayHack) + (sizeof (struct Knoten) * AnzahlKnoten));
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
+
+    system(CLEAR);
 
     ResetAllCMDs();
 

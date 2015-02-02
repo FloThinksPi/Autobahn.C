@@ -110,15 +110,17 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
 // Gibt Alle möglichen Ziele mit gegangenem Weg aus
 int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten)
 {
-    char* buffer= malloc(sizeof(char*));
+
     char* BewegungsArray[AnzahlKnoten];
 
 
-    for (int i = 0; i < AnzahlKnoten; i++){
-        if(meineKnoten[i]->ID==Endknoten) {
+    for (int i = 0; i < AnzahlKnoten; i++) {
+        if (meineKnoten[i]->ID == Endknoten) {
 
             int v = i;
             int AnzahlBewegungen = 0;
+            char *buffer = malloc(sizeof(char *));
+
 
             while (meineKnoten[v]->knotenZurueck->Name != NULL) {
 
@@ -140,15 +142,18 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
             }
 
-
+            buffer = malloc(sizeof(char *));
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
-                    sprintf(buffer, "\n\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    puts("\n");
+                    sprintf(buffer, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
                     printMenuHeader(buffer);
                     puts("\n");
                 } else {
+                    puts("\n");
                     sprintf(buffer, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
                     printMenuHeader(buffer);
+                    printMenuItem("");
 
                     printTabelHeader(3, "Von", "Strecke", "Nach");
                     for (int x = AnzahlBewegungen - 1; x >= 0; x--) {
