@@ -42,16 +42,6 @@ int main (int argc, char *argv[])
 
 #else
 
-int AnzahlKnoten;
-
-//Struct Hack dient um ein Globales undefiniert großes array zu schaffen , erst seit C99 Erlaubt.
-struct UndefArrayHack {
-    int placeholder;
-    struct Knoten *meineKnoten[];
-};
-
-struct UndefArrayHack *ArrayHack;
-
 int main (int argc, char *argv[])
 {
     ConfigureCMD();
@@ -62,6 +52,16 @@ int main (int argc, char *argv[])
 }
 #endif
 
+
+int AnzahlKnoten;
+
+//Struct Hack dient um ein Globales undefiniert großes array zu schaffen , erst seit C99 Erlaubt.
+struct UndefArrayHack {
+    int placeholder;
+    struct Knoten *meineKnoten[];
+};
+
+struct UndefArrayHack *ArrayHack;
 
 
 //Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
