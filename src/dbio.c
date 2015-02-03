@@ -43,7 +43,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 int getNumKnoten(){
 
     //ZÄHLT ANZAHL ABFAHRTEN
-    FILE *fp = fopen("data/knoten.csv", "r");
+    FILE *fp = fopen("data\\knoten.csv", "r");
     if (fp == NULL) {
         perror("Fehler \"data/knoten.csv");
         return 0;
@@ -104,7 +104,7 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
 int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
-    FILE *fp = fopen("data/knoten.csv", "r");
+    FILE *fp = fopen("data\\knoten.csv", "r");
     char *line= malloc(sizeof(char)*ZeilenLeange);
     int i=0;
 
@@ -121,9 +121,9 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
             switch(u) {
-                case 0: meineKnoten[i]->Name= malloc(sizeof(char));memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data));meineKnoten[i]->ID=i; break;
-                case 1: meineKnoten[i]->AutobahnName= malloc(sizeof(char)); memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)); break;
-                case 2: sscanf(Data, "%d", &dist); meineKnoten[i]->AutobahnKM=dist; break;
+                case 0: meineKnoten[i]->Name= malloc(sizeof(char*));memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);meineKnoten[i]->ID=i; break;
+                case 1: meineKnoten[i]->AutobahnName= malloc(sizeof(char*)); memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1); break;
+                case 2: dist= atoi(Data); meineKnoten[i]->AutobahnKM=dist; break;
                 default : break;
             }
 
@@ -185,15 +185,19 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.00000000001);
 
                 sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
-                memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer));
+                memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer)+1);
 
                 sprintf(Buffer,"%s(%s)",meineKnoten[j]->Name,meineKnoten[j]->AutobahnName);
-                memcpy(meineKnoten[j]->Name, Buffer, countUTF8String(Buffer));
+                memcpy(meineKnoten[j]->Name, Buffer, countUTF8String(Buffer)+1);
 
                 break;
             }
     }
 
+    //Initialisiere speicher
+    for (int i = 0; i < AnzahlKnoten; i++){
+        meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten*));
+    }
 
     return 0;
 }

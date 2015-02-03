@@ -113,16 +113,20 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
     char* BewegungsArray[AnzahlKnoten];
 
+    char *buffer = NULL;
+    char *buffer2 = NULL;
+
+    buffer = malloc(sizeof(char*));
+    buffer2 = malloc(sizeof(char*));
 
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {
 
             int v = i;
             int AnzahlBewegungen = 0;
-            char *buffer = malloc(sizeof(char *));
 
 
-            while (meineKnoten[v]->knotenZurueck->Name != NULL) {
+            while (meineKnoten[v]->knotenZurueck->ID >=0) {
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
@@ -132,9 +136,9 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name));
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer));
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name));
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer)+1);
+                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name)+1);
 
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
@@ -142,17 +146,17 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
             }
 
-            buffer = malloc(sizeof(char *));
+
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
-                    sprintf(buffer, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
-                    printMenuHeader(buffer);
+                    sprintf(buffer2, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    printMenuHeader(buffer2);
                     puts("\n");
                 } else {
                     puts("\n");
-                    sprintf(buffer, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
-                    printMenuHeader(buffer);
+                    sprintf(buffer2, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
+                    printMenuHeader(buffer2);
                     printMenuItem("");
 
                     printTabelHeader(3, "Von", "Strecke", "Nach");
@@ -160,15 +164,20 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
-                    sprintf(buffer, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
-                    printMenuHeader(buffer);
+                    sprintf(buffer2, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
+                    printMenuHeader(buffer2);
                     puts("\n");
                 }
             }
 
+
         }
 
+
     }
+
+
+    return 1;
 }
 
 //Finden und ausgabe des weges zwischen a und b
@@ -182,9 +191,7 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){
         meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ;
-        meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten));
     }
-
 
 
     //Algorythmus wird gestartet
