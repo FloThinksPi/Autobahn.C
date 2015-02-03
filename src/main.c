@@ -96,9 +96,9 @@ void chop(char *str) {
     str[p-1] = '\0';
 }
 
-int Search(int argc, char *argv[]){
+int FindWay(int argc, char *argv[]){
 
-    char *Typo="Usage: Search [StartAusfahrt] [ZielAusfahrt] [-i(Optional)] \n";
+    char *Typo="Usage: Search [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
 
     if(argc>=3&&argc<=4) {
 
@@ -106,8 +106,10 @@ int Search(int argc, char *argv[]){
         size_t optind;
         for (optind = 3; optind < argc && argv[optind][0] == '-'; optind++) {
             switch (argv[optind][1]) {
-                case 'i':
+                case 'h':
                     hasparam=1;
+                    puts("\n");
+                    printMenuItem(Typo);
                     break;
                 default:
                     puts("\n");
@@ -128,6 +130,70 @@ int Search(int argc, char *argv[]){
         if(K1Nummer!= INT_MAX && K2Nummer!= INT_MAX){
             findeWeg(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer, K2Nummer);
         }
+
+    }else{
+        puts("\n");
+        printMenuItem(Typo);
+    }
+
+}
+
+int Search(int argc, char *argv[]){
+
+    char *Typo="Usage: ls [KnotenName] [-auk(Optional)]";
+
+    if(argc>=2&&argc<=3) {
+
+        int hasparam=0;
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        int AutobahnGefunden=0;
+        size_t optind;
+        for (optind =0; optind < argc ; optind++) {
+            if(argv[optind][0] == '-') {
+                switch (argv[optind][1]) {
+                    case 'a':
+                        hasparam = 1;
+                        break;
+                    case 'u':
+                        hasparam = 1;
+                        break;
+                    case 'k':
+                        hasparam = 1;
+                        break;
+                    default:
+                        puts("\n");
+                        printMenuItem(Typo);
+                        return 0;
+                }
+            }
+        }
+
+        char *K1 = argv[1];
+
+
+        if(hasparam==0){
+            chop(K1);
+        }
+
+        for(int x=1;x<=atol(Autobahnen[0]);x++) {//TODO Atol depriciated
+
+            if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
+                AutobahnGefunden=1;
+                printf("%s", Autobahnen[x]);//TODO Func zum Autobahn Ausgeben , func(meineKnoten,Anzahlk,Autobahn,Knotenname(kann NUll sein)
+            }
+        }
+
+        if(!AutobahnGefunden) {
+
+            int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1);
+
+            if (K1Nummer != INT_MAX) {
+                printf("%s", ArrayHack->meineKnoten[K1Nummer]->AutobahnName);//TODO AUSGABE DER GESAMTEN AUTOBAHN HIER
+            }
+
+        }
+
+
 
     }else{
         puts("\n");
@@ -186,9 +252,8 @@ int EditMenu(int argc, char *argv[]){
 
     ResetAllCMDs();
 
-    AddCMD("1", "um den Bearbeitungsmodus für Autobahnen zu öffnen", showTestTabel);
-    AddCMD("2", "um den Bearbeitungsmodus für Ausfahrten zu öffnen", NULL);
-    AddCMD("3", "um den Bearbeitungsmodus für Kreuze zu öffnen", NULL);
+    AddCMD("edit", "um Ausfahrten/Kreuze/Autobahnen zu bearbeiten (edit -h für Erklärung des Befehls)", showTestTabel);
+    AddCMD("ls", "für Navigationsbefehle (ls -h für Erklärung des Befehls)", Search);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);
 
     showUserCMDHelp();
@@ -207,12 +272,12 @@ int NavMenu(int argc, char *argv[]){
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 
-    system(CLEAR);
+   // system(CLEAR);
 
     ResetAllCMDs();
 
-    AddCMD("search", "für Suchfunktion (search --help für mehr infos)", Search);
-    AddCMD("nav", "für Navigationsbefehle (nav --help für mehr infos)", NULL);
+    AddCMD("nav", "für eine Navigation (search -h für Erklärung des Befehls)", FindWay);
+    AddCMD("ls", "für Navigationsbefehle (ls -h für Erklärung des Befehls)", Search);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);
 
     showUserCMDHelp();

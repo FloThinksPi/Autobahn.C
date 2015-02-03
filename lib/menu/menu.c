@@ -177,6 +177,7 @@ void SetMenuTitle(char *title){
 }
 
 int I_Quit(int argc, char *argv[]){
+    //TODO Speichern der änderungen on Exit (Struct to file)
     system(CLEAR);
     exit(0);
 }

@@ -215,7 +215,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
     for(int i=0;i<AnzahlKnoten;i++)
     {
 
-        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=4 && countUTF8String(meineKnoten[i]->Name)>3){
+        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=4 && countUTF8String(meineKnoten[i]->Name)>5){
             if(p==0){
                 printf("\n");
                 sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
@@ -225,6 +225,15 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
             printMenuItem(meineKnoten[i]->Name);
         }
 
+        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)<=5){
+            if(p==0){
+                printf("\n");
+                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
+                printMenuHeader(buffer);
+                p=1;
+            }
+            printMenuItem(meineKnoten[i]->Name);
+        }
 
     }
     if(p==0){

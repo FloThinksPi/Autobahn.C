@@ -12,6 +12,9 @@
 
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
 int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName);
+char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
+int strcompCaseInsensitive(char const *a, char const *b);
+
 int getNumKnoten();
 
 #endif
