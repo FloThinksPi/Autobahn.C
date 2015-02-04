@@ -4,6 +4,7 @@
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
+#include <stdint.h>
 #include "processing.h"
 #include "../lib/printui/printui.h"
 #include "dbio.h"
@@ -11,8 +12,16 @@
 
 #ifdef _WIN3
 char* FILEPATH="data\\knoten.csv";
-#else
+#elif __linux
 char* FILEPATH="data/knoten.csv";
+#elif __APPLE__
+char *FILEPATH=malloc(sizeof(char*));
+char EXECDIR[FILENAME_MAX];
+uint32_t size = sizeof(EXECDIR);
+if (_NSGetExecutablePath(EXECDIR, &size) == 0)
+printf("executable path is %s\n", EXECDIR);
+sprintf(FILEPATH,"%s/data/knoten.csv",EXECDIR)
+printf("buffer too small; need size %u\n", size);
 #endif
 
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
