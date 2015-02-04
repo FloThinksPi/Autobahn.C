@@ -17,6 +17,7 @@
 #include "../lib/printui/printui.h"
 #include "consoleAdaption/unixAdapt.h"
 
+int StartupMenu(int argc, char *argv[]);
 
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
@@ -62,7 +63,7 @@ int AnzahlKnoten;
 //Struct Hack dient um ein Globales undefiniert großes array zu schaffen , erst seit C99 Erlaubt.
 struct UndefArrayHack {
     int placeholder;
-    struct Knoten *meineKnoten[];
+    struct Knoten *meineKnoten[100];
 };
 
 struct UndefArrayHack *ArrayHack;
@@ -140,6 +141,7 @@ int FindWay(int argc, char *argv[]){
         printMenuItem(Typo);
     }
 
+    return 1;
 }
 
 int Search(int argc, char *argv[]){
@@ -204,6 +206,7 @@ int Search(int argc, char *argv[]){
         printMenuItem(Typo);
     }
 
+    return 1;
 }
 
 
@@ -271,11 +274,12 @@ int NavMenu(int argc, char *argv[]){
 
 
     AnzahlKnoten=getNumKnoten();
-    ArrayHack =malloc(sizeof(struct UndefArrayHack) + sizeof(struct Knoten* [AnzahlKnoten]));
+    ArrayHack =malloc(sizeof(struct UndefArrayHack));
 
+    //ArrayHack->meineKnoten= malloc(sizeof(struct Knoten**));
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 
-    system(F);
+    system(CLEAR);
 
     ResetAllCMDs();
 

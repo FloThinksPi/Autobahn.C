@@ -113,8 +113,8 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
     char* BewegungsArray[AnzahlKnoten];
 
-    char* buffer = malloc(sizeof(char*));
-    char* buffer2= malloc(sizeof(char*));//TODO Bug letzter weg wird korrupt und zeigt falsche zeichen an
+    char* buffer;
+    char tmpBuffer[100];//TODO Bug letzter weg wird korrupt und zeigt falsche zeichen an
 
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {
@@ -128,16 +128,23 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
-                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char*));
-                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char*));
-                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char*));
 
-                    sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
+                    sprintf(tmpBuffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
+                    buffer= malloc(sizeof(char)* countUTF8String(tmpBuffer));
+                    memmove(buffer,tmpBuffer,countUTF8String(tmpBuffer));
+
+
+                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char)*countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
+                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char)*countUTF8String(buffer)+1);
+                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char)*countUTF8String(meineKnoten[v]->Name)+1);
+
+
 
                     memmove(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
                     memmove(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer)+1);
                     memmove(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name)+1);
 
+                    free(buffer);
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
                 }
@@ -149,13 +156,18 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
-                    sprintf(buffer2, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
-                    printMenuHeader(buffer2);
+                    sprintf(tmpBuffer, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    buffer= malloc(sizeof(char)* countUTF8String(tmpBuffer));
+                    memmove(buffer,tmpBuffer,countUTF8String(tmpBuffer));
+                    printMenuHeader(buffer);
                     puts("\n");
+                    free(buffer);
                 } else {
                     puts("\n");
-                    sprintf(buffer2, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
-                    printMenuHeader(buffer2);
+                    sprintf(tmpBuffer, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
+                    buffer= malloc(sizeof(char)* countUTF8String(tmpBuffer));
+                    memmove(buffer,tmpBuffer,countUTF8String(tmpBuffer));
+                    printMenuHeader(buffer);
                     printMenuItem("");
 
                     printTabelHeader(3, "Von", "Strecke", "Nach");
@@ -163,10 +175,14 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
-                    sprintf(buffer2, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
-                    printMenuHeader(buffer2);
+                    sprintf(tmpBuffer, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
+                    buffer= malloc(sizeof(char)* countUTF8String(tmpBuffer));
+                    memmove(buffer,tmpBuffer,countUTF8String(tmpBuffer));
+                    printMenuHeader(buffer);
                     puts("\n");
+                    free(buffer);
                 }
+
 
 
             }

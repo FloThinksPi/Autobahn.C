@@ -9,7 +9,7 @@
 #include "dbio.h"
 #include "../lib/levenshtein/levenshtein.h"
 
-#ifdef _WIN3
+#ifdef _WIN32
 char* FILEPATH="data\\knoten.csv";
 #elif __linux
 char* FILEPATH="data/knoten.csv";//TODO AbsolutePath berechnen
@@ -115,32 +115,55 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     char *line= malloc(sizeof(char*));
     int i=0;
 
-    char *Data;
+
+    char *buffer;
+
     while (1) {
         if (fgets(line,ZeilenLeange, fp) == NULL) break;
 
 
 
-        Data=strtok(line,",");
+        buffer=strtok(line,",");
         int u= 0;
         int dist;
-        meineKnoten[i] = malloc(sizeof(struct Knoten));
+
+        meineKnoten[i]=malloc(sizeof(struct Knoten));
+
         while(1){
 
 
+
             switch(u) {
-                case 0: meineKnoten[i]->Name= malloc(sizeof(char*));memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);meineKnoten[i]->ID=i; break;
-                case 1: meineKnoten[i]->AutobahnName= malloc(sizeof(char*)); memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1); break;
-                case 2: dist= atoi(Data); meineKnoten[i]->AutobahnKM=dist; break;
+                case 0: {
+                    meineKnoten[i]->Name = malloc(sizeof(char*));
+                    memcpy(meineKnoten[i]->Name, buffer, countUTF8String(buffer));
+                    meineKnoten[i]->ID = i;
+                    puts("D1");
+                    break;
+                }
+                case 1: {
+                    puts("D2");
+                    meineKnoten[i]->AutobahnName= malloc(sizeof(char*));
+                    puts("D2");
+                    memcpy(meineKnoten[i]->AutobahnName, buffer, countUTF8String(buffer));
+                    puts("D2");
+                    break;
+                }
+                case 2: {
+                    dist= atoi(buffer);
+                    meineKnoten[i]->AutobahnKM=dist;puts("D3");
+                    break;
+                }
                 default : break;
             }
 
 
-            Data = strtok(NULL,",");
+            buffer = strtok(NULL,",");
             u++;
-            if(Data==0) break;
+            if(buffer==0) break;
         }
         i++;
+        free(buffer);
     }
 
 
@@ -204,7 +227,8 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten*));
     }
 
-    return 0;
+    fclose(fp);
+    return 1;
 }
 
 int strcompCaseInsensitive(char const *a, char const *b)
@@ -220,7 +244,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
 {
 
     int p=0;
-    char *buffer= malloc(sizeof(char*));
+    char *buffer= malloc(sizeof(char)* countUTF8String(KnotenName)+1);
     for(int i=0;i<AnzahlKnoten;i++)
     {
 
