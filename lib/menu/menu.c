@@ -226,6 +226,7 @@ int AddCMD(char *cmd, char *desc, int (*handler)())
 void ResetAllCMDs(){
 
     head=NULL;
+    tDataNode* pNode = NULL;
     MenuTitle="Unnamed Menu";
 
 }

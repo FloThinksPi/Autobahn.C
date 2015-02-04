@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(Autobahn_C)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -g -O0 -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
 set(
     CMAKE_RUNTIME_OUTPUT_DIRECTORY
