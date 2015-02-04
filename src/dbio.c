@@ -9,6 +9,11 @@
 #include "dbio.h"
 #include "../lib/levenshtein/levenshtein.h"
 
+#ifdef _WIN3
+char* FILEPATH="data\\knoten.csv";
+#else
+char* FILEPATH="data/knoten.csv";
+#endif
 
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
 const int Datenleange=50;//Maximale länge eines Datensatzes in einer zeile ( durch kommas getrennter bereich)
@@ -43,7 +48,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 int getNumKnoten(){
 
     //ZÄHLT ANZAHL ABFAHRTEN
-    FILE *fp = fopen("data\\knoten.csv", "r");
+    FILE *fp = fopen(FILEPATH, "r");
     if (fp == NULL) {
         perror("Fehler \"data/knoten.csv");
         return 0;
@@ -104,7 +109,7 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
 int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
-    FILE *fp = fopen("data\\knoten.csv", "r");
+    FILE *fp = fopen(FILEPATH, "r");
     char *line= malloc(sizeof(char*));
     int i=0;
 
