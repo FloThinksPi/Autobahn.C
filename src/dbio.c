@@ -105,18 +105,19 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
     FILE *fp = fopen("data\\knoten.csv", "r");
-    char *line= malloc(sizeof(char)*ZeilenLeange);
+    char *line= malloc(sizeof(char*));
     int i=0;
 
+    char *Data;
     while (1) {
         if (fgets(line,ZeilenLeange, fp) == NULL) break;
 
-        char *Data;
+
+
         Data=strtok(line,",");
         int u= 0;
         int dist;
         meineKnoten[i] = malloc(sizeof(struct Knoten));
-
         while(1){
 
 
@@ -133,7 +134,6 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
             if(Data==0) break;
         }
         i++;
-
     }
 
 
@@ -175,14 +175,12 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
     //Verbinde alle Knoten mit gleichen namen mitteinander mit der entfernung 0.000001(wird zu 0 wegen ungenauigkeit) , (Kreuze werden verknüpft)
 
-
-
     for (int i = 0; i < AnzahlKnoten; ++i)
     {
         for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
                 char *Buffer= malloc(sizeof(char*));
-                ErstelleWegBidirektional(meineKnoten, i, j, 0.00000000001);
+                ErstelleWegBidirektional(meineKnoten, i, j, 0.000001);
 
                 sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
                 memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer)+1);

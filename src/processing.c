@@ -11,7 +11,7 @@
 
 
 //Anzahl der Knoten
-int AnzahlKnoten = NULL;
+int AnzahlKnoten = 0;
 
 double my_round(double x, unsigned int digits) {
     if (digits > 0) {
@@ -72,7 +72,7 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
     // Find shortest path for all vertices (V-1 Möglich da der letzte wert automatisch fest steht , aber nicht gemacht da sonst der letzte wert nicht ausgegeben wird)
     for (int count = 0; count < AnzahlKnoten-1; count++)
     {
-        int u=NULL;
+        int u=0;
 
         //U = immer src beim ersten mal , weitere info siehe funktion
         u = minDistance(meineKnoten);
@@ -113,11 +113,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
     char* BewegungsArray[AnzahlKnoten];
 
-    char *buffer = NULL;
-    char *buffer2 = NULL;
-
-    buffer = malloc(sizeof(char*));
-    buffer2 = malloc(sizeof(char*));
+    char* buffer = malloc(sizeof(char*));
 
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {
@@ -130,15 +126,15 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
-                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char *));
-                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char *));
-                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char *));
+                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char*));
+                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char*));
+                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char*));
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer)+1);
-                    memcpy(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name)+1);
 
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
@@ -148,6 +144,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
+                char *buffer2 = malloc(sizeof(char*));
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
                     sprintf(buffer2, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
@@ -168,14 +165,15 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
                     printMenuHeader(buffer2);
                     puts("\n");
                 }
+
+
             }
 
-
+            break;
         }
 
 
     }
-
 
     return 1;
 }

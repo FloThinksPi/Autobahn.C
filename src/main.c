@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
         if(strcmp(argv[1],skipParameter)){
             ConfigureCMD();
             StartupMenu(0,NULL);
-           // RestartInUtf8Cmd();
+            //RestartInUtf8Cmd();
         }else{
             ConfigureCMD();
             StartupMenu(0,NULL);
@@ -38,7 +38,7 @@ int main (int argc, char *argv[])
     }else{
         ConfigureCMD();
         StartupMenu(0,NULL);
-   // RestartInUtf8Cmd();
+     //RestartInUtf8Cmd();
     }
 
   return 0;
@@ -271,8 +271,7 @@ int NavMenu(int argc, char *argv[]){
 
 
     AnzahlKnoten=getNumKnoten();
-
-    ArrayHack = malloc(sizeof (struct UndefArrayHack) + (sizeof (struct Knoten) * AnzahlKnoten));
+    ArrayHack =malloc(sizeof(struct UndefArrayHack) + sizeof(struct Knoten* [AnzahlKnoten]));
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 
