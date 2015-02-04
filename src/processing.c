@@ -114,6 +114,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
     char* BewegungsArray[AnzahlKnoten];
 
     char* buffer = malloc(sizeof(char*));
+    char buffer2= malloc(sizeof(char*));//TODO Bug letzter weg wird korrupt und zeigt falsche zeichen an
 
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {
@@ -122,7 +123,8 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
             int AnzahlBewegungen = 0;
 
 
-            while (meineKnoten[v]->knotenZurueck->ID >=0) {
+            while (meineKnoten[v]->knotenZurueck->ID >0) {
+
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
@@ -143,8 +145,8 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
             }
 
 
+
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
-                char *buffer2 = malloc(sizeof(char*));
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
                     sprintf(buffer2, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);

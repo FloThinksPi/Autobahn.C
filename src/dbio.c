@@ -4,7 +4,6 @@
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
-#include <stdint.h>
 #include "processing.h"
 #include "../lib/printui/printui.h"
 #include "dbio.h"
@@ -13,10 +12,9 @@
 #ifdef _WIN3
 char* FILEPATH="data\\knoten.csv";
 #elif __linux
-char* FILEPATH="data/knoten.csv";
+char* FILEPATH="data/knoten.csv";//TODO AbsolutePath berechnen
 #elif __APPLE__
 char* FILEPATH="data/knoten.csv";
-//TODO AbsolutePath berechnen
 #endif
 
 const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
