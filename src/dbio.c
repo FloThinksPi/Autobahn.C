@@ -9,7 +9,7 @@
 #include "dbio.h"
 #include "../lib/levenshtein/levenshtein.h"
 
-#ifdef _WIN3
+#ifdef _WIN32
 char* FILEPATH="data\\knoten.csv";
 #elif __linux
 char* FILEPATH="data/knoten.csv";//TODO AbsolutePath berechnen
@@ -82,9 +82,9 @@ int compare(const void *s1, const void *s2) {
 
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
 
+
     char** Autobahnen = malloc(sizeof(char*));
     int AnzahlAutobahnen=0;
-
 
     for(int i=0;i<AnzahlKnoten;i++){
 
@@ -95,15 +95,16 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
         }
 
         if(inArray==0){
-            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char*));
+            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (countUTF8String(meineKnoten[i]->AutobahnName)+1));
             Autobahnen[AnzahlAutobahnen+1]=meineKnoten[i]->AutobahnName;
             AnzahlAutobahnen++;
         }
 
     }
 
-    Autobahnen[0]=malloc(sizeof(char));
+    Autobahnen[0]=malloc(sizeof(char)*2000);//TODO BAD STATIC LEGTH
     sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
+
 
     return Autobahnen;
 }
@@ -112,7 +113,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
     FILE *fp = fopen(FILEPATH, "r");
-    char *line= malloc(sizeof(char*));
+    char *line= malloc(sizeof(char)*(ZeilenLeange+1));
     int i=0;
 
     char *Data;
@@ -120,22 +121,43 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         if (fgets(line,ZeilenLeange, fp) == NULL) break;
 
 
-
         Data=strtok(line,",");
-        int u= 0;
+        int u=0;
         int dist;
-        meineKnoten[i] = malloc(sizeof(struct Knoten));
+        printf("I=%d\n",i);
+        meineKnoten[i]= malloc(sizeof(struct Knoten));
         while(1){
+            printf("2I=%d\n",i);
+            printf("U=%d\n",u);
 
 
             switch(u) {
-                case 0: meineKnoten[i]->Name= malloc(sizeof(char*));memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);meineKnoten[i]->ID=i; break;
-                case 1: meineKnoten[i]->AutobahnName= malloc(sizeof(char*)); memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1); break;
-                case 2: dist= atoi(Data); meineKnoten[i]->AutobahnKM=dist; break;
+                case 0: {
+                        puts("A1");
+                        meineKnoten[i]->Name= malloc(sizeof(char)*(countUTF8String(Data)+1));
+                        memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);
+                        meineKnoten[i]->ID=i;
+                        puts("A2\n");
+                        break;
+                 }
+                case 1: {
+                    puts("B1");
+                        meineKnoten[i]->AutobahnName= malloc(sizeof(char)*(countUTF8String(Data)+1));
+                        memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1);
+                    puts("B2\n");
+                    break;
+                 }
+                case 2: {
+                    puts("C1");
+                        dist= atoi(Data);
+                        meineKnoten[i]->AutobahnKM=dist;
+                    puts("C1\n");
+                        break;
+                }
                 default : break;
             }
 
-
+            printf("Dist=%d\n",dist);
             Data = strtok(NULL,",");
             u++;
             if(Data==0) break;
@@ -145,17 +167,19 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
 
+    puts("AOK");
     //Sortiere Struct
 
     qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),compare);
 
+    puts("AOK");
     //Gleiche IDs der Knoten der richtigen reihenfolge an
     for(int x=0;x<AnzahlKnoten;x++){
         meineKnoten[x]->ID=x;
         meineKnoten[x]->numWege=0;
     }
 
-
+    puts("AOK");
 
     //Lese Welche Autobahenen es gibt
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
@@ -164,8 +188,8 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     for(int x=1;x<=atol(Autobahnen[0]);x++){//TODO Atol depriciated
 
         printf("%s\n",Autobahnen[x]);
-
         int lastNode=INT_MAX;
+
 
         for(int u=0;u<AnzahlKnoten;u++){
 

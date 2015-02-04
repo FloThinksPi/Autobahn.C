@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include "win32Adapt.h"
+#include "../../lib/printui/printui.h"
 
 //TODO SET Width from printui var
 
@@ -35,19 +36,18 @@ void RestartInUtf8Cmd(){
     char buffer[MAX_PATH];//always use MAX_PATH for filepaths
     GetModuleFileName(NULL,buffer,sizeof(buffer));
 
-    char cmd[1024];
-    snprintf(cmd, sizeof cmd, "%s%s%s", "start \"Autobahn\" cmd.exe /C ",buffer, skipParam);
+    char *cmd= malloc(sizeof(char)*200);
+    sprintf(cmd, "%s%s%s", "start \"Autobahn\" cmd.exe /C ",buffer, skipParam);
 
     //Einstellungen der autobahn konsole
     system("setlocal enableextensions disabledelayedexpansion");
     system("reg add \"HKCU\\Console\\Autobahn\" /f");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FaceName\"         /t \"REG_SZ\"     /d \"Lucida Console\"");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FaceName\"         /t \"REG_SZ\"     /d \"Consolas\"");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontFamily\"       /t \"REG_DWORD\"  /d 0x00000036");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontSize\"         /t \"REG_DWORD\"  /d 0x000F0000");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"FontWeight\"       /t \"REG_DWORD\"  /d 0x00000190");
     system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"QuickEdit\"        /t \"REG_DWORD\"  /d 0x00000000");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"ScreenBufferSize\" /t \"REG_DWORD\"  /d 0x0bb80078");
-    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"WindowSize\"       /t \"REG_DWORD\"  /d 0x00320078");
+    system("reg add \"HKCU\\Console\\Autobahn\" /f /v \"WindowSize\"       /t \"REG_DWORD\"  /d 0x0020078");
     system(cmd);
 
 }
