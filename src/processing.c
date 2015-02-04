@@ -114,7 +114,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
     char* BewegungsArray[AnzahlKnoten];
 
     char* buffer = malloc(sizeof(char*));
-    char buffer2= malloc(sizeof(char*));//TODO Bug letzter weg wird korrupt und zeigt falsche zeichen an
+    char* buffer2= malloc(sizeof(char*));//TODO Bug letzter weg wird korrupt und zeigt falsche zeichen an
 
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {

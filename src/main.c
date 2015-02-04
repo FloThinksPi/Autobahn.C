@@ -275,7 +275,7 @@ int NavMenu(int argc, char *argv[]){
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 
-   // system(CLEAR);
+    system(F);
 
     ResetAllCMDs();
 
