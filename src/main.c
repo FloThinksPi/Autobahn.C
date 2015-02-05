@@ -28,17 +28,13 @@ int main (int argc, char *argv[])
 {
     if(argv[1]!=NULL){
         if(strcmp(argv[1],skipParameter)){
-           ConfigureCMD();
-           StartupMenu(0,NULL);
-           // RestartInUtf8Cmd();
+           RestartInUtf8Cmd();
         }else{
             ConfigureCMD();
             StartupMenu(0,NULL);
         }
     }else{
-      ConfigureCMD();
-        StartupMenu(0,NULL);
-     //RestartInUtf8Cmd();
+    RestartInUtf8Cmd();
     }
 
   return 0;
@@ -210,7 +206,7 @@ int Search(int argc, char *argv[]){
 int StartupMenu(int argc, char *argv[]){
 
     system(CLEAR);
-    //ä,ö,ü,§,%
+
     SetMenuTitle("Autobahn.C Startbildschirm");
     AddCMD("easteregg", "um das Easteregg zu öffnen.", NULL);
     AddCMD("", "", MainMenu);

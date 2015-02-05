@@ -64,7 +64,7 @@ void ConfigureCMD(){
     HANDLE StdHandle;
     COORD mycoord;
     mycoord.X=width;
-    mycoord.Y=10000;
+    mycoord.Y=200;
     StdHandle=GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleScreenBufferSize(StdHandle,mycoord);
 

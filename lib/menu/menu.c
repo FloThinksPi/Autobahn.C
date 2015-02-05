@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
+#include <fcntl.h>
 #include "linktable.h"
 #include "menu.h"
 #include "../printui/printui.h"
@@ -263,10 +265,11 @@ int FindSimilarCommands(tLinkTable * head,char *CMD)
 
         x++;
     }
-    if(p==0){
+    if(p==0 && strcmp(CMD,"")){
+        puts("");
+        printMenuHeader("Unbekannter Befehl!");
 
-        printf("!!Ungültiger Befehl!!\n\n");
-    }else{
+    }else if(strcmp(CMD,"")!=0){
         printFooter();
     }
     return 0;
@@ -284,10 +287,11 @@ int StartCMDSystem()
         char cmd[CMD_MAX_LEN];
 		char *pcmd = NULL;
         printf("\nBefehl Eingeben> ");
-        /* scanf("%s", cmd); */
-		pcmd = fgets(cmd, CMD_MAX_LEN, stdin);
+		pcmd = fgets(cmd, CMD_MAX_LEN,stdin);
 		if(pcmd == NULL)
 		{
+            puts("\n");
+            printMenuHeader("   Keine Umlaute und [§ , ß]   ");
 			continue;
 		}
         /* convert cmd to argc/argv */

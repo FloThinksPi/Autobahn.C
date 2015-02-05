@@ -19,7 +19,7 @@ struct Knoten {
     struct Knoten *knotenZurueck;
     double entfernungZumUrsprung;
     int numWege;
-    struct Wege *Wege[3];//MAximal 3 Wege sind möglich (2 bei Ausfahrten und 3 bei kreuzen , da sich die kreuze von 2 autobahnen mit einer kante der länge 0 verbinden)
+    struct Wege *Wege[3];//MAximal 3 Wege sind möglich (2 bei Ausfahrten und 3 bei kreuzen , da sich die kreuze.csv von 2 autobahnen mit einer kante der länge 0 verbinden)
 };
 
 struct Wege {

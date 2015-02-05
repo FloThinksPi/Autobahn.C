@@ -183,7 +183,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     //Lese Welche Autobahenen es gibt
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
 
-    //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze , sie haben am anfang nur zwei wege , also wie normale abfahrten
+    //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze.csv , sie haben am anfang nur zwei wege , also wie normale abfahrten
     for(int x=1;x<=atol(Autobahnen[0]);x++){//TODO Atol depriciated
 
         printf("%s\n",Autobahnen[x]);
