@@ -117,10 +117,11 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
 
     char *Data;
-    for(int i=0;i<AnzahlKnoten;i++) {
-        //if (fgets(line,ZeilenLeange,fp) == NULL) break;
+    int i;
+    for(i=0;i<AnzahlKnoten;i++) {
+        if (fgets(line,ZeilenLeange,fp) == NULL) break;
 
-        fgets(line,ZeilenLeange,fp);
+        //fgets(line,ZeilenLeange,fp);
         Data=strtok(line,",");
         int u=0;
         int dist;
@@ -148,7 +149,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
                  }
                 case 2: {
 
-                        dist= atoi(Data);
+                        dist= atof(Data);
                         meineKnoten[i]->AutobahnKM=dist;
                         printf("Name:%f\n",meineKnoten[i]->AutobahnKM);
                         break;
@@ -164,8 +165,9 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     }
 
     fclose(fp);
-
+    printf("i=%d , ANzahl=%d",i,AnzahlKnoten);
     puts("AOK");
+
     //Sortiere Struct
 
     //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
