@@ -47,7 +47,7 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 
 }
 
-int getNumKnoten(){
+int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicherplatz Arrayhack->meineknoten richtig belegt wird
 
     //ZÄHLT ANZAHL ABFAHRTEN
     FILE *fp = fopen(FILEPATH, "r");
@@ -77,7 +77,7 @@ int compare(const void *s1, const void *s2) {
     struct Knoten* K1 = *(struct Knoten **) s1;
     struct Knoten* K2 = *(struct Knoten **) s2;
 
-    return K1->AutobahnKM - K2->AutobahnKM;
+    return (int) (K1->AutobahnKM - K2->AutobahnKM);
 }
 
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
@@ -102,7 +102,7 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
 
     }
 
-    Autobahnen[0]=malloc(sizeof(char)*2000);//TODO BAD STATIC LEGTH
+    Autobahnen[0]=malloc(sizeof(char)*10);//TODO BAD STATIC LEGTH
     sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
 
 
@@ -114,62 +114,61 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
     FILE *fp = fopen(FILEPATH, "r");
     char *line= malloc(sizeof(char)*(ZeilenLeange+1));
-    int i=0;
+
 
     char *Data;
-    while (1) {
-        if (fgets(line,ZeilenLeange, fp) == NULL) break;
+    for(int i=0;i<AnzahlKnoten;i++) {
+        //if (fgets(line,ZeilenLeange,fp) == NULL) break;
 
-
+        fgets(line,ZeilenLeange,fp);
         Data=strtok(line,",");
         int u=0;
         int dist;
-        printf("I=%d\n",i);
+        printf("\nI=%d\n",i);
         meineKnoten[i]= malloc(sizeof(struct Knoten));
         while(1){
-            printf("2I=%d\n",i);
-            printf("U=%d\n",u);
+
 
 
             switch(u) {
                 case 0: {
-                        puts("A1");
+
                         meineKnoten[i]->Name= malloc(sizeof(char)*(countUTF8String(Data)+1));
                         memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);
                         meineKnoten[i]->ID=i;
-                        puts("A2\n");
+                        printf("Name:%s\n",meineKnoten[i]->Name);
                         break;
                  }
                 case 1: {
-                    puts("B1");
+
                         meineKnoten[i]->AutobahnName= malloc(sizeof(char)*(countUTF8String(Data)+1));
                         memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1);
-                    puts("B2\n");
+                        printf("AutobahnName:%s\n",meineKnoten[i]->AutobahnName);
                     break;
                  }
                 case 2: {
-                    puts("C1");
+
                         dist= atoi(Data);
                         meineKnoten[i]->AutobahnKM=dist;
-                    puts("C1\n");
+                        printf("Name:%f\n",meineKnoten[i]->AutobahnKM);
                         break;
                 }
                 default : break;
             }
 
-            printf("Dist=%d\n",dist);
+
             Data = strtok(NULL,",");
             u++;
             if(Data==0) break;
         }
-        i++;
     }
 
-
+    fclose(fp);
 
     puts("AOK");
     //Sortiere Struct
 
+    //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
     qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),compare);
 
     puts("AOK");

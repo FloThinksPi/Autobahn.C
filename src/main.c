@@ -271,11 +271,11 @@ int NavMenu(int argc, char *argv[]){
 
 
     AnzahlKnoten=getNumKnoten();
-    ArrayHack =malloc(sizeof(struct UndefArrayHack));
+    ArrayHack =malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 
-    //system(CLEAR);
+    system(CLEAR);
 
     ResetAllCMDs();
 
