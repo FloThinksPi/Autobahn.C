@@ -62,6 +62,7 @@ struct UndefArrayHack {
 };
 
 struct UndefArrayHack *ArrayHack;
+int loaded=0;
 
 void chop(char *str) {
     size_t p=strlen(str);
@@ -112,12 +113,12 @@ int FindWay(int argc, char *argv[]){
 
 int Search(int argc, char *argv[]){
 
-    char *Typo="Usage: ls [KnotenName] [-auk(Optional)]";
+    char *Typo="          Usage: ls [KnotenName] [-auk(Optional)]          ";
 
     if(argc>=2&&argc<=3) {
 
         int hasparam=0;
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);//TODO NUR beim einlesen nötig
         int AutobahnGefunden=0;
         size_t optind;
         for (optind =0; optind < argc ; optind++) {
@@ -133,8 +134,7 @@ int Search(int argc, char *argv[]){
                         hasparam = 1;
                         break;
                     default:
-                        puts("\n");
-                        printMenuItem(Typo);
+                        printMenuHeaderContinous(Typo);
                         return 0;
                 }
             }
@@ -147,12 +147,13 @@ int Search(int argc, char *argv[]){
             chop(K1);
         }
 
-        for(int x=1;x<=atol(Autobahnen[0]);x++) {//TODO Atol depriciated
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
                 AutobahnGefunden=1;
-                printf("%s", Autobahnen[x]);//TODO Func zum Autobahn Ausgeben , func(meineKnoten,Anzahlk,Autobahn,Knotenname(kann NUll sein)
+                printf("Autobahn: %s", Autobahnen[x]);//TODO Func zum Autobahn Ausgeben , func(meineKnoten,Anzahlk,Autobahn,Knotenname(kann NUll sein)
             }
+
         }
 
         if(!AutobahnGefunden) {
@@ -160,7 +161,7 @@ int Search(int argc, char *argv[]){
             int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1);
 
             if (K1Nummer != INT_MAX) {
-                printf("%s", ArrayHack->meineKnoten[K1Nummer]->AutobahnName);//TODO AUSGABE DER GESAMTEN AUTOBAHN HIER
+                printAutobahn(ArrayHack->meineKnoten, AnzahlKnoten, ArrayHack->meineKnoten[K1Nummer]->AutobahnName,K1);
             }
 
         }
@@ -169,7 +170,7 @@ int Search(int argc, char *argv[]){
 
     }else{
         puts("\n");
-        printMenuItem(Typo);
+        printMenuHeaderContinous(Typo);
     }
 
 }
@@ -204,14 +205,41 @@ int StartupMenu(int argc, char *argv[]){
 //Hauptmenu
 int MainMenu(int argc, char *argv[]){
 
-    system(CLEAR);
+    char *Buffer= malloc(sizeof(char)*1000);
+    if(loaded==0){
+        system(CLEAR);
+        AnzahlKnoten=getNumKnoten();
+        sprintf(Buffer,"Einen Moment , %d Datensätze werden verarbeitet.",AnzahlKnoten);
+        printMenuHeader("Lade Daten");
+        printMenuItem(Buffer);
+        printFooter();
+        puts("\n");
+        ArrayHack = malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+        loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
+        loaded=1;
+
+        system(CLEAR);
+
+        sprintf(Buffer,"%d Datensätze Wurden Erfolgreich verarbeitet.",AnzahlKnoten);
+        printMenuHeader("Daten Geladen");
+        printMenuItem(Buffer);
+        printFooter();
+        puts("\n");
+    }else{
+        system(CLEAR);
+    }
 
     ResetAllCMDs();
+
+    SetMenuTitle("Hauptmenu");
 
     AddCMD("edit", "um das Bearbeitungs Menu zu öffnen", EditMenu);
     AddCMD("nav", "um das Navigations Menu zu öffnen", NavMenu);
 
     showUserCMDHelp();
+
+    //free(Buffer);TODO FREE ERROR
 
     return 0;
 
@@ -223,8 +251,9 @@ int EditMenu(int argc, char *argv[]){
     system(CLEAR);
 
     ResetAllCMDs();
+    SetMenuTitle("Editier Menu");
 
-    AddCMD("edit", "um Ausfahrten/Kreuze/Autobahnen zu bearbeiten (edit -h für Erklärung des Befehls)", showTestTabel);
+    AddCMD("edit", "um Ausfahrten/Kreuze/Autobahnen zu bearbeiten (edit -h für Erklärung des Befehls)", NULL);
     AddCMD("ls", "für Navigationsbefehle (ls -h für Erklärung des Befehls)", Search);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);
 
@@ -236,17 +265,10 @@ int EditMenu(int argc, char *argv[]){
 //Navigations / Benutzungs Menu
 int NavMenu(int argc, char *argv[]){
 
-
-    AnzahlKnoten=getNumKnoten();
-
-    ArrayHack = malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
-
-    loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
-
     system(CLEAR);
 
     ResetAllCMDs();
-
+    SetMenuTitle("Navigations Menu");
     AddCMD("nav", "für eine Navigation (search -h für Erklärung des Befehls)", FindWay);
     AddCMD("ls", "für Navigationsbefehle (ls -h für Erklärung des Befehls)", Search);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);

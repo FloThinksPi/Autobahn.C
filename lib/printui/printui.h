@@ -22,9 +22,11 @@ void printTabelRow(char numCols,...);
 
 //Allgemeinen Footer ausgeben
 void printFooter();
+void printFooterContinous();
 
 //Menu Ausgeben
 void printMenuHeader(char text[]);
+void printMenuHeaderContinous(char *text);
 void printMenuItem(char text[]);
 
 //Zählt Zeichen in einem String

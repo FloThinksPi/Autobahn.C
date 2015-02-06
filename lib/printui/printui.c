@@ -34,8 +34,14 @@
 int countUTF8String(char *s);
 
 //vc=VerticalCaracter | hc = horizontalCharacter
-static const char *hc = "-";
-static const char *vc = "|";
+static const char *hc = "┅";
+static const char *vc = "┋";
+//EDGES
+static const char *lo = "┏";
+static const char *ro = "┓";
+
+static const char *lu = "┗";
+static const char *ru = "┛";
 
 //Terminal Breite , terminal wird auf win32 und unix systemen resized siehe src/ConsoleAdaption
 static const int terminalWidth = 120;
@@ -92,15 +98,14 @@ void center_print_row_segment(char *s, int width,bool isHeading,bool isLast)
 }
 
 
-
-void center_print_menu_header(char *s, int width)
+//MODE 0=Header 1=Footer 2=Durchgehende Linie
+void center_print_menu_header(char *s, int width,int Mode)
 {
 
     int length = countUTF8String(s);
     int i;
 
-
-    fputs(vc,stdout);
+    if(Mode ==1){  fputs(lu,stdout);  }else if(Mode ==0){fputs(lo,stdout);}else{fputs(hc,stdout);}
     for (i=1; i<=(width-length)/2; i++) {
         fputs(hc, stdout);
     }
@@ -110,8 +115,8 @@ void center_print_menu_header(char *s, int width)
 
         fputs(hc, stdout);
     }
-    fputs(vc,stdout);
-    fputs(nlc, stdout);
+
+    if(Mode ==1){  fputs(ru,stdout);  }else if(Mode ==0){fputs(ro,stdout);}else{fputs(hc,stdout);}
 
 
 }
@@ -135,7 +140,7 @@ void center_print_menu(char *s, int width)
 
 
     fputs(vc, stdout);
-    //printf("%d",(width-length)%2);
+
     fputs(nlc,stdout);
 
 
@@ -160,7 +165,12 @@ int countUTF8String(char *s) {
 //Gibt die Menuüberschrift aus
 void printMenuHeader(char *text){
 
-    center_print_menu_header(text, terminalWidth);
+    center_print_menu_header(text, terminalWidth,0);
+
+}
+void printMenuHeaderContinous(char *text){
+
+    center_print_menu_header(text, terminalWidth,3);
 
 }
 
@@ -213,8 +223,10 @@ void printTabelRow(char numCols,...){
 }
 
 //Allgemeine schlusszeile
-void printFooter(){
+void printFooterContinous(){
     center_print_row_segment("", terminalWidth , true, true);
 }
 
-
+void printFooter(){
+    center_print_menu_header("", terminalWidth,1);
+}

@@ -17,7 +17,7 @@ char* FILEPATH="data/knoten_viele.csv";//TODO AbsolutePath berechnen
 char* FILEPATH="data/knoten.csv";
 #endif
 
-const int ZeilenLeange=200;//Maximale länge einer zeile im dokument
+const int ZeilenLeange=300;//Maximale länge einer zeile im dokument
 const int Datenleange=50;//Maximale länge eines Datensatzes in einer zeile ( durch kommas getrennter bereich)
 
 void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,double leange){
@@ -68,7 +68,6 @@ int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicher
         }
     }
     fclose(fp);
-    printf("Anzahl Knoten: %d \n", countlines);//DEBUG
 
     return countlines;
 }
@@ -207,11 +206,13 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
                 char *Buffer= malloc(sizeof(char)*1000);
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.000001);
 
-                sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
-                memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer)+1);
+                meineKnoten[i]->isKreuz=1;
+                //sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
+                //memcpy(meineKnoten[i]->Name, Buffer, countUTF8String(Buffer)+1);
 
-                sprintf(Buffer,"%s(%s)",meineKnoten[j]->Name,meineKnoten[j]->AutobahnName);
-                memcpy(meineKnoten[j]->Name, Buffer, countUTF8String(Buffer)+1);
+                meineKnoten[j]->isKreuz=1;
+                //sprintf(Buffer,"%s(%s)",meineKnoten[j]->Name,meineKnoten[j]->AutobahnName);
+                //memcpy(meineKnoten[j]->Name, Buffer, countUTF8String(Buffer)+1);
 
                 break;
             }
@@ -238,11 +239,11 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
 {
 
     int p=0;
-    char *buffer= malloc(sizeof(char*));
+    char *buffer= malloc(sizeof(char)*1000);
     for(int i=0;i<AnzahlKnoten;i++)
     {
 
-        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=4 && countUTF8String(meineKnoten[i]->Name)>5){
+        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=3){
             if(p==0){
                 printf("\n");
                 sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
@@ -252,15 +253,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
             printMenuItem(meineKnoten[i]->Name);
         }
 
-        if(levenshtein(KnotenName, meineKnoten[i]->Name)<=2 && countUTF8String(meineKnoten[i]->Name)<=5){
-            if(p==0){
-                printf("\n");
-                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
-                printMenuHeader(buffer);
-                p=1;
-            }
-            printMenuItem(meineKnoten[i]->Name);
-        }
+
 
     }
     if(p==0){
@@ -291,7 +284,293 @@ int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *Knoten
 };
 
 
+void printAutobahn(struct Knoten *meineKnoten[],int AnzahlKnoten,char *AutobahnName,char *Suchbegriff){//TODO QuickA and Dirty print remove
 
+    char *Buffer= malloc(sizeof(char)*1000);
+    int TotalSize= 70;
+    char *SearchBuffer;
+
+    struct Knoten *meineGefiltertenKnoten[AnzahlKnoten];
+
+    //Ausfahrten und Kreuze Errechnen
+    int i;
+    int size;
+    int AnzahlGefilterte=0;
+    for(i=0;i<AnzahlKnoten;i++){
+        if(strcmp(meineKnoten[i]->AutobahnName,AutobahnName)==0){
+
+            meineGefiltertenKnoten[AnzahlGefilterte]=meineKnoten[i];//zeigt auf den gleichen bereich wie meinknoten
+            AnzahlGefilterte++;
+
+        }
+    }
+
+    puts("\n");
+    //Überschrift Ausgeben
+    if(Suchbegriff!=NULL){
+        sprintf(Buffer,"%s Befindet sich auf Autobahn %s",Suchbegriff,meineGefiltertenKnoten[0]->AutobahnName);
+
+        for(int x=0;x<AnzahlGefilterte;x++){
+            if(strcompCaseInsensitive(meineGefiltertenKnoten[x]->Name,Suchbegriff)==0){
+                sprintf(Buffer,"<<<%s>>>",meineGefiltertenKnoten[x]->Name);
+                size = countUTF8String(Buffer);
+                SearchBuffer = malloc(sizeof(char)*size+1);
+                memcpy(SearchBuffer, Buffer, size+1);
+                meineGefiltertenKnoten[x]->Name=SearchBuffer;//Zeiger wird umgerichtet
+                sprintf(Buffer,"%s(%.0f Km) ist auf Autobahn: %s",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnKM,AutobahnName);
+            }
+        }
+
+
+    }else{
+        sprintf(Buffer,"Autobahn %s",AutobahnName);
+    }
+    printMenuHeader(Buffer);
+    printMenuItem(" ");
+    if(meineGefiltertenKnoten[0]->isKreuz==1){
+
+        char *Buffer2= malloc(sizeof(char)*1000);
+        //Findet die autobahn zu der das kreuz führt
+        for(int u=0;u<meineGefiltertenKnoten[0]->numWege;u++){
+            if(meineGefiltertenKnoten[0]->Wege[u]->nach->ID!=meineGefiltertenKnoten[0+1]->ID){
+                Buffer2=meineGefiltertenKnoten[0]->Wege[u]->nach->AutobahnName;
+                break;
+            }
+        }
+
+        sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[0]->Name,meineGefiltertenKnoten[0]->AutobahnKM,meineGefiltertenKnoten[0]->AutobahnName,Buffer2);
+        size= countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+
+
+        free(Buffer2);
+
+    }else{
+        //Erste Ausfahrt Ausgeben
+        sprintf(Buffer,"%s(%.2f Km)",meineGefiltertenKnoten[0]->Name,meineGefiltertenKnoten[0]->AutobahnKM);
+        size = countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+    }
+
+
+    sprintf(Buffer,"      |  ");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"    //#\\\\");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"   // # \\\\");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"  //  #  \\\\");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    //AUSFAHRTEN
+
+    int x;
+    for(x=1;x<AnzahlGefilterte-1;x++){
+
+
+
+        sprintf(Buffer,"  ||  #  ||");
+        size= countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+
+
+        if(meineGefiltertenKnoten[x]->isKreuz==1){
+            sprintf(Buffer,"  /|  #  |\\");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+            sprintf(Buffer," / |  #  | \\");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+
+            char *Buffer2= malloc(sizeof(char)*1000);
+            //Findet die autobahn zu der das kreuz führt
+            for(int u=0;u<meineGefiltertenKnoten[x]->numWege;u++){
+                if(meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x-1]->ID && meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x+1]->ID){
+                    Buffer2=meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
+                    break;
+                }
+            }
+
+            sprintf(Buffer,"=  |  #  |  =    Kreuz  %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnKM,meineGefiltertenKnoten[x]->AutobahnName,Buffer2);
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+
+
+            free(Buffer2);
+
+
+
+            sprintf(Buffer," \\ |  #  | /");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+            sprintf(Buffer,"  \\|  #  |/");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+        }else{
+
+            sprintf(Buffer,"  ||  #  |\\");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+            sprintf(Buffer,"  ||  #  | \\");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+
+
+
+            sprintf(Buffer,"  ||  #  |  =    %s(%.2f Km)",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnKM);
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+
+
+
+
+            sprintf(Buffer,"  ||  #  | /");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+            sprintf(Buffer,"  ||  #  |/");
+            size= countUTF8String(Buffer);
+            for(int u=0;u<(TotalSize-size);u++){
+                Buffer[size+u]=' ';
+            }
+            printMenuItem(Buffer);
+        }
+
+
+        sprintf(Buffer,"  ||  #  ||");
+        size= countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+
+    }
+
+
+//ENDKNOTEN
+
+    sprintf(Buffer,"  \\\\  #  //");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"   \\\\ # //");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"    \\\\#//");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    sprintf(Buffer,"      |  ");
+    size= countUTF8String(Buffer);
+    for(int u=0;u<(TotalSize-size);u++){
+        Buffer[size+u]=' ';
+    }
+    printMenuItem(Buffer);
+
+    //Letzten Knoten Ausgeben
+
+
+    if(meineGefiltertenKnoten[0]->isKreuz==1){
+
+        char *Buffer2= malloc(sizeof(char)*1000);
+        //Findet die autobahn zu der das kreuz führt
+        for(int u=0;u<meineGefiltertenKnoten[x]->numWege;u++){
+            if(meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x-1]->ID){
+                Buffer2=meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
+                break;
+            }
+        }
+
+        sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnKM,meineGefiltertenKnoten[x]->AutobahnName,Buffer2);
+        size= countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+
+        free(Buffer2);
+
+    }else{
+        //Erste Ausfahrt Ausgeben
+        sprintf(Buffer,"%s(%.2f Km)",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnKM);
+        size = countUTF8String(Buffer);
+        for(int u=0;u<(TotalSize-size);u++){
+            Buffer[size+u]=' ';
+        }
+        printMenuItem(Buffer);
+    }
+
+    printFooter();
+    puts("\n");
+
+    //Aufräumen
+    free(Buffer);
+    free(*meineGefiltertenKnoten);
+}
 
 
 

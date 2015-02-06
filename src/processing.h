@@ -15,6 +15,7 @@ struct Knoten {
     double AutobahnKM;
     char *AutobahnName;
     char *Name;
+    int isKreuz;
     bool besucht;
     struct Knoten *knotenZurueck;
     double entfernungZumUrsprung;

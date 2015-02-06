@@ -267,7 +267,8 @@ int FindSimilarCommands(tLinkTable * head,char *CMD)
     }
     if(p==0 && strcmp(CMD,"")){
         puts("");
-        printMenuHeader("Unbekannter Befehl!");
+        printMenuHeaderContinous("Unbekannter Befehl!");
+        puts("");
 
     }else if(strcmp(CMD,"")!=0){
         printFooter();
@@ -291,7 +292,7 @@ int StartCMDSystem()
 		if(pcmd == NULL)
 		{
             puts("\n");
-            printMenuHeader("   Keine Umlaute und [§ , ß]   ");
+            printMenuHeaderContinous("   Keine Umlaute und [§ , ß]   ");
 			continue;
 		}
         /* convert cmd to argc/argv */
