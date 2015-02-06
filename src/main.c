@@ -63,34 +63,6 @@ struct UndefArrayHack {
 
 struct UndefArrayHack *ArrayHack;
 
-
-//Funktionen müssen vor dem aufruf im menu stehen da sie sonst nicht gefunden werden.
-int showTestTabel(int argc, char *argv[]){
-
-
-    printf("\n");
-
-    printTabelHeader(6,"Col1","Col2","Col3","Colü4","Col5","6.");
-    printTabelRow(6,"Erste Den","1203","Heilbrn","123","NULL","6.");
-    printFooter();
-
-    printf("\n");
-
-    printTabelHeader(3,"Col1","Col2","Col3");
-    printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
-    printTabelRow(3,"Erste Daten","Zweiter Wert","FIX THAT BIT");
-    printFooter();
-
-    printTabelHeader(2,"Spalte 1","Spalte 2");
-    printTabelRow(2,"123","dasd");
-    printTabelRow(2,"123","dasd");
-    printTabelRow(2,"123","dasd");
-    printTabelRow(2,"123","dasd");
-    printFooter();
-
-    return 0;
-}
-
 void chop(char *str) {
     size_t p=strlen(str);
     str[p-1] = '\0';
@@ -265,9 +237,9 @@ int EditMenu(int argc, char *argv[]){
 int NavMenu(int argc, char *argv[]){
 
 
-
     AnzahlKnoten=getNumKnoten();
-    ArrayHack =malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+    ArrayHack = malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
     loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
 

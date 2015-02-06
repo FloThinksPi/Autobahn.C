@@ -12,7 +12,7 @@
 #ifdef _WIN32
 char* FILEPATH="data\\knoten.csv";
 #elif __linux
-char* FILEPATH="data/knoten.csv";//TODO AbsolutePath berechnen
+char* FILEPATH="data/knoten_viele.csv";//TODO AbsolutePath berechnen
 #elif __APPLE__
 char* FILEPATH="data/knoten.csv";
 #endif
@@ -125,7 +125,6 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         Data=strtok(line,",");
         int u=0;
         int dist;
-        printf("\nI=%d\n",i);
         meineKnoten[i]= malloc(sizeof(struct Knoten));
         while(1){
 
@@ -137,21 +136,18 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
                         meineKnoten[i]->Name= malloc(sizeof(char)*(countUTF8String(Data)+1));
                         memcpy(meineKnoten[i]->Name, Data, countUTF8String(Data)+1);
                         meineKnoten[i]->ID=i;
-                        printf("Name:%s\n",meineKnoten[i]->Name);
                         break;
                  }
                 case 1: {
 
                         meineKnoten[i]->AutobahnName= malloc(sizeof(char)*(countUTF8String(Data)+1));
                         memcpy(meineKnoten[i]->AutobahnName, Data, countUTF8String(Data)+1);
-                        printf("AutobahnName:%s\n",meineKnoten[i]->AutobahnName);
                     break;
                  }
                 case 2: {
 
                         dist= atof(Data);
                         meineKnoten[i]->AutobahnKM=dist;
-                        printf("Name:%f\n",meineKnoten[i]->AutobahnKM);
                         break;
                 }
                 default : break;
@@ -165,22 +161,19 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     }
 
     fclose(fp);
-    printf("i=%d , ANzahl=%d",i,AnzahlKnoten);
-    puts("AOK");
 
     //Sortiere Struct
 
     //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
     qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),compare);
 
-    puts("AOK");
+
     //Gleiche IDs der Knoten der richtigen reihenfolge an
     for(int x=0;x<AnzahlKnoten;x++){
         meineKnoten[x]->ID=x;
         meineKnoten[x]->numWege=0;
     }
 
-    puts("AOK");
 
     //Lese Welche Autobahenen es gibt
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
@@ -188,7 +181,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze.csv , sie haben am anfang nur zwei wege , also wie normale abfahrten
     for(int x=1;x<=atol(Autobahnen[0]);x++){//TODO Atol depriciated
 
-        printf("%s\n",Autobahnen[x]);
+
         int lastNode=INT_MAX;
 
 
@@ -211,7 +204,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     {
         for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
-                char *Buffer= malloc(sizeof(char*));
+                char *Buffer= malloc(sizeof(char)*1000);
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.000001);
 
                 sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann

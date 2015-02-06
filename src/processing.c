@@ -8,6 +8,7 @@
 #include <string.h>
 #include "processing.h"
 #include "../lib/printui/printui.h"
+#include "utils.h"
 
 
 //Anzahl der Knoten
@@ -108,7 +109,7 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
 
 
 // Gibt Alle möglichen Ziele mit gegangenem Weg aus
-int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten)
+int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten,double StartZeit)
 {
 
     char* BewegungsArray[AnzahlKnoten];
@@ -162,7 +163,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
-                    sprintf(buffer, "  Gesamt: %0.2f ", meineKnoten[i]->entfernungZumUrsprung);
+                    sprintf(buffer, "  Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden", meineKnoten[i]->entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
                     printMenuHeader(buffer);
                     puts("\n");
                 }
@@ -183,6 +184,8 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten)
 {
 
+    double StartZeit = get_time();
+
     //Anzahl an Knoten wird festgelegt
     AnzahlKnoten=AnzahlNodes;
 
@@ -197,7 +200,7 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
     dijkstra(meineKnoten, StartKnoten);
 
     //TODO Ausgaben schreiben , mit printui tabellen
-    printPathToTarget(meineKnoten,StartKnoten,ZielKnoten);
+    printPathToTarget(meineKnoten,StartKnoten,ZielKnoten,StartZeit);
 
 
     return 1;
