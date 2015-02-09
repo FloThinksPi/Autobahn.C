@@ -18,6 +18,7 @@ int strcompCaseInsensitive(char const *a, char const *b);
 int getNumKnoten();
 
 
-void printAutobahn(struct Knoten *meineKnoten[],int AnzahlKnoten,char *AutobahnName,char *Suchbegriff);
+void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
+void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
 
 #endif

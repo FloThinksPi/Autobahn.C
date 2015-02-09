@@ -71,7 +71,7 @@ void chop(char *str) {
 
 int FindWay(int argc, char *argv[]){
 
-    char *Typo="Usage: Search [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
+    char *Typo="Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
 
     if(argc>=3&&argc<=4) {
 
@@ -113,25 +113,27 @@ int FindWay(int argc, char *argv[]){
 
 int Search(int argc, char *argv[]){
 
-    char *Typo="          Usage: ls [KnotenName] [-auk(Optional)]          ";
+    char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
 
-    if(argc>=2&&argc<=3) {
+    if(argc>=2&&argc<=4) {
 
         int hasparam=0;
+        int textonly=0;
+        int sortName=0;
+
         char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);//TODO NUR beim einlesen nötig
         int AutobahnGefunden=0;
         size_t optind;
-        for (optind =0; optind < argc ; optind++) {
+        for (optind = 0; optind < argc ; optind++) {
             if(argv[optind][0] == '-') {
                 switch (argv[optind][1]) {
-                    case 'a':
+                    case 't':
                         hasparam = 1;
+                        textonly=1;
                         break;
-                    case 'u':
+                    case 'n':
                         hasparam = 1;
-                        break;
-                    case 'k':
-                        hasparam = 1;
+                        sortName=1;
                         break;
                     default:
                         printMenuHeaderContinous(Typo);
@@ -142,16 +144,33 @@ int Search(int argc, char *argv[]){
 
         char *K1 = argv[1];
 
-
         if(hasparam==0){
             chop(K1);
+        }
+
+
+        if (strcompCaseInsensitive("autobahn",K1) == 0) {
+
+            printMenuHeader("  Alle Autobahnen  ");
+            puts("\n");
+            for(int x=1;x<=atoi(Autobahnen[0]);x++) {
+                printTabelRow(3,"",Autobahnen[x],"");
+            }
+            puts("\n");
+            printFooter();
+
+            return 0;
         }
 
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
                 AutobahnGefunden=1;
-                printf("Autobahn: %s", Autobahnen[x]);//TODO Func zum Autobahn Ausgeben , func(meineKnoten,Anzahlk,Autobahn,Knotenname(kann NUll sein)
+                if(textonly){
+                    printAutobahnText(ArrayHack->meineKnoten, AnzahlKnoten, Autobahnen[x], NULL,sortName);
+                }else{
+                    printAutobahnVisual(ArrayHack->meineKnoten, AnzahlKnoten, Autobahnen[x], NULL,sortName);
+                }
             }
 
         }
@@ -160,8 +179,14 @@ int Search(int argc, char *argv[]){
 
             int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1);
 
-            if (K1Nummer != INT_MAX) {
-                printAutobahn(ArrayHack->meineKnoten, AnzahlKnoten, ArrayHack->meineKnoten[K1Nummer]->AutobahnName,K1);
+            if(textonly){
+                printAutobahnText(ArrayHack->meineKnoten, AnzahlKnoten, ArrayHack->meineKnoten[K1Nummer]->AutobahnName, K1,sortName);
+            }else{
+
+                if (K1Nummer != INT_MAX) {
+                    printAutobahnVisual(ArrayHack->meineKnoten, AnzahlKnoten, ArrayHack->meineKnoten[K1Nummer]->AutobahnName, K1,sortName);
+                }
+
             }
 
         }
