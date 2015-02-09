@@ -89,7 +89,7 @@ int ShowAllCmd(tLinkTable * head)
     {
 
 
-        char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+        char *ausgabe = malloc(strlen(pNode->cmd)+strlen(pNode->desc)+strlen(PrintfFormat)+1);
         sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
         printMenuItem(ausgabe);
 
@@ -123,7 +123,7 @@ int ShowUserCmd(tLinkTable * head)
 
 
         if(x>2) {
-            char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+            char *ausgabe = malloc(strlen(pNode->cmd)+strlen(pNode->desc)+strlen(PrintfFormat)+1);
             sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
             printMenuItem(ausgabe);
         }
@@ -148,7 +148,7 @@ int ShowSystemCmd(tLinkTable * head)
     {
 
         if(x<3) {
-            char *ausgabe = malloc(countUTF8String(pNode->cmd)+countUTF8String(pNode->desc)+countUTF8String(PrintfFormat)+1);
+            char *ausgabe = malloc(strlen(pNode->cmd)+strlen(pNode->desc)+strlen(PrintfFormat)+1);
             sprintf(ausgabe,PrintfFormat, pNode->cmd, pNode->desc);
             printMenuItem(ausgabe);
         }
@@ -243,7 +243,7 @@ int FindSimilarCommands(tLinkTable * head,char *CMD)
     {
 
 
-        if(levenshtein(CMD, pNode->cmd)<=2 && countUTF8String(pNode->cmd)>2){
+        if(levenshtein(CMD, pNode->cmd)<=2 && strlen(pNode->cmd)>2){
             if(p==0){
                 printf("\n");
                 printMenuHeader("Ungültiger Befehl , Meinten sie vieleicht");
@@ -252,7 +252,7 @@ int FindSimilarCommands(tLinkTable * head,char *CMD)
             printMenuItem(pNode->cmd);
         }
 
-        if(levenshtein(CMD, pNode->cmd)<2 && countUTF8String(pNode->cmd)<=2){
+        if(levenshtein(CMD, pNode->cmd)<2 && strlen(pNode->cmd)<=2){
             if(p==0){
                 printf("\n");
                 printMenuHeader("Ungültiger Befehl , Meinten sie vieleicht");
@@ -305,7 +305,7 @@ int StartCMDSystem()
 		}
         if(argc == 1)
         {
-            int len = countUTF8String(argv[0]);
+            int len = strlen(argv[0]);
             *(argv[0] + len - 1) = '\0';
         }
         tDataNode *p = (tDataNode*)SearchLinkTableNode(head,SearchConditon,(void*)argv[0]);

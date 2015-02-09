@@ -14,8 +14,8 @@
 # define min(x, y) ((x) < (y) ? (x) : (y))
 
 unsigned int levenshtein ( char *word1,  char *word2) {
-    unsigned int len1 = countUTF8String(word1),
-                 len2 = countUTF8String(word2);
+    unsigned int len1 = strlen(word1),
+                 len2 = strlen(word2);
     unsigned int *v = malloc((len2 + 1)* sizeof(unsigned int*));
     unsigned int i, j, current, next, cost;
 

@@ -28,10 +28,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "printui.h"
 
 
-//FunktionsDeklaration
-int countUTF8String(char *s);
 
 //vc=VerticalCaracter | hc = horizontalCharacter
 static const char *hc = "┅";
@@ -66,7 +65,7 @@ void center_print_row_segment(char *s, int width,bool isHeading,bool isLast)
 {
 
 
-    int length = countUTF8String(s);
+    int length = CountUTF8String(s);
     int i;
     fputs(vc, stdout);
     for (i=1; i<((width-length)/2); i++) {
@@ -102,7 +101,7 @@ void center_print_row_segment(char *s, int width,bool isHeading,bool isLast)
 void center_print_menu_header(char *s, int width,int Mode)
 {
 
-    int length = countUTF8String(s);
+    int length = CountUTF8String(s);
     int i;
 
     if(Mode ==1){  fputs(lu,stdout);  }else if(Mode ==0){fputs(lo,stdout);}else{fputs(hc,stdout);}
@@ -118,13 +117,13 @@ void center_print_menu_header(char *s, int width,int Mode)
 
     if(Mode ==1){  fputs(ru,stdout);  }else if(Mode ==0){fputs(ro,stdout);}else{fputs(hc,stdout);}
 
-
+    fputs(nlc,stdout);
 }
 
 void center_print_menu(char *s, int width)
 {
 
-    int length = countUTF8String(s);
+    int length = CountUTF8String(s);
     int i;
 
     fputs(vc, stdout);
@@ -147,7 +146,7 @@ void center_print_menu(char *s, int width)
 }
 
 //Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt
-int countUTF8String(char *s) {
+int CountUTF8String(char *s) {
     int i = 0, j = 0;
 
     while (s[i]) {

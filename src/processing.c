@@ -128,15 +128,15 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
-                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char)*(countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1));
-                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char)*(countUTF8String(buffer)+1));
-                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char)*(countUTF8String(meineKnoten[v]->Name)+1));
+                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char)*(strlen(meineKnoten[v]->knotenZurueck->Name)+1));
+                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char)*(strlen(buffer)+1));
+                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char)*(strlen(meineKnoten[v]->Name)+1));
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
-                    memmove(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, countUTF8String(meineKnoten[v]->knotenZurueck->Name)+1);
-                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, countUTF8String(buffer)+1);
-                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, countUTF8String(meineKnoten[v]->Name)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, strlen(meineKnoten[v]->knotenZurueck->Name)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, strlen(buffer)+1);
+                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, strlen(meineKnoten[v]->Name)+1);
 
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
