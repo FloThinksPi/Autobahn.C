@@ -10,15 +10,21 @@
 
 #include "processing.h"
 
+//FileIO
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
+
+//Datei Suche/Processing
 int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName);
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
-int strcompCaseInsensitive(char const *a, char const *b);
-
 int getNumKnoten();
+void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
 
-
+//Datei Visualisierung
 void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
 void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
+
+//BearbeitungsFunktionen
+int DeleteAutobahn(struct Knoten *meineKnoten[],int Anzahlknoten,char *AutobahnName);//Löscht alle ausfahrten und Kreuze , auch die kreuze die auf andere autobahnen liegen aber auf die gelöschte geführt haben
+int DeleteAusfahrt(struct Knoten *meineKnoten[],int Anzahlknoten,int AusfahrtIDinStruct);//muss beim löschen von Kreuzen 2 mal Aufgerufen und löscht damit beide enden eines kreuzes
 
 #endif

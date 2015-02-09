@@ -116,6 +116,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
     char* buffer = malloc(sizeof(char)*200);
 
+
     for (int i = 0; i < AnzahlKnoten; i++) {
         if (meineKnoten[i]->ID == Endknoten) {
 
@@ -128,15 +129,12 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
                 if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
-                    BewegungsArray[AnzahlBewegungen * 3] = malloc(sizeof(char)*(strlen(meineKnoten[v]->knotenZurueck->Name)+1));
-                    BewegungsArray[AnzahlBewegungen * 3 + 1] = malloc(sizeof(char)*(strlen(buffer)+1));
-                    BewegungsArray[AnzahlBewegungen * 3 + 2] = malloc(sizeof(char)*(strlen(meineKnoten[v]->Name)+1));
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
-                    memmove(BewegungsArray[AnzahlBewegungen * 3], meineKnoten[v]->knotenZurueck->Name, strlen(meineKnoten[v]->knotenZurueck->Name)+1);
-                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 1], buffer, strlen(buffer)+1);
-                    memmove(BewegungsArray[AnzahlBewegungen * 3 + 2], meineKnoten[v]->Name, strlen(meineKnoten[v]->Name)+1);
+                    BewegungsArray[AnzahlBewegungen * 3]=strdup(meineKnoten[v]->knotenZurueck->Name);
+                    BewegungsArray[AnzahlBewegungen * 3 + 1]=strdup(buffer);
+                    BewegungsArray[AnzahlBewegungen * 3 + 2]=strdup(meineKnoten[v]->Name);
 
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
@@ -149,22 +147,22 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
             if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
                 if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
-                    sprintf(buffer, "\"%s\" ist von \"%s\" aus nicht Erreichbar", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
-                    printMenuHeader(buffer);
+                    sprintf(buffer, "  \"%s\" ist von \"%s\" aus nicht Erreichbar  ", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    printMenuHeaderContinous(buffer);
                     puts("\n");
                 } else {
                     puts("\n");
-                    sprintf(buffer, "Weg von \"%s\" nach \"%s\" ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
+                    sprintf(buffer, "  Weg von \"%s\" nach \"%s\"  ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
                     printMenuHeader(buffer);
                     printMenuItem("");
 
-                    printTabelHeader(3, "Von", "Strecke", "Nach");
+                    printTabelHeader(3, " Von ", " Strecke ", " Nach ");
                     for (int x = AnzahlBewegungen - 1; x >= 0; x--) {
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
-                    sprintf(buffer, "  Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden", meineKnoten[i]->entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
-                    printMenuHeader(buffer);
+                    sprintf(buffer, " | Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden | ", meineKnoten[i]->entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
+                    printFooterText(buffer);
                     puts("\n");
                 }
 

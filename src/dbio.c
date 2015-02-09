@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <ctype.h>
+#include <stdbool.h>
 #include "processing.h"
 #include "../lib/printui/printui.h"
 #include "dbio.h"
 #include "../lib/levenshtein/levenshtein.h"
+#include "utils.h"
 
 #ifdef _WIN32
 char* FILEPATH="data\\knoten.csv";
@@ -72,109 +73,9 @@ int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicher
     return countlines;
 }
 
-int compare(const void *s1, const void *s2) {
-    struct Knoten* K1 = *(struct Knoten **) s1;
-    struct Knoten* K2 = *(struct Knoten **) s2;
+void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
-    return (int) (K1->AutobahnKM - K2->AutobahnKM);
-}
-
-char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
-
-
-    char** Autobahnen = malloc(sizeof(char*)*AnzahlKnoten);
-    int AnzahlAutobahnen=0;
-
-    for(int i=0;i<AnzahlKnoten;i++){
-
-        int inArray=0;
-
-        for(int u=1;u<AnzahlAutobahnen+1;u++){
-            if( strcmp(Autobahnen[u],meineKnoten[i]->AutobahnName) == 0 ){inArray=1; break;}
-        }
-
-        if(inArray==0){
-            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (strlen(meineKnoten[i]->AutobahnName)+1));
-            memcpy(Autobahnen[AnzahlAutobahnen+1], meineKnoten[i]->AutobahnName, strlen(meineKnoten[i]->AutobahnName)+1);
-            //Autobahnen[AnzahlAutobahnen+1]=meineKnoten[i]->AutobahnName;
-            AnzahlAutobahnen++;
-        }
-
-    }
-
-    Autobahnen[0]=malloc(sizeof(char)*10);//TODO BAD STATIC LEGTH
-    sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
-
-
-    return Autobahnen;
-}
-
-int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
-
-
-    FILE *fp = fopen(FILEPATH, "r");
-    char *line= malloc(sizeof(char)*(ZeilenLeange+1));
-
-
-    char *Data;
-    int i;
-    for(i=0;i<AnzahlKnoten;i++) {
-        if (fgets(line,ZeilenLeange,fp) == NULL) break;
-
-        //fgets(line,ZeilenLeange,fp);
-        Data=strtok(line,",");
-        int u=0;
-        int dist;
-        meineKnoten[i]= malloc(sizeof(struct Knoten));
-        meineKnoten[i]->besucht= false;
-        meineKnoten[i]->AutobahnKM=0;
-        meineKnoten[i]->entfernungZumUrsprung=0;
-        meineKnoten[i]->ID=i;
-        meineKnoten[i]->isKreuz=0;
-        meineKnoten[i]->numWege=0;
-        meineKnoten[i]->Wege[0]=NULL;
-        meineKnoten[i]->Wege[1]=NULL;
-        meineKnoten[i]->Wege[2]=NULL;
-        while(1){
-
-
-
-            switch(u) {
-                case 0: {
-
-                        meineKnoten[i]->Name= malloc(sizeof(char)*(strlen(Data)+1));
-                        memcpy(meineKnoten[i]->Name, Data, strlen(Data)+1);
-                        meineKnoten[i]->ID=i;
-                        break;
-                 }
-                case 1: {
-
-                        meineKnoten[i]->AutobahnName= malloc(sizeof(char)*(strlen(Data)+1));
-                        memcpy(meineKnoten[i]->AutobahnName, Data, strlen(Data)+1);
-                    break;
-                 }
-                case 2: {
-
-                        dist= atof(Data);
-                        meineKnoten[i]->AutobahnKM=dist;
-                        break;
-                }
-                default : break;
-            }
-
-
-            Data = strtok(NULL,",");
-            u++;
-            if(Data==0) break;
-        }
-    }
-
-    fclose(fp);
-
-    //Sortiere Struct
-
-    //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
-    qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),compare);
+    //Voraussetzung ist ein nach Autobahnkm sortiertes Struct
 
 
     //Gleiche IDs der Knoten der richtigen reihenfolge an
@@ -213,16 +114,10 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     {
         for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
-                char *Buffer= malloc(sizeof(char)*1000);
+
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.000001);
-
                 meineKnoten[i]->isKreuz=1;
-                //sprintf(Buffer,"%s(%s)",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName);//TODO Anhängen der Autobahn an kreuznamen im output erledigen damit suchfunktion arbeiten kann
-                //memcpy(meineKnoten[i]->Name, Buffer, strlen(Buffer)+1);
-
                 meineKnoten[j]->isKreuz=1;
-                //sprintf(Buffer,"%s(%s)",meineKnoten[j]->Name,meineKnoten[j]->AutobahnName);
-                //memcpy(meineKnoten[j]->Name, Buffer, strlen(Buffer)+1);
 
                 break;
             }
@@ -232,18 +127,117 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     for (int i = 0; i < AnzahlKnoten; i++){
         meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten*));
     }
+}
+
+char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
+
+
+    char** Autobahnen = malloc(sizeof(char*)*AnzahlKnoten);
+    int AnzahlAutobahnen=0;
+
+    for(int i=0;i<AnzahlKnoten;i++){
+
+        int inArray=0;
+
+        for(int u=1;u<AnzahlAutobahnen+1;u++){
+            if( strcmp(Autobahnen[u],meineKnoten[i]->AutobahnName) == 0 ){inArray=1; break;}
+        }
+
+        if(inArray==0){
+            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (strlen(meineKnoten[i]->AutobahnName)+1));
+            memcpy(Autobahnen[AnzahlAutobahnen+1], meineKnoten[i]->AutobahnName, strlen(meineKnoten[i]->AutobahnName)+1);
+            AnzahlAutobahnen++;
+        }
+
+    }
+
+    Autobahnen[0]=malloc(sizeof(char)*10);//TODO STATIC LEGTH
+    sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
+
+
+    return Autobahnen;
+}
+
+int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
+
+
+    FILE *fp = fopen(FILEPATH, "r");
+    char *line= malloc(sizeof(char)*(ZeilenLeange+1));
+
+
+    char *Data;
+    int i;
+    for(i=0;i<AnzahlKnoten;i++) {
+        if (fgets(line,ZeilenLeange,fp) == NULL) break;
+
+        //fgets(line,ZeilenLeange,fp);
+        Data=strtok(line,",");
+        int u=0;
+        int dist;
+        //SpeicherPlatzt für eintrag reservieren und alle werte initialisieren damit es nichgt zu undef. verhalten kommt.
+        meineKnoten[i]= malloc(sizeof(struct Knoten));
+        meineKnoten[i]->besucht= false;
+        meineKnoten[i]->Name=NULL;
+        meineKnoten[i]->AutobahnName=NULL;
+        meineKnoten[i]->AutobahnKM=0;
+        meineKnoten[i]->entfernungZumUrsprung=0;
+        meineKnoten[i]->ID=i;
+        meineKnoten[i]->isKreuz=0;
+        meineKnoten[i]->numWege=0;
+        meineKnoten[i]->Wege[0]=NULL;
+        meineKnoten[i]->Wege[1]=NULL;
+        meineKnoten[i]->Wege[2]=NULL;
+        meineKnoten[i]->knotenZurueck=NULL;
+        meineKnoten[i]->entfernungZumUrsprung=0;
+
+        while(1){
+
+
+
+            switch(u) {
+                case 0: {
+
+                        meineKnoten[i]->Name= malloc(sizeof(char)*(strlen(Data)+1));
+                        memcpy(meineKnoten[i]->Name, Data, strlen(Data)+1);
+                        meineKnoten[i]->ID=i;
+                        break;
+                 }
+                case 1: {
+
+                        meineKnoten[i]->AutobahnName= malloc(sizeof(char)*(strlen(Data)+1));
+                        memcpy(meineKnoten[i]->AutobahnName, Data, strlen(Data)+1);
+                    break;
+                 }
+                case 2: {
+
+                        dist= atof(Data);
+                        meineKnoten[i]->AutobahnKM=dist;
+                        break;
+                }
+                default : break;
+            }
+
+
+            Data = strtok(NULL,",");
+            u++;
+            if(Data==0) break;
+        }
+    }
+
+    fclose(fp);
+    free(line);
+
+    //Sortiere Struct
+
+    //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
+    qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
+
+    ConnectData(meineKnoten,AnzahlKnoten);
 
     return 0;
 }
 
-int strcompCaseInsensitive(char const *a, char const *b)
-{
-    for (;; a++, b++) {
-        int d = tolower(*a) - tolower(*b);
-        if (d != 0 || !*a)
-            return d;
-    }
-}
+
 
 int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName)
 {
@@ -273,6 +267,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
     }else{
         printFooter();
     }
+    free(buffer);
     return 0;
 }
 
@@ -299,17 +294,16 @@ void printAutobahnRow(char *S,int TotalSize){
     int size_n= CountUTF8String(S);
     char *Buffer=malloc(sizeof(char)*(TotalSize+1));
 
-    memcpy(Buffer, S, size_S+1);
+    memcpy(Buffer, S, size_S);
 
     int u;
     for(u=0;u<(TotalSize-size_n);u++){
         Buffer[size_n+u]=' ';
     }
 
-    //Buffer[size_n+u+1]='\0';
-
     printMenuItem(Buffer);
 
+    free(Buffer);
 }
 
 void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus){//TODO QuickA and Dirty print remove
@@ -349,9 +343,9 @@ void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *A
                 SearchBuffer->AutobahnKM=meineGefiltertenKnoten[x]->AutobahnKM;
                 SearchBuffer->numWege=meineGefiltertenKnoten[x]->numWege;
                 SearchBuffer->ID=meineGefiltertenKnoten[x]->ID;
-                SearchBuffer->Wege[1] = meineGefiltertenKnoten[x]->Wege[0];
-                SearchBuffer->Wege[2] = meineGefiltertenKnoten[x]->Wege[1];
-                SearchBuffer->Wege[3] = meineGefiltertenKnoten[x]->Wege[2];
+                SearchBuffer->Wege[0] = meineGefiltertenKnoten[x]->Wege[0];
+                SearchBuffer->Wege[1] = meineGefiltertenKnoten[x]->Wege[1];
+                SearchBuffer->Wege[2] = meineGefiltertenKnoten[x]->Wege[2];
                 SearchBuffer->isKreuz=meineGefiltertenKnoten[x]->isKreuz;
 
                 meineGefiltertenKnoten[x]= SearchBuffer;//Zeiger wird umgerichtet
@@ -451,7 +445,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *A
     //Letzten Knoten Ausgeben
 
 
-    if(meineGefiltertenKnoten[0]->isKreuz==1){
+    if(meineGefiltertenKnoten[x]->isKreuz==1){
 
         char *Buffer2;
         //Findet die autobahn zu der das kreuz führt
@@ -515,9 +509,9 @@ void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *Aut
                 SearchBuffer->AutobahnKM=meineGefiltertenKnoten[x]->AutobahnKM;
                 SearchBuffer->numWege=meineGefiltertenKnoten[x]->numWege;
                 SearchBuffer->ID=meineGefiltertenKnoten[x]->ID;
+                SearchBuffer->Wege[0] = meineGefiltertenKnoten[x]->Wege[0];
                 SearchBuffer->Wege[1] = meineGefiltertenKnoten[x]->Wege[1];
                 SearchBuffer->Wege[2] = meineGefiltertenKnoten[x]->Wege[2];
-                SearchBuffer->Wege[3] = meineGefiltertenKnoten[x]->Wege[3];
                 SearchBuffer->isKreuz=meineGefiltertenKnoten[x]->isKreuz;
 
                 meineGefiltertenKnoten[x]= SearchBuffer;//Zeiger wird umgerichtet
@@ -632,12 +626,33 @@ void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *Aut
     free(SearchBuffer);
 }
 
+//EDIT FUNKTIONEN
+int DeleteAusfahrt(struct Knoten *meineKnoten[],int AnzahlKnoten,int Ausfahrt){
+
+    free(meineKnoten[Ausfahrt]->Name);
+    free(meineKnoten[Ausfahrt]->AutobahnName);
+    free(meineKnoten[Ausfahrt]->knotenZurueck);
+    free(meineKnoten[Ausfahrt]);
 
 
+    for(int i=Ausfahrt+1;i<AnzahlKnoten;i++){
+        meineKnoten[i-1]=meineKnoten[i];
+        meineKnoten[i-1]->ID=i-1;
+    }
+
+    for(int i=0;i<AnzahlKnoten-1;i++){
+        free(meineKnoten[i]->Wege[0]);
+        free(meineKnoten[i]->Wege[1]);
+        free(meineKnoten[i]->Wege[2]);
+        meineKnoten[i]->numWege=0;
+    }
 
 
+    //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
+    ConnectData(meineKnoten, AnzahlKnoten-1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
 
-
+    return AnzahlKnoten-1;
+}
 
 
 

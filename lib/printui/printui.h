@@ -22,7 +22,7 @@ void printTabelRow(char numCols,...);
 
 //Allgemeinen Footer ausgeben
 void printFooter();
-void printFooterContinous();
+void printFooterText(char *S);
 
 //Menu Ausgeben
 void printMenuHeader(char text[]);

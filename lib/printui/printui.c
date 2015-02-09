@@ -145,18 +145,6 @@ void center_print_menu(char *s, int width)
 
 }
 
-//Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt
-int CountUTF8String(char *s) {
-    int i = 0, j = 0;
-
-    while (s[i]) {
-        if ((s[i] & 0xc0) != 0x80) j++;
-        i++;
-
-    }
-    return j;
-}
-
 //##############
 //### Menu Aufbau
 //##############
@@ -222,10 +210,15 @@ void printTabelRow(char numCols,...){
 }
 
 //Allgemeine schlusszeile
+
 void printFooterContinous(){
     center_print_row_segment("", terminalWidth , true, true);
 }
 
 void printFooter(){
     center_print_menu_header("", terminalWidth,1);
+}
+
+void printFooterText(char *S){
+    center_print_menu_header(S, terminalWidth,1);
 }

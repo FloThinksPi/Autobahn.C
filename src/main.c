@@ -12,10 +12,9 @@
 #include <string.h>
 #include "dbio.h"
 #include "main.h"
-#include "processing.h"
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
-#include "consoleAdaption/unixAdapt.h"
+#include "utils.h"
 
 
 //Wählt die richtige main für UNIX und Windows systeme
@@ -63,6 +62,7 @@ struct UndefArrayHack {
 
 struct UndefArrayHack *ArrayHack;
 int loaded=0;
+int needReload=0;
 
 void chop(char *str) {
     size_t p=strlen(str);
@@ -200,6 +200,68 @@ int Search(int argc, char *argv[]){
 
 }
 
+int Edit(int argc, char *argv[]){
+
+
+
+    return 0;
+}
+int Delete(int argc, char *argv[]){
+
+    char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
+    int AutobahnGefunden=0;
+    if(argc==2) {
+
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);//TODO NUR beim einlesen nötig
+
+        char *K1 = argv[1];
+
+        chop(K1);
+
+
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
+
+            if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
+                //DeleteAutobahn(Autobahnen[x]);
+
+                return 0;
+            }
+
+        }
+
+
+        int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1);
+
+        if (K1Nummer != INT_MAX) {
+
+           if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==1){
+               //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+
+               return 0;
+           }else{
+               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,K1Nummer);
+               ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+               needReload=1;
+               return 0;
+           }
+
+        }
+
+
+
+
+    }else{
+        printMenuHeader(Typo);
+    }
+
+    return 1;
+}
+int New(int argc, char *argv[]){
+
+
+    return 0;
+}
+
 
 int StartupMenu(int argc, char *argv[]){
 
@@ -251,9 +313,31 @@ int MainMenu(int argc, char *argv[]){
         printMenuItem(Buffer);
         printFooter();
         puts("\n");
-    }else{
+    }else if(needReload) {
         system(CLEAR);
-    }
+        sprintf(Buffer,"Einen Moment ,  Änderungen für %d Daten werden verarbeitet.",AnzahlKnoten);
+        printMenuHeader("Wende Änderungen An");
+        printMenuItem(Buffer);
+        printFooter();
+        puts("\n");
+
+        ConnectData(ArrayHack->meineKnoten, AnzahlKnoten);
+
+        needReload=0;
+        system(CLEAR);
+
+        sprintf(Buffer,"%d Datensätze Wurden Erfolgreich verarbeitet.",AnzahlKnoten);
+        printMenuHeader("Änderungen Geladen");
+        printMenuItem(Buffer);
+        printFooter();
+        puts("\n");
+
+    }else{
+            system(CLEAR);
+        }
+
+
+    free(Buffer);
 
     ResetAllCMDs();
 
@@ -263,8 +347,6 @@ int MainMenu(int argc, char *argv[]){
     AddCMD("nav", "um das Navigations Menu zu öffnen", NavMenu);
 
     showUserCMDHelp();
-
-    //free(Buffer);TODO FREE ERROR
 
     return 0;
 
@@ -278,7 +360,9 @@ int EditMenu(int argc, char *argv[]){
     ResetAllCMDs();
     SetMenuTitle("Editier Menu");
 
-    AddCMD("edit", "um Ausfahrten/Kreuze/Autobahnen zu bearbeiten (edit -h für Erklärung des Befehls)", NULL);
+    AddCMD("edit", "um Ausfahrten/Kreuze/Autobahnen zu bearbeiten (edit -h für Erklärung des Befehls)", Edit);
+    AddCMD("new", "um Ausfahrten/Kreuze/Autobahnen zu Erstellen (new -h für Erklärung des Befehls)", New);
+    AddCMD("rm", "um Ausfahrten/Kreuze/Autobahnen zu Löschen (rm -h für Erklärung des Befehls)", Delete);
     AddCMD("ls", "für Navigationsbefehle (ls -h für Erklärung des Befehls)", Search);
     AddCMD("back", "um Zurück zum Hauptmenu zu kommen", MainMenu);
 
