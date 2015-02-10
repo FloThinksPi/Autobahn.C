@@ -245,7 +245,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
         if(levenshtein(KnotenName, meineKnoten[i]->Name)<=3){
             if(p==0){
                 printf("\n");
-                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden, Meinten sie vieleicht",KnotenName);
+                sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht gefunden, meinten sie vieleicht",KnotenName);
                 printMenuHeader(buffer);
                 p=1;
             }
@@ -257,7 +257,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
     }
     if(p==0){
         puts("\n");
-        sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht Gefunden",KnotenName);
+        sprintf(buffer,"Ausfahrt/Kreuz \"%s\" Nicht gefunden",KnotenName);
         printMenuHeader(buffer);
     }else{
         printFooter();
@@ -325,7 +325,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *A
     puts("\n");
     //Überschrift Ausgeben
     if(Suchbegriff!=NULL){
-        sprintf(Buffer,"%s Befindet sich auf Autobahn %s",Suchbegriff,meineGefiltertenKnoten[0]->AutobahnName);
+        sprintf(Buffer,"%s Befindet sich auf der Autobahn %s",Suchbegriff,meineGefiltertenKnoten[0]->AutobahnName);
 
         for(int x=0;x<AnzahlGefilterte;x++){
             if(strcompCaseInsensitive(meineGefiltertenKnoten[x]->Name,Suchbegriff)==0){

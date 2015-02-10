@@ -139,6 +139,15 @@ int Search(int argc, char *argv[]){
                         hasparam = 1;
                         sortName=1;
                         break;
+                    case 'h':
+                        printMenuHeader("ls Hilfe");
+                        printMenuItem("");
+                        printMenuItem("Geben Sie ls [Stadt/Kreuzname] ein (z.B. 'ls Heilbronn'),");
+                        printMenuItem("um die Autobahn auf der sich die Stadt oder das Kreuz befindet, anzeigen zu lassen.");
+                        printMenuItem("Es werden alle Städte und Kreuze mit dem Abstand zum Anfang der Autobahn angezeigt.");
+                        printMenuItem("");
+                        printFooter();
+                        return 1;
                     default:
                         printMenuHeaderContinous(Typo);
                         return 0;
@@ -208,6 +217,7 @@ int Edit(int argc, char *argv[]){
 
     return 0;
 }
+
 int Delete(int argc, char *argv[]){
 
     char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
@@ -316,12 +326,12 @@ int StartupMenu(int argc, char *argv[]){
 
     showSystemCMDHelp();
 
-    printMenuItem("Diese Befehle funktionieren  Überall im Programm");
-    printMenuItem("Drücken sie Enter um zu  Starten");
+    printMenuItem("Diese Befehle funktionieren überall im Programm");
+    printMenuItem("Drücken Sie Enter um zu Starten");
     printFooter();
 
     printMenuItem("Dieses Programm wurde estellt von [...]");
-    printMenuItem("Es kommt in der menutzung dem terminal eines UNIX systems nahe");
+    printMenuItem("Es kommt in der Benutzung dem Terminal eines UNIX-Systems nahe");
     printMenuItem("Viel Spaß");
     printFooter();
 
@@ -351,7 +361,7 @@ int MainMenu(int argc, char *argv[]){
 
         system(CLEAR);
 
-        sprintf(Buffer,"%d Datensätze Wurden Erfolgreich verarbeitet.",AnzahlKnoten);
+        sprintf(Buffer,"%d Datensätze wurden erfolgreich verarbeitet.",AnzahlKnoten);
         printMenuHeader("Daten Geladen");
         printMenuItem(Buffer);
         printFooter();
@@ -359,7 +369,7 @@ int MainMenu(int argc, char *argv[]){
     }else if(needReload) {
         system(CLEAR);
         sprintf(Buffer,"Einen Moment ,  Änderungen für %d Daten werden verarbeitet.",AnzahlKnoten);
-        printMenuHeader("Wende Änderungen An");
+        printMenuHeader("Wende Änderungen an");
         printMenuItem(Buffer);
         printFooter();
         puts("\n");
@@ -369,7 +379,7 @@ int MainMenu(int argc, char *argv[]){
         needReload=0;
         system(CLEAR);
 
-        sprintf(Buffer,"%d Datensätze Wurden Erfolgreich verarbeitet.",AnzahlKnoten);
+        sprintf(Buffer,"%d Datensätze wurden Erfolgreich verarbeitet.",AnzahlKnoten);
         printMenuHeader("Änderungen Geladen");
         printMenuItem(Buffer);
         printFooter();
