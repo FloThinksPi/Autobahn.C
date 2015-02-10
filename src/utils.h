@@ -10,7 +10,7 @@
 
 //ConsoleAdapt
 #ifdef WIN32
-void RestartInUtf8Cmd()
+void RestartInUtf8Cmd();
 #endif
 void ConfigureCMD();
 //

@@ -1,15 +1,13 @@
 #include <ctype.h>
 #include "utils.h"
 #include "processing.h"
-
+#include <stdio.h>
+#include "../lib/printui/printui.h"
+#include <stdlib.h>
 
 #ifdef WIN32
 
 #include <windows.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "../lib/printui/printui.h"
 
 double get_time()
 {
@@ -68,9 +66,6 @@ void ConfigureCMD(){
 #else
 
 #include <sys/time.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "../lib/printui/printui.h"
 
 
 void ConfigureCMD(){

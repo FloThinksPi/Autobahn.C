@@ -10,10 +10,10 @@
 #include "../lib/levenshtein/levenshtein.h"
 #include "utils.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 char* FILEPATH="data\\knoten.csv";
 #elif __linux
-char* FILEPATH="data/knoten.csv";//TODO AbsolutePath berechnen
+char* FILEPATH="data/knoten.csv";
 #elif __APPLE__
 char* FILEPATH="data/knoten.csv";
 #endif

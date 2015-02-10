@@ -20,20 +20,24 @@
 //Wählt die richtige main für UNIX und Windows systeme
 #ifdef _WIN32
 
-#include "consoleAdaption/win32Adapt.h"
+
 const char *skipParameter="\\CMDknowsUTF8";
 
 int main (int argc, char *argv[])
 {
     if(argv[1]!=NULL){
         if(strcmp(argv[1],skipParameter)){
-           RestartInUtf8Cmd();
+           //RestartInUtf8Cmd();
+            ConfigureCMD();
+            StartupMenu(0,NULL);
         }else{
             ConfigureCMD();
             StartupMenu(0,NULL);
         }
     }else{
-    RestartInUtf8Cmd();
+    //RestartInUtf8Cmd();
+        ConfigureCMD();
+        StartupMenu(0,NULL);
     }
 
   return 0;
