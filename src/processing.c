@@ -124,7 +124,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
             int AnzahlBewegungen = 0;
 
 
-            while (meineKnoten[v]->knotenZurueck->ID >0) {
+            while (meineKnoten[v]->knotenZurueck!=NULL) {
 
 
 

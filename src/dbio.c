@@ -122,11 +122,6 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){
                 break;
             }
     }
-
-    //Initialisiere speicher
-    for (int i = 0; i < AnzahlKnoten; i++){
-        meineKnoten[i]->knotenZurueck= malloc(sizeof(struct Knoten*));
-    }
 }
 
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
