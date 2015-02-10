@@ -124,3 +124,12 @@ int strcompCaseInsensitive(char const *a, char const *b)
             return d;
     }
 }
+
+double my_round(double x, unsigned int digits) {
+    if (digits > 0) {
+        return my_round(x*10.0, digits-1)/10.0;
+    }
+    else {
+        return x;
+    }
+}

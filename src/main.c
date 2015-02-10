@@ -222,11 +222,28 @@ int Delete(int argc, char *argv[]){
 
         chop(K1);
 
-
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
-                //DeleteAutobahn(Autobahnen[x]);
+
+                for(int z=0;z<AnzahlKnoten;z++){
+                    if(strcompCaseInsensitive(Autobahnen[x],ArrayHack->meineKnoten[z]->AutobahnName)==0){
+                        if(ArrayHack->meineKnoten[z]->isKreuz==1){
+                            //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,z);
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1));
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                            needReload=1;
+                        }else{
+                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,z);
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+                            needReload=1;
+                        }
+                    }
+                }
 
                 return 0;
             }
@@ -240,7 +257,13 @@ int Delete(int argc, char *argv[]){
 
            if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==1){
                //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,K1Nummer);
+               ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
+               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1));
+               ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+               needReload=1;
                return 0;
            }else{
                AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,K1Nummer);

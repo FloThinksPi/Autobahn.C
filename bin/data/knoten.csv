@@ -1,7 +1,7 @@
 Mosbach,A1,0
 Ulm,A1,45
 Buxtehude,A1,60
-Erfurt,A1,100
+Erfurt,A1,100.23
 Koeln,A2,0
 Duesseldorf,A2,35
 Konstanz,A2,75
@@ -19,7 +19,7 @@ Berlin,A5,0
 Magdeburg,A5,45
 Halle,A5,65
 Zwickau,A5,145
-Regensburg,A5,210.342
+Regensburg,A5,210
 Heilbronn,A6,0
 Aschaffenburg,A6,35
 Leipzig,A6,90
@@ -31,7 +31,7 @@ Muenchen,A8,0
 Ingolstadt,A8,40
 Bamberg,A8,75
 Wuerzburg,A8,85
-K1/2,A1,30
+K1/2,A1,30.123
 K1/3,A1,85
 K2/4,A2,55
 K2/5,A2,115

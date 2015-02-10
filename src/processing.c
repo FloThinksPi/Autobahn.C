@@ -14,15 +14,6 @@
 //Anzahl der Knoten
 int AnzahlKnoten = 0;
 
-double my_round(double x, unsigned int digits) {
-    if (digits > 0) {
-        return my_round(x*10.0, digits-1)/10.0;
-    }
-    else {
-        return x;
-    }
-}
-
 double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
     int i=0;
@@ -30,8 +21,7 @@ double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
 
         if(meineKnoten[u]->Wege[i]->nach->ID==meineKnoten[v]->ID){
-            double ret = meineKnoten[u]->Wege[i]->laenge;
-            return ret;
+            return meineKnoten[u]->Wege[i]->laenge;
         }
 
         i++;
@@ -45,10 +35,11 @@ double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
 //Errechnet den am kürzesten entfernten nächsten knoten aus allen noch nicht besuchten knoten.
 //Wählt somit den "Weg" dergegangen wird.
-double minDistance(struct Knoten *meineKnoten[])
+int minDistance(struct Knoten *meineKnoten[])
 {
     // Initialize min value
-    double min = INT_MAX, min_index ;
+    double min = INT_MAX;
+    int min_index = 0;
 
     for (int v = 0; v < AnzahlKnoten; v++) {
         if (meineKnoten[v]->besucht == false && meineKnoten[v]->entfernungZumUrsprung <= min) {
@@ -190,14 +181,14 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){
-        meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ;
+        meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ,  meineKnoten[i]->knotenZurueck=NULL;
     }
 
 
     //Algorythmus wird gestartet
     dijkstra(meineKnoten, StartKnoten);
 
-    //TODO Ausgaben schreiben , mit printui tabellen
+    //Ausgabe der Wege in einer Tabelle
     printPathToTarget(meineKnoten,StartKnoten,ZielKnoten,StartZeit);
 
 

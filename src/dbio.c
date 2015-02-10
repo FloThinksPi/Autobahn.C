@@ -89,7 +89,7 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
 
     //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze.csv , sie haben am anfang nur zwei wege , also wie normale abfahrten
-    for(int x=1;x<=atol(Autobahnen[0]);x++){//TODO Atol depriciated
+    for(int x=1;x<=atoi(Autobahnen[0]);x++){//TODO Atol depriciated
 
 
         int lastNode=INT_MAX;
@@ -168,7 +168,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         //fgets(line,ZeilenLeange,fp);
         Data=strtok(line,",");
         int u=0;
-        int dist;
+        double dist;
         //SpeicherPlatzt für eintrag reservieren und alle werte initialisieren damit es nichgt zu undef. verhalten kommt.
         meineKnoten[i]= malloc(sizeof(struct Knoten));
         meineKnoten[i]->besucht= false;
