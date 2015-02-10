@@ -206,8 +206,6 @@ int Search(int argc, char *argv[]){
 
 int Edit(int argc, char *argv[]){
 
-
-
     return 0;
 }
 int Delete(int argc, char *argv[]){
@@ -230,15 +228,18 @@ int Delete(int argc, char *argv[]){
                     if(strcompCaseInsensitive(Autobahnen[x],ArrayHack->meineKnoten[z]->AutobahnName)==0){
                         if(ArrayHack->meineKnoten[z]->isKreuz==1){
                             //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
-                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,z);
+
+                            char *KreuzName=ArrayHack->meineKnoten[z]->Name;
+
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
                             ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
-                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1));
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, KreuzName));
                             ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
                             needReload=1;
                         }else{
-                            AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,z);
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
                             ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
                             needReload=1;
                         }
@@ -257,16 +258,16 @@ int Delete(int argc, char *argv[]){
 
            if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==1){
                //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
-               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,K1Nummer);
+               AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
-               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1));
+               AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1));
                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
                needReload=1;
                return 0;
            }else{
-               AnzahlKnoten=DeleteAusfahrt(ArrayHack->meineKnoten,AnzahlKnoten,K1Nummer);
+               AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
                needReload=1;
                return 0;
@@ -284,6 +285,21 @@ int Delete(int argc, char *argv[]){
     return 1;
 }
 int New(int argc, char *argv[]){
+
+    char *Typo="          Usage: new [ObjektName] [AutobahnName AutobahnKM] [[AutobahnName AutobahnKM]WennKreuz]          ";
+
+
+    if(argc==4) {
+
+        NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], argv[2], atof(argv[3]));
+
+    }else if(argc==6){
+        //heilbronn k1 120 k2 320
+
+    }else{
+        puts("\n");
+        printMenuHeaderContinous(Typo);
+    }
 
 
     return 0;

@@ -24,7 +24,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *A
 void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
 
 //BearbeitungsFunktionen
-int DeleteAutobahn(struct Knoten *meineKnoten[],int Anzahlknoten,char *AutobahnName);//Löscht alle ausfahrten und Kreuze , auch die kreuze die auf andere autobahnen liegen aber auf die gelöschte geführt haben
-int DeleteAusfahrt(struct Knoten *meineKnoten[],int Anzahlknoten,int AusfahrtIDinStruct);//muss beim löschen von Kreuzen 2 mal Aufgerufen und löscht damit beide enden eines kreuzes
+int DeleteKnoten(struct Knoten *meineKnoten[], int Anzahlknoten, int AusfahrtIDinStruct);//muss beim löschen von Kreuzen 2 mal Aufgerufen und löscht damit beide enden eines kreuzes
+int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM);
 
 #endif
