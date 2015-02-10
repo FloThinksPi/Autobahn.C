@@ -117,9 +117,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
             while (meineKnoten[v]->knotenZurueck!=NULL) {
 
-
-
-                if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)) {//TODO Zeile geht nicht , Kreuzüberfahrten solllten nicht anzeigen werden -> distanz 0km ausbelnden
+                if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)>0.001) {
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
 
@@ -129,7 +127,10 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
                     v = meineKnoten[v]->knotenZurueck->ID;
                     AnzahlBewegungen++;
+                }else{
+                    v = meineKnoten[v]->knotenZurueck->ID;
                 }
+
 
             }
 

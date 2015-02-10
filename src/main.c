@@ -324,6 +324,7 @@ int New(int argc, char *argv[]){
                 printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
                 printMenuItem(Typo);
                 printFooter();
+                free(buffer);
                 return 1;
             }
 
@@ -331,16 +332,35 @@ int New(int argc, char *argv[]){
             printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
             printMenuItem(Typo);
             printFooter();
+            free(buffer);
             return 1;
         }
 
        char *AutobahnBuffer=argv[2];
 
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {
+
+            if (strcompCaseInsensitive(argv[1], Autobahnen[x]) == 0) {
+
+
+                puts("");
+                sprintf(buffer,"  Fehler , Es gibt Bereits ein Autobahn mit gleichem Namen(%s)",argv[1]);
+                printMenuHeader(buffer);
+
+                free(buffer);
+                int AnzAutobahnen=atoi(Autobahnen[0]);
+                for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
+                free(Autobahnen);
+                return 1;
+            }
+
+        }
+
+
         if(findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 0) == INT_MAX || strcmp("new", argv[0])!=0){
 
-
-
-                char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
 
                 for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
@@ -357,9 +377,17 @@ int New(int argc, char *argv[]){
             puts("");
             sprintf(buffer,"  Fehler , Es gibt Bereits einen Knoten Namens \"%s\"  ",argv[1]);
             printMenuHeader(buffer);
+
+            int AnzAutobahnen=atoi(Autobahnen[0]);
+            for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
+            free(Autobahnen);
+            free(buffer);
             return 1;
         }
 
+        int AnzAutobahnen=atoi(Autobahnen[0]);
+        for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
+        free(Autobahnen);
         free(buffer);
 
         ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
