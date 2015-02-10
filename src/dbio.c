@@ -267,7 +267,7 @@ int FindSimilarNode(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenNa
 }
 
 
-int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName){
+int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar){
 
 
     for(int i=0;i<AnzahlKnoten;i++){
@@ -277,7 +277,9 @@ int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *Knoten
 
     }
 
-    FindSimilarNode(meineKnoten, AnzahlKnoten, KnotenName);
+    if(FindSimmilar){
+        FindSimilarNode(meineKnoten, AnzahlKnoten, KnotenName);
+    }
 
     return INT_MAX;
 
@@ -652,10 +654,6 @@ int DeleteKnoten(struct Knoten *meineKnoten[], int AnzahlKnoten, int Ausfahrt){
 int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM){
 
 
-    meineKnoten= realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten+1);
-
-
-
     int zielSpeicher= INT_MAX;
 
     for(int i=0;i<AnzahlKnoten;i++){
@@ -665,30 +663,33 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
         }
     }
 
-    for(int i=AnzahlKnoten;i>=zielSpeicher;i--){
-        meineKnoten[i+1]=meineKnoten[i];
-        meineKnoten[i+1]->ID=i+1;
+    if(zielSpeicher== INT_MAX)zielSpeicher=AnzahlKnoten;
+
+    for(int i=AnzahlKnoten;i>zielSpeicher;i--){
+        meineKnoten[i]=meineKnoten[i-1];
+        meineKnoten[i]->ID=i;
     }
 
 
-    meineKnoten[AnzahlKnoten+1]= malloc(sizeof(struct Knoten));
-    meineKnoten[AnzahlKnoten+1]->besucht= false;
-    meineKnoten[AnzahlKnoten+1]->Name= strdup(Name);
-    meineKnoten[AnzahlKnoten+1]->AutobahnName= strdup(AutobahnName);
-    meineKnoten[AnzahlKnoten+1]->AutobahnKM=AutobahnKM;
-    meineKnoten[AnzahlKnoten+1]->entfernungZumUrsprung=0;
-    meineKnoten[AnzahlKnoten+1]->ID=AnzahlKnoten+1;
-    meineKnoten[AnzahlKnoten+1]->isKreuz=0;
-    meineKnoten[AnzahlKnoten+1]->numWege=0;
-    meineKnoten[AnzahlKnoten+1]->Wege[0]=NULL;
-    meineKnoten[AnzahlKnoten+1]->Wege[1]=NULL;
-    meineKnoten[AnzahlKnoten+1]->Wege[2]=NULL;
-    meineKnoten[AnzahlKnoten+1]->knotenZurueck=NULL;
-    meineKnoten[AnzahlKnoten+1]->entfernungZumUrsprung=0;
+
+    meineKnoten[zielSpeicher]=malloc(sizeof(struct Knoten));
+    meineKnoten[zielSpeicher]->besucht= false;
+    meineKnoten[zielSpeicher]->Name= strdup(Name);
+    meineKnoten[zielSpeicher]->AutobahnName= strdup(AutobahnName);
+    meineKnoten[zielSpeicher]->AutobahnKM=AutobahnKM;
+    meineKnoten[zielSpeicher]->entfernungZumUrsprung=0;
+    meineKnoten[zielSpeicher]->ID=zielSpeicher;
+    meineKnoten[zielSpeicher]->isKreuz=0;
+    meineKnoten[zielSpeicher]->numWege=0;
+    meineKnoten[zielSpeicher]->Wege[0]=NULL;
+    meineKnoten[zielSpeicher]->Wege[1]=NULL;
+    meineKnoten[zielSpeicher]->Wege[2]=NULL;
+    meineKnoten[zielSpeicher]->knotenZurueck=NULL;
+    meineKnoten[zielSpeicher]->entfernungZumUrsprung=0;
 
 
 
-    for(int i=0;i<AnzahlKnoten+1;i++){
+    for(int i=0;i<AnzahlKnoten;i++){
         free(meineKnoten[i]->Wege[0]);
         free(meineKnoten[i]->Wege[1]);
         free(meineKnoten[i]->Wege[2]);

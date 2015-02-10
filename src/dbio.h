@@ -14,7 +14,7 @@
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
 
 //Datei Suche/Processing
-int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName);
+int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar);
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
 int getNumKnoten();
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
