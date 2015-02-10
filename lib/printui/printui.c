@@ -31,7 +31,7 @@
 #include "printui.h"
 
 
-
+/*
 //vc=VerticalCaracter | hc = horizontalCharacter
 static const char *hc = "┅";
 static const char *vc = "┋";
@@ -41,6 +41,16 @@ static const char *ro = "┓";
 
 static const char *lu = "┗";
 static const char *ru = "┛";
+*/
+
+static const char *hc = "-";
+static const char *vc = "|";
+//EDGES
+static const char *lo = "|";
+static const char *ro = "|";
+
+static const char *lu = "|";
+static const char *ru = "|";
 
 //Terminal Breite , terminal wird auf win32 und unix systemen resized siehe src/ConsoleAdaption
 static const int terminalWidth = 120;
