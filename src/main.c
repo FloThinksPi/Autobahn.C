@@ -16,6 +16,7 @@
 #include "../lib/printui/printui.h"
 #include "utils.h"
 #include <math.h>
+#include <ctype.h>
 
 
 //Wählt die richtige main für UNIX und Windows systeme
@@ -216,13 +217,176 @@ int Search(int argc, char *argv[]){
 
 int Edit(int argc, char *argv[]){
 
-    return 0;
+
+    char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
+
+    if(argc==3) {
+
+
+        char *K1 = argv[1];
+        char *K2 = argv[2];
+
+        chop(K2);
+
+        char* buffer= malloc(sizeof(char)*1000);
+
+        for(int i=0;i< CountUTF8String(K1);i++){
+
+            if(isalnum((int)K1[i])==0 && K1[i]!='_' && K1[i]!='-' && K1[i]!='.'){
+
+                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
+                printMenuHeader(buffer);
+                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
+                printFooter();
+
+                free(buffer);
+                return 1;
+            }
+
+        }
+
+        for(int i=0;i< CountUTF8String(K2);i++){
+
+            if(isalnum((int)K2[i])==0 && K2[i]!='_' && K2[i]!='-' && K2[i]!='.'){
+
+                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
+                printMenuHeader(buffer);
+                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
+                printFooter();
+
+                free(buffer);
+                return 1;
+            }
+
+        }
+
+        free(buffer);
+
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
+
+            if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
+
+                for(int z=0;z<AnzahlKnoten;z++){
+                    if(strcompCaseInsensitive(Autobahnen[x],ArrayHack->meineKnoten[z]->AutobahnName)==0){
+                        if(ArrayHack->meineKnoten[z]->isKreuz==1){
+                            //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+
+
+                            struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
+                            Knoten1->ID=ArrayHack->meineKnoten[z]->ID;
+                            Knoten1->Name= strdup(ArrayHack->meineKnoten[z]->Name);
+                            Knoten1->AutobahnName= strdup(ArrayHack->meineKnoten[z]->AutobahnName);
+                            Knoten1->AutobahnKM=ArrayHack->meineKnoten[z]->AutobahnKM;
+
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->ID);
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                            int zw = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->Name, 0);
+                            struct Knoten *Knoten2 = malloc(sizeof(struct Knoten));
+                            Knoten1->ID=ArrayHack->meineKnoten[zw]->ID;
+                            Knoten1->Name= strdup(ArrayHack->meineKnoten[zw]->Name);
+                            Knoten1->AutobahnName= strdup(ArrayHack->meineKnoten[zw]->AutobahnName);
+                            Knoten1->AutobahnKM=ArrayHack->meineKnoten[zw]->AutobahnKM;
+
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten2->ID);
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
+                            AnzahlKnoten= NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->Name , K2 , Knoten1->AutobahnKM);
+
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
+                            AnzahlKnoten= NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten2->Name , K2 , Knoten2->AutobahnKM);
+
+                            free(Knoten1->AutobahnName);
+                            free(Knoten1->Name);
+                            free(Knoten1);
+
+                            free(Knoten2->AutobahnName);
+                            free(Knoten2->Name);
+                            free(Knoten2);
+
+                            needReload=1;
+                        }else{
+                            struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
+                            Knoten1->ID=ArrayHack->meineKnoten[z]->ID;
+                            Knoten1->Name= strdup(ArrayHack->meineKnoten[z]->Name);
+                            Knoten1->AutobahnName= strdup(ArrayHack->meineKnoten[z]->AutobahnName);
+                            Knoten1->AutobahnKM=ArrayHack->meineKnoten[z]->AutobahnKM;
+
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->ID);
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
+                            AnzahlKnoten= NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->Name , K2 , Knoten1->AutobahnKM);
+
+
+                            free(Knoten1->AutobahnName);
+                            free(Knoten1->Name);
+                            free(Knoten1);
+
+                            needReload=1;
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
+        }
+
+
+        int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1,1);
+
+        if (K1Nummer != INT_MAX) {
+
+            if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==1){
+                //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+                AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
+                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1,1));
+                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                needReload=1;
+                return 0;
+            }else{
+                struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
+                Knoten1->ID=ArrayHack->meineKnoten[K1Nummer]->ID;
+                Knoten1->Name= strdup(ArrayHack->meineKnoten[K1Nummer]->Name);
+                Knoten1->AutobahnName= strdup(ArrayHack->meineKnoten[K1Nummer]->AutobahnName);
+                Knoten1->AutobahnKM=ArrayHack->meineKnoten[K1Nummer]->AutobahnKM;
+
+                AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->ID);
+                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+
+                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
+                AnzahlKnoten= NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K2 , Knoten1->AutobahnName , Knoten1->AutobahnKM);
+
+
+                free(Knoten1->AutobahnName);
+                free(Knoten1->Name);
+                free(Knoten1);
+
+                needReload=1;
+            }
+
+        }
+
+
+
+
+    }else{
+        printMenuHeader(Typo);
+    }
+
+    return 1;
 }
 
 int Delete(int argc, char *argv[]){
 
     char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
-    int AutobahnGefunden=0;
     if(argc==2) {
 
         char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
@@ -230,6 +394,25 @@ int Delete(int argc, char *argv[]){
         char *K1 = argv[1];
 
         chop(K1);
+
+        char* buffer= malloc(sizeof(char)*1000);
+
+        for(int i=0;i< CountUTF8String(K1);i++){
+
+            if(isalnum((int)K1[i])==0 && K1[i]!='_' && K1[i]!='-' && K1[i]!='.'){
+
+                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
+                printMenuHeader(buffer);
+                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
+                printFooter();
+
+                free(buffer);
+                return 1;
+            }
+
+        }
+
+        free(buffer);
 
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
 
@@ -295,6 +478,9 @@ int Delete(int argc, char *argv[]){
 
     return 1;
 }
+
+
+
 int New(int argc, char *argv[]){
 
     char *Typo="          Usage: new [ObjektName] [AutobahnName AutobahnKM] [[AutobahnName AutobahnKM]WennKreuz]          ";
@@ -304,7 +490,38 @@ int New(int argc, char *argv[]){
         char *lastparam=argv[3];
         chop(lastparam);
 
-        char *buffer = malloc(sizeof(char)*100);
+        char *buffer = malloc(sizeof(char)*1000);
+
+        for(int i=0;i< CountUTF8String(argv[1]);i++){
+
+            if(isalnum((int)argv[1][i])==0 && argv[1][i]!='_' && argv[1][i]!='-' && argv[1][i]!='.'){
+
+                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
+                printMenuHeader(buffer);
+                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
+                printFooter();
+
+                free(buffer);
+                return 1;
+            }
+
+        }
+
+        for(int i=0;i<CountUTF8String(argv[2]);i++){
+
+            if(isalnum((int)argv[2][i])==0 && argv[2][i]!='_' && argv[2][i]!='-' && argv[2][i]!='.'){
+
+                sprintf(buffer,"  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen",argv[2][i]);
+                printMenuHeader(buffer);
+                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
+                printFooter();
+
+                free(buffer);
+                return 1;
+            }
+
+        }
+
         double f = atof(lastparam);
         sprintf(buffer,"%.2f", f);
 
@@ -321,6 +538,7 @@ int New(int argc, char *argv[]){
         if(strcmp(buffer, lastparam)==0){
 
             if(f>=1000000000 || f<=-1000000000){
+                puts("");
                 printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
                 printMenuItem(Typo);
                 printFooter();
@@ -329,12 +547,14 @@ int New(int argc, char *argv[]){
             }
 
         }else{
+            puts("");
             printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
             printMenuItem(Typo);
             printFooter();
             free(buffer);
             return 1;
         }
+
 
        char *AutobahnBuffer=argv[2];
 
@@ -385,13 +605,15 @@ int New(int argc, char *argv[]){
             return 1;
         }
 
+
+
+        ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
+        AnzahlKnoten=NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], AutobahnBuffer, f);
+
         int AnzAutobahnen=atoi(Autobahnen[0]);
         for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
         free(Autobahnen);
         free(buffer);
-
-        ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
-        AnzahlKnoten=NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], AutobahnBuffer, f);
 
 
     }else if(argc==6){
@@ -421,7 +643,7 @@ int New(int argc, char *argv[]){
     }
 
 
-    return 0;
+    return 1;
 }
 
 
