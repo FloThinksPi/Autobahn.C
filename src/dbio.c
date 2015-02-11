@@ -53,7 +53,6 @@ int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicher
     //ZÄHLT ANZAHL ABFAHRTEN
     FILE *fp = fopen(FILEPATH, "r");
     if (fp == NULL) {
-        perror("Fehler \"data/knoten.csv");
         return 0;
     }
     //Datei zeilenweise lesen
@@ -118,8 +117,8 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.000001);
                 meineKnoten[i]->isKreuz=1;
                 meineKnoten[j]->isKreuz=1;
-
                 break;
+
             }
     }
 }
@@ -219,7 +218,10 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
         }
     }
 
-    fclose(fp);
+    if(fp!=NULL){
+        fclose(fp);
+    }
+
     free(line);
 
     //Sortiere Struct
@@ -732,7 +734,7 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 
 
-    for(int i=0;i<AnzahlKnoten;i++){
+    for(int i=0;i<AnzahlKnoten;i++){//Free(null) ist valid
         free(meineKnoten[i]->Wege[0]);
         free(meineKnoten[i]->Wege[1]);
         free(meineKnoten[i]->Wege[2]);
@@ -747,7 +749,13 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 
 
+void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
+
+
+
+    return ;
+}
 
 
 
