@@ -682,16 +682,17 @@ int DeleteKnoten(struct Knoten *meineKnoten[], int AnzahlKnoten, int Ausfahrt){
         meineKnoten[i-1]->ID=i-1;
     }
 
-    for(int i=0;i<AnzahlKnoten-1;i++){
-        free(meineKnoten[i]->Wege[0]);
-        free(meineKnoten[i]->Wege[1]);
-        free(meineKnoten[i]->Wege[2]);
+    for(int i=0;i<AnzahlKnoten;i++){//Free(null) ist valid
+        if(meineKnoten[i]->Wege[0]!=NULL) free(meineKnoten[i]->Wege[0]); meineKnoten[i]->Wege[0]= NULL;
+        if(meineKnoten[i]->Wege[1]!=NULL) free(meineKnoten[i]->Wege[1]); meineKnoten[i]->Wege[1]= NULL;
+        if(meineKnoten[i]->Wege[2]!=NULL) free(meineKnoten[i]->Wege[2]); meineKnoten[i]->Wege[2]= NULL;
+
         meineKnoten[i]->numWege=0;
     }
 
 
     //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
-    ConnectData(meineKnoten, AnzahlKnoten-1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
+    //ConnectData(meineKnoten, AnzahlKnoten-1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
 
     return AnzahlKnoten-1;
 }
@@ -735,14 +736,15 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 
     for(int i=0;i<AnzahlKnoten;i++){//Free(null) ist valid
-        free(meineKnoten[i]->Wege[0]);
-        free(meineKnoten[i]->Wege[1]);
-        free(meineKnoten[i]->Wege[2]);
+        if(meineKnoten[i]->Wege[0]!=NULL) free(meineKnoten[i]->Wege[0]); meineKnoten[i]->Wege[0]= NULL;
+        if(meineKnoten[i]->Wege[1]!=NULL) free(meineKnoten[i]->Wege[1]); meineKnoten[i]->Wege[1]= NULL;
+        if(meineKnoten[i]->Wege[2]!=NULL) free(meineKnoten[i]->Wege[2]); meineKnoten[i]->Wege[2]= NULL;
+
         meineKnoten[i]->numWege=0;
     }
 
     //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
-    ConnectData(meineKnoten, AnzahlKnoten+1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
+    //ConnectData(meineKnoten, AnzahlKnoten+1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
 
     return AnzahlKnoten+1;
 }

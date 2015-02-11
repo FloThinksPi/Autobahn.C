@@ -123,6 +123,29 @@ int Search(int argc, char *argv[]){
 
     if(argc>=2&&argc<=4) {
 
+        char *Buffer= malloc(sizeof(char)*1000);
+        if(needReload) {
+            system(CLEAR);
+            sprintf(Buffer,"Einen Moment ,  Änderungen für %d Daten werden verarbeitet.",AnzahlKnoten);
+            printMenuHeader("Wende Änderungen an");
+            printMenuItem(Buffer);
+            printFooter();
+            puts("\n");
+
+            ConnectData(ArrayHack->meineKnoten, AnzahlKnoten);
+
+            needReload=0;
+            system(CLEAR);
+
+            sprintf(Buffer,"%d Datensätze wurden Erfolgreich verarbeitet.",AnzahlKnoten);
+            printMenuHeader("Änderungen Geladen");
+            printMenuItem(Buffer);
+            printFooter();
+            puts("\n");
+
+        }
+        free(Buffer);
+
         int hasparam=0;
         int textonly=0;
         int sortName=0;
@@ -303,7 +326,6 @@ int Edit(int argc, char *argv[]){
                         free(Knoten1);
 
                         needReload=1;
-
                     }
                 }
 
