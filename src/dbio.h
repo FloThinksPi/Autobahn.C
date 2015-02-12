@@ -12,6 +12,7 @@
 
 //FileIO
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
+void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten);
 
 //Datei Suche/Processing
 int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar);

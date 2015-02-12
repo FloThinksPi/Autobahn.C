@@ -29,6 +29,8 @@
 #include "menu.h"
 #include "../printui/printui.h"
 #include "../levenshtein/levenshtein.h"
+#include "../../src/dbio.h"
+#include "../../src/main.h"
 
 tLinkTable * head = NULL;
 
@@ -179,7 +181,7 @@ void SetMenuTitle(char *title){
 }
 
 int I_Quit(int argc, char *argv[]){
-    //TODO Speichern der änderungen on Exit (Struct to file)
+    saveIt();
     system(CLEAR);
     exit(0);
 }

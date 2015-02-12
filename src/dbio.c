@@ -752,7 +752,15 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 
 void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten){
-    
+
+    FILE * file= fopen(FILEPATH,"w");
+    if (file != NULL) {
+        for(int i=0;i<AnzahlKnoten-1;i++){
+            fprintf(file,"%s,%s,%.2f\n",meineKnoten[i]->Name,meineKnoten[i]->AutobahnName,meineKnoten[i]->AutobahnKM);
+        }
+        fprintf(file,"%s,%s,%.2f",meineKnoten[AnzahlKnoten-1]->Name,meineKnoten[AnzahlKnoten-1]->AutobahnName,meineKnoten[AnzahlKnoten-1]->AutobahnKM);
+        fclose(file);
+    }else{}//TODO EXIT MIT FEHLERMEDLING
 
     return ;
 }

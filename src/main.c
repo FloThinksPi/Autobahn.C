@@ -1152,3 +1152,6 @@ int NavMenu(int argc, char *argv[]){
     return 0;
 }
 
+void saveIt(){
+    saveStructToFile(ArrayHack->meineKnoten, AnzahlKnoten);
+}
