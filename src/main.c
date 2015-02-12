@@ -15,7 +15,6 @@
 #include "../lib/menu/menu.h"
 #include "../lib/printui/printui.h"
 #include "utils.h"
-#include <math.h>
 #include <ctype.h>
 
 
@@ -482,44 +481,58 @@ int Edit(int argc, char *argv[]){
         }
 
 
-        char *AutobahnBuffer = argv[2];
+        for(int i=0;i<AnzahlKnoten;i++) {
+            if (ArrayHack->meineKnoten[i]->AutobahnKM == f) {
 
-        char **Autobahnen = loadAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+                sprintf(buffer, "  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ", f, ArrayHack->meineKnoten[i]->AutobahnName, ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
 
-
-            for (int x = 1; x <= atoi(Autobahnen[0]); x++) {
-
-                if (strcompCaseInsensitive(argv[2], Autobahnen[x]) == 0) {
-
-                    AutobahnBuffer = Autobahnen[x];
-
-                }
+                free(buffer);
+                return 1;
             }
-        int K1Nummer= findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 1)== INT_MAX;
-        if(K1Nummer!= INT_MAX) {
-
-
-            struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
-            Knoten1->ID = ArrayHack->meineKnoten[K1Nummer]->ID;
-            Knoten1->Name = strdup(ArrayHack->meineKnoten[K1Nummer]->Name);
-            Knoten1->AutobahnName = strdup(ArrayHack->meineKnoten[K1Nummer]->AutobahnName);
-            Knoten1->AutobahnKM = ArrayHack->meineKnoten[K1Nummer]->AutobahnKM;
-
-            AnzahlKnoten = DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->ID);
-
-            AnzahlKnoten = NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->Name, AutobahnBuffer, f);
-
-            free(Knoten1->AutobahnName);
-            free(Knoten1->Name);
-            free(Knoten1);
-
         }
 
-        int AnzAutobahnen = atoi(Autobahnen[0]);
-        for (int x = 0; x <= AnzAutobahnen; x++) free(Autobahnen[x]);
-        free(Autobahnen);
+        char *AutobahnBuffer = argv[2];
+
+        int K1Nummer= findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 1);
+        if(K1Nummer!= INT_MAX) {
+            if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==0) {
+
+                char **Autobahnen = loadAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+
+
+                for (int x = 1; x <= atoi(Autobahnen[0]); x++) {
+
+                    if (strcompCaseInsensitive(argv[2], Autobahnen[x]) == 0) {
+
+                        AutobahnBuffer = Autobahnen[x];
+
+                    }
+                }
+
+                struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
+                Knoten1->ID = ArrayHack->meineKnoten[K1Nummer]->ID;
+                Knoten1->Name = strdup(ArrayHack->meineKnoten[K1Nummer]->Name);
+                Knoten1->AutobahnName = strdup(ArrayHack->meineKnoten[K1Nummer]->AutobahnName);
+                Knoten1->AutobahnKM = ArrayHack->meineKnoten[K1Nummer]->AutobahnKM;
+
+                AnzahlKnoten = DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->ID);
+
+                AnzahlKnoten = NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Knoten1->Name, AutobahnBuffer, f);
+
+                int AnzAutobahnen = atoi(Autobahnen[0]);
+                for (int x = 0; x <= AnzAutobahnen; x++) free(Autobahnen[x]);
+                free(Autobahnen);
+                free(Knoten1->AutobahnName);
+                free(Knoten1->Name);
+                free(Knoten1);
+                needReload=1;
+            }else{
+                printMenuHeaderContinous("Fehler , Ausfahrt ist ein Kreuz");
+            }
+        }
+
         free(buffer);
-        needReload=1;
     }else if(argc==6){
 
         char *lastparam = argv[5];
@@ -638,6 +651,25 @@ int Edit(int argc, char *argv[]){
             return 1;
         }
 
+        for(int i=0;i<AnzahlKnoten;i++){
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==f){
+
+                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
+
+                free(buffer);
+                return 1;
+            }
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==ff){
+
+                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",ff,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
+
+                free(buffer);
+                return 1;
+            }
+        }
+
 
         char *AutobahnBuffer1 = argv[2];
         char *AutobahnBuffer2 = argv[4];
@@ -658,6 +690,8 @@ int Edit(int argc, char *argv[]){
 
             }
         }
+
+
 
         int K1Nummer= findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 1);
 
@@ -708,7 +742,6 @@ int Edit(int argc, char *argv[]){
         for (int x = 0; x <= AnzAutobahnen; x++) free(Autobahnen[x]);
         free(Autobahnen);
         free(buffer);
-        needReload=1;
     }else{
         printMenuHeader(Typo);
     }
@@ -929,13 +962,27 @@ int New(int argc, char *argv[]){
         }else{
             puts("");
             sprintf(buffer,"  Fehler , Es gibt Bereits einen Knoten Namens \"%s\"  ",argv[1]);
-            printMenuHeader(buffer);
+            printMenuHeaderContinous(buffer);
 
             int AnzAutobahnen=atoi(Autobahnen[0]);
             for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
             free(Autobahnen);
             free(buffer);
             return 1;
+        }
+
+        for(int i=0;i<AnzahlKnoten;i++){
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==f){
+
+                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
+
+                int AnzAutobahnen=atoi(Autobahnen[0]);
+                for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
+                free(Autobahnen);
+                free(buffer);
+                return 1;
+            }
         }
 
 
@@ -947,7 +994,8 @@ int New(int argc, char *argv[]){
         for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
         free(Autobahnen);
         free(buffer);
-
+        needReload=1;
+        return 0;
 
     }else if(argc==6){
 

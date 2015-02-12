@@ -752,9 +752,7 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 
 void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten){
-
-
-
+    
 
     return ;
 }
