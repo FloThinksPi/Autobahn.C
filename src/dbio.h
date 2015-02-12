@@ -10,6 +10,12 @@
 
 #include "processing.h"
 
+struct OutputBuffer
+{
+    char *TextName;
+    char *TextKm;
+};
+
 //FileIO
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
 void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten);

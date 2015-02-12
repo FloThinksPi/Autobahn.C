@@ -26,7 +26,6 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
     int numWegezuKnoten1 = meineKnoten[Knoten1]->numWege;
     int numWegezuKnoten2 = meineKnoten[Knoten2]->numWege;
 
-    //TODO Püfen ob weg schon existiert
 
     struct Wege *W1 =  malloc(sizeof(struct Wege));
     struct Wege *W2 =  malloc(sizeof(struct Wege));
@@ -72,11 +71,12 @@ int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicher
     return countlines;
 }
 
-void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){
+void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){//TODO SPEED UP THIS FUNCTION
 
     for (int i = 0; i < AnzahlKnoten; ++i)
     {
-        for (int j = i + 1; j < AnzahlKnoten; ++j) if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
+        for (int j = i + 1; j < AnzahlKnoten; ++j)
+            if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
             {
                 ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
                 meineKnoten[i]->isKreuz=1;
@@ -103,7 +103,7 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){
     char** Autobahnen=loadAutobahnen(meineKnoten,AnzahlKnoten);
 
     //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze.csv , sie haben am anfang nur zwei wege , also wie normale abfahrten
-    for(int x=1;x<=atoi(Autobahnen[0]);x++){//TODO Atol depriciated
+    for(int x=1;x<=atoi(Autobahnen[0]);x++){
 
 
         int lastNode=INT_MAX;
@@ -149,7 +149,7 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten) {
 
     }
 
-    Autobahnen[0]=malloc(sizeof(char)*10);//TODO STATIC LEGTH
+    Autobahnen[0]=malloc(sizeof(char)*10);
     sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
 
 
@@ -231,7 +231,7 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten[],int AnzahlKnoten){
     //Sortiere Struct
 
     //size_t Knoten_len = AnzahlKnoten / sizeof(struct Knoten);
-    qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
+    //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
 
     ConnectData(meineKnoten,AnzahlKnoten);
 
@@ -291,7 +291,7 @@ int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *Knoten
 
 };
 
-void printAutobahnRow(char *S,int TotalSize){
+void printAutobahnRow(char *S,int TotalSize){//TODO IN  LINKSBÜNDIGER PRINT IN PRINTUI IMPLEMENTIEREN
 
     size_t size_S=strlen(S);
     int size_n= CountUTF8String(S);
@@ -309,7 +309,7 @@ void printAutobahnRow(char *S,int TotalSize){
     free(Buffer);
 }
 
-void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus){//TODO QuickA and Dirty print remove
+void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus){//TODO SORTIEREN
 
     char *Buffer= malloc(sizeof(char)*1000);
     int TotalSize= 70;
@@ -504,7 +504,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *A
     return ;
 }
 
-void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus){//TODO QuickA and Dirty print remove
+void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus){
 
     char *Buffer= malloc(sizeof(char)*1000);
     struct Knoten *SearchBuffer = NULL;
@@ -557,101 +557,93 @@ void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *Aut
     printMenuHeader(Buffer);
     printMenuItem(" ");
     printTabelHeader(2,"  Ausfahrts/Kreuz Name  ","  Autobahn Km  ");
-    if(meineGefiltertenKnoten[0]->isKreuz==1){
 
-        char *Buffer2;
-        //Findet die autobahn zu der das kreuz führt
-        for(int u=0;u<meineGefiltertenKnoten[0]->numWege;u++){
-            if(AnzahlGefilterte>1) {
-                if (meineGefiltertenKnoten[0]->Wege[u]->nach->ID != meineGefiltertenKnoten[0 + 1]->ID) {
-                    Buffer2 = meineGefiltertenKnoten[0]->Wege[u]->nach->AutobahnName;
-                    break;
+
+    if(SortierModus==1){
+
+        struct OutputBuffer *OBuffer[AnzahlGefilterte];
+
+        for (int x = 0; x < AnzahlGefilterte; x++) {
+
+            OBuffer[x]= malloc(sizeof(struct OutputBuffer*)*2);
+
+
+            if (meineGefiltertenKnoten[x]->isKreuz == 1) {
+
+
+                char *Buffer2;
+                //Findet die autobahn zu der das kreuz führt
+                for (int u = 0; u < meineGefiltertenKnoten[x]->numWege; u++) {
+                    if (meineGefiltertenKnoten[x]->Wege[u]->nach->ID != meineGefiltertenKnoten[x - 1]->ID && meineGefiltertenKnoten[x]->Wege[u]->nach->ID != meineGefiltertenKnoten[x + 1]->ID) {
+                        Buffer2 = meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
+                        break;
+                    }
                 }
-            }else{
-                Buffer2 = meineGefiltertenKnoten[0]->Wege[u]->nach->AutobahnName;
-                break;
+
+                sprintf(Buffer, "%s (%s -> %s)", meineGefiltertenKnoten[x]->Name, meineGefiltertenKnoten[x]->AutobahnName, Buffer2);
+                char *TmpKM = malloc(sizeof(char) * 1000);
+                sprintf(TmpKM, "%f", meineGefiltertenKnoten[x]->AutobahnKM);
+
+                OBuffer[x]->TextName = strdup(Buffer);
+                OBuffer[x]->TextKm= strdup(TmpKM);
+
+                free(TmpKM);
+
+
+            } else {
+
+                sprintf(Buffer, "%f", meineGefiltertenKnoten[x]->AutobahnKM);
+
+                OBuffer[x]->TextName = strdup(meineGefiltertenKnoten[x]->Name);
+                OBuffer[x]->TextKm = strdup(Buffer);
+
+
             }
-        }
-
-
-        sprintf(Buffer,"\"%s\" Kreuz von %s -> %s",meineGefiltertenKnoten[0]->Name,meineGefiltertenKnoten[0]->AutobahnName,Buffer2);
-        char *TmpKM= malloc(sizeof(char)*1000);
-        sprintf(TmpKM, "%f",meineGefiltertenKnoten[0]->AutobahnKM);
-        printTabelRow(2,Buffer,TmpKM);
-        free(TmpKM);
-
-
-    }else{
-        //Erste Ausfahrt Ausgeben
-        sprintf(Buffer,"%f",meineGefiltertenKnoten[0]->AutobahnKM);
-        printTabelRow(2,meineGefiltertenKnoten[0]->Name,Buffer);
-    }
-
-
-    //AUSFAHRTEN
-
-    int x;
-    for(x=1;x<AnzahlGefilterte-1;x++){
-
-
-        if(meineGefiltertenKnoten[x]->isKreuz==1){
-
-
-            char *Buffer2;
-            //Findet die autobahn zu der das kreuz führt
-            for(int u=0;u<meineGefiltertenKnoten[x]->numWege;u++){
-                if(meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x-1]->ID && meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x+1]->ID){
-                    Buffer2=meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
-                    break;
-                }
-            }
-
-            sprintf(Buffer,"\"%s\" Kreuz von %s -> %s",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnName,Buffer2);
-            char *TmpKM= malloc(sizeof(char)*1000);
-            sprintf(TmpKM, "%f",meineGefiltertenKnoten[x]->AutobahnKM);
-            printTabelRow(2,Buffer,TmpKM);
-            free(TmpKM);
-
-
-        }else{
-
-            sprintf(Buffer,"%f",meineGefiltertenKnoten[x]->AutobahnKM);
-            printTabelRow(2,meineGefiltertenKnoten[x]->Name,Buffer);
 
         }
 
-    }
+        qsort(OBuffer,AnzahlGefilterte,sizeof(struct OutputBuffer*),QsortCompareName);
+
+        for(int i=0;i<AnzahlGefilterte;i++){
+            printTabelRow(2,OBuffer[i]->TextName,OBuffer[i]->TextKm);
+            free(OBuffer[i]->TextKm);
+            free(OBuffer[i]->TextName);
+            free(OBuffer[i]);
+        }
 
 
-//ENDKNOTEN
+    }else {
 
 
-    //Letzten Knoten Ausgeben
+        for (int x = 0; x < AnzahlGefilterte; x++) {
 
-    //Wenn es nur einen Knoten Gibt wird kein Endknoten ausgegeben , es gibt ja keinen.
-    if (x>1) {
-        if(meineGefiltertenKnoten[x]->isKreuz==1){
 
-            char *Buffer2;
-            //Findet die autobahn zu der das kreuz führt
-            for(int u=0;u<meineGefiltertenKnoten[x]->numWege;u++){
-                if(meineGefiltertenKnoten[x]->Wege[u]->nach->ID!=meineGefiltertenKnoten[x-1]->ID){
-                    Buffer2=meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
-                    break;
+            if (meineGefiltertenKnoten[x]->isKreuz == 1) {
+
+
+                char *Buffer2;
+                //Findet die autobahn zu der das kreuz führt
+                for (int u = 0; u < meineGefiltertenKnoten[x]->numWege; u++) {
+                    if (meineGefiltertenKnoten[x]->Wege[u]->nach->ID != meineGefiltertenKnoten[x - 1]->ID && meineGefiltertenKnoten[x]->Wege[u]->nach->ID != meineGefiltertenKnoten[x + 1]->ID) {
+                        Buffer2 = meineGefiltertenKnoten[x]->Wege[u]->nach->AutobahnName;
+                        break;
+                    }
                 }
+
+                sprintf(Buffer, "\"%s\" Kreuz von %s -> %s", meineGefiltertenKnoten[x]->Name, meineGefiltertenKnoten[x]->AutobahnName, Buffer2);
+                char *TmpKM = malloc(sizeof(char) * 1000);
+                sprintf(TmpKM, "%f", meineGefiltertenKnoten[x]->AutobahnKM);
+                printTabelRow(2, Buffer, TmpKM);
+                free(TmpKM);
+
+
+            } else {
+
+                sprintf(Buffer, "%f", meineGefiltertenKnoten[x]->AutobahnKM);
+                printTabelRow(2, meineGefiltertenKnoten[x]->Name, Buffer);
+
             }
 
-            sprintf(Buffer,"\"%s\" Kreuz von %s -> %s",meineGefiltertenKnoten[x]->Name,meineGefiltertenKnoten[x]->AutobahnName,Buffer2);
-            char *TmpKM= malloc(sizeof(char)*10);
-            sprintf(TmpKM, "%f",meineGefiltertenKnoten[x]->AutobahnKM);
-            printTabelRow(2,Buffer,TmpKM);
-            free(TmpKM);
-
-
-        }else{
-            //Letzte Ausfahrt Ausgeben
-            sprintf(Buffer,"%f",meineGefiltertenKnoten[x]->AutobahnKM);
-            printTabelRow(2,meineGefiltertenKnoten[x]->Name,Buffer);
         }
     }
 

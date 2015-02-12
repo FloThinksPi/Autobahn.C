@@ -68,6 +68,7 @@ struct UndefArrayHack {
 struct UndefArrayHack *ArrayHack;
 int loaded=0;
 int needReload=0;
+int needFullReload=0;
 int DataChanged=0;
 
 void chop(char *str) {
@@ -137,6 +138,7 @@ int Search(int argc, char *argv[]){
             OnlyConnectKreuze(ArrayHack->meineKnoten, AnzahlKnoten);
 
             needReload=0;
+            needFullReload=1;
             system(CLEAR);
 
             sprintf(Buffer,"%d Datensätze wurden Erfolgreich verarbeitet.",AnzahlKnoten);
@@ -152,7 +154,7 @@ int Search(int argc, char *argv[]){
         int textonly=0;
         int sortName=0;
 
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);//TODO NUR beim einlesen nötig
+        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
         int AutobahnGefunden=0;
         size_t optind;
         for (optind = 0; optind < argc ; optind++) {
@@ -192,6 +194,14 @@ int Search(int argc, char *argv[]){
             }
         }
 
+        if(textonly==0 && sortName==1){
+
+            puts("");
+            printMenuHeaderContinous("  Das sortieren Nach Namen Funtioniert nur im Textmodus (mit parameter -t )  ");
+
+            return 1;
+        }
+
         char *K1 = argv[1];
 
         if(hasparam==0){
@@ -201,7 +211,7 @@ int Search(int argc, char *argv[]){
 
 
 
-        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
                 AutobahnGefunden=1;
@@ -305,7 +315,7 @@ int Edit(int argc, char *argv[]){
 
         }
 
-        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
 
@@ -795,7 +805,7 @@ int Delete(int argc, char *argv[]){
 
         free(buffer);
 
-        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//TODO Atol depriciated
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
 
@@ -1105,7 +1115,7 @@ int MainMenu(int argc, char *argv[]){
         printMenuItem(Buffer);
         printFooter();
         puts("\n");
-    }else if(needReload) {
+    }else if(needFullReload||needReload) {
         system(CLEAR);
         sprintf(Buffer,"Einen Moment ,  Änderungen für %d Daten werden verarbeitet.",AnzahlKnoten);
         printMenuHeader("Wende Änderungen an");
@@ -1116,6 +1126,7 @@ int MainMenu(int argc, char *argv[]){
         ConnectData(ArrayHack->meineKnoten, AnzahlKnoten);
 
         needReload=0;
+        needFullReload=0;
         system(CLEAR);
 
         sprintf(Buffer,"%d Datensätze wurden Erfolgreich verarbeitet.",AnzahlKnoten);

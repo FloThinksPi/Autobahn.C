@@ -3,6 +3,7 @@
 #include "processing.h"
 #include <stdio.h>
 #include "../lib/printui/printui.h"
+#include "dbio.h"
 #include <stdlib.h>
 
 #ifdef WIN32
@@ -66,6 +67,7 @@ void ConfigureCMD(){
 #else
 
 #include <sys/time.h>
+#include <string.h>
 
 
 void ConfigureCMD(){
@@ -94,16 +96,14 @@ int QsortCompareKM(const void *s1, const void *s2) {
     struct Knoten* K1 = *(struct Knoten **) s1;
     struct Knoten* K2 = *(struct Knoten **) s2;
 
-
     return (int) (K1->AutobahnKM - K2->AutobahnKM);
 }
 
 int QsortCompareName(const void *s1, const void *s2) {
-    struct Knoten* K1 = *(struct Knoten **) s1;
-    struct Knoten* K2 = *(struct Knoten **) s2;
+    struct  OutputBuffer* K1 = *(struct OutputBuffer **) s1;
+    struct OutputBuffer* K2 = *(struct OutputBuffer **) s2;
 
-
-    return (int) (K1->AutobahnKM - K2->AutobahnKM);
+    return (strcmp(K1->TextName, K2->TextName));
 }
 
 //Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt

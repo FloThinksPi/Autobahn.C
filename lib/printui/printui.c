@@ -18,7 +18,7 @@
 
 //TODO Püfen ob ausgame nicht zu lang ist als es dürfte , was zu verschiebung der zeichen führt
 //TODO /n löschen wenn win32 da dort /n einen character belegt und deswegen eine neue zeile beginnt.
-//TODO Footer spalten zeichen (vertkal) hinzufügen
+
 
 
 //Code Begin
