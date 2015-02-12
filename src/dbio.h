@@ -19,6 +19,7 @@ int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *Knoten
 char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
 int getNumKnoten();
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
+void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);
 
 //Datei Visualisierung
 void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);

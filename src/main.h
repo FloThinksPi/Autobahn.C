@@ -21,6 +21,6 @@ int MainMenu(int argc, char *argv[]);
 int EditMenu(int argc, char *argv[]);
 int NavMenu(int argc, char *argv[]);
 
-void saveIt();
+int saveIt(int argc, char *argv[]);
 
 #endif

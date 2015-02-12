@@ -68,6 +68,7 @@ struct UndefArrayHack {
 struct UndefArrayHack *ArrayHack;
 int loaded=0;
 int needReload=0;
+int DataChanged=0;
 
 void chop(char *str) {
     size_t p=strlen(str);
@@ -122,6 +123,8 @@ int Search(int argc, char *argv[]){
 
     if(argc>=2&&argc<=4) {
 
+
+
         char *Buffer= malloc(sizeof(char)*1000);
         if(needReload) {
             system(CLEAR);
@@ -131,7 +134,7 @@ int Search(int argc, char *argv[]){
             printFooter();
             puts("\n");
 
-            ConnectData(ArrayHack->meineKnoten, AnzahlKnoten);
+            OnlyConnectKreuze(ArrayHack->meineKnoten, AnzahlKnoten);
 
             needReload=0;
             system(CLEAR);
@@ -325,6 +328,7 @@ int Edit(int argc, char *argv[]){
                         free(Knoten1);
 
                         needReload=1;
+                        DataChanged=1;
                     }
                 }
 
@@ -381,6 +385,7 @@ int Edit(int argc, char *argv[]){
                 free(Knoten2);
 
                 needReload=1;
+                DataChanged=1;
                 return 0;
             }else{
                 struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
@@ -399,6 +404,7 @@ int Edit(int argc, char *argv[]){
                 free(Knoten1);
 
                 needReload=1;
+                DataChanged=1;
                 free(buffer);
                 return 0;
             }
@@ -481,16 +487,7 @@ int Edit(int argc, char *argv[]){
         }
 
 
-        for(int i=0;i<AnzahlKnoten;i++) {
-            if (ArrayHack->meineKnoten[i]->AutobahnKM == f) {
 
-                sprintf(buffer, "  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ", f, ArrayHack->meineKnoten[i]->AutobahnName, ArrayHack->meineKnoten[i]->Name);
-                printMenuHeaderContinous(buffer);
-
-                free(buffer);
-                return 1;
-            }
-        }
 
         char *AutobahnBuffer = argv[2];
 
@@ -510,6 +507,18 @@ int Edit(int argc, char *argv[]){
                     }
                 }
 
+                for(int i=0;i<AnzahlKnoten;i++) {
+                    if (ArrayHack->meineKnoten[i]->AutobahnKM == f && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer)==0) {
+
+                        puts("");
+                        sprintf(buffer, "  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ", f, ArrayHack->meineKnoten[i]->AutobahnName, ArrayHack->meineKnoten[i]->Name);
+                        printMenuHeaderContinous(buffer);
+
+                        free(buffer);
+                        return 1;
+                    }
+                }
+
                 struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
                 Knoten1->ID = ArrayHack->meineKnoten[K1Nummer]->ID;
                 Knoten1->Name = strdup(ArrayHack->meineKnoten[K1Nummer]->Name);
@@ -526,7 +535,9 @@ int Edit(int argc, char *argv[]){
                 free(Knoten1->AutobahnName);
                 free(Knoten1->Name);
                 free(Knoten1);
+
                 needReload=1;
+                DataChanged=1;
             }else{
                 printMenuHeaderContinous("Fehler , Ausfahrt ist ein Kreuz");
             }
@@ -651,24 +662,7 @@ int Edit(int argc, char *argv[]){
             return 1;
         }
 
-        for(int i=0;i<AnzahlKnoten;i++){
-            if(ArrayHack->meineKnoten[i]->AutobahnKM==f){
 
-                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
-                printMenuHeaderContinous(buffer);
-
-                free(buffer);
-                return 1;
-            }
-            if(ArrayHack->meineKnoten[i]->AutobahnKM==ff){
-
-                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",ff,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
-                printMenuHeaderContinous(buffer);
-
-                free(buffer);
-                return 1;
-            }
-        }
 
 
         char *AutobahnBuffer1 = argv[2];
@@ -691,6 +685,26 @@ int Edit(int argc, char *argv[]){
             }
         }
 
+        for(int i=0;i<AnzahlKnoten;i++){
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==f && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer1)==0){
+
+                puts("");
+                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
+
+                free(buffer);
+                return 1;
+            }
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==ff && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer2)==0){
+
+                puts("");
+                sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",ff,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+                printMenuHeaderContinous(buffer);
+
+                free(buffer);
+                return 1;
+            }
+        }
 
 
         int K1Nummer= findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 1);
@@ -731,6 +745,7 @@ int Edit(int argc, char *argv[]){
                 free(Knoten2);
 
                 needReload=1;
+                DataChanged=1;
             }else{
                 printMenuHeaderContinous("   Angegebenes Ziel ist Kein Kreuz   ");
             }
@@ -789,19 +804,21 @@ int Delete(int argc, char *argv[]){
                         if(ArrayHack->meineKnoten[z]->isKreuz==1){
                             //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
 
-                            char *KreuzName=ArrayHack->meineKnoten[z]->Name;
+                            char *KreuzName= strdup(ArrayHack->meineKnoten[z]->Name);
 
                             AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
+                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, KreuzName,0));
+
                             ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
-                            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, KreuzName,1));
-                            ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
-
+                            free(KreuzName);
                             needReload=1;
+                            DataChanged=1;
                         }else{
                             AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
                             ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
                             needReload=1;
+                            DataChanged=1;
                         }
                     }
                 }
@@ -825,11 +842,13 @@ int Delete(int argc, char *argv[]){
                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
 
                needReload=1;
+               DataChanged=1;
                return 0;
            }else{
                AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
                ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
                needReload=1;
+               DataChanged=1;
                return 0;
            }
 
@@ -972,8 +991,9 @@ int New(int argc, char *argv[]){
         }
 
         for(int i=0;i<AnzahlKnoten;i++){
-            if(ArrayHack->meineKnoten[i]->AutobahnKM==f){
+            if(ArrayHack->meineKnoten[i]->AutobahnKM==f && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer)==0 ){
 
+                puts("");
                 sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
                 printMenuHeaderContinous(buffer);
 
@@ -994,16 +1014,20 @@ int New(int argc, char *argv[]){
         for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
         free(Autobahnen);
         free(buffer);
+
         needReload=1;
+        DataChanged=1;
         return 0;
 
     }else if(argc==6){
 
         char *buffer= malloc(sizeof(char)*100);
+        char *buffer2= malloc(sizeof(char)*100);
 
-        char *FirstParam[4]={"new",argv[1],argv[2],argv[3]};
+        sprintf(buffer,"%s\n",argv[3]);
+        char *FirstParam[4]={"new",argv[1],argv[2],buffer};
         char *SecondParam[4]={"NewIgnoreDouble",argv[1],argv[4],argv[5]};
-        sprintf(buffer,"%s\n",argv[1]);
+        sprintf(buffer2,"%s\n",argv[1]);
         char *DeleteParam[2]={"Delete",buffer};
 
         if(New(4, FirstParam)==0){
@@ -1017,7 +1041,10 @@ int New(int argc, char *argv[]){
         }
 
         free(buffer);
-
+        free(buffer2);
+        needReload=1;
+        DataChanged=1;
+        return 0;
     }else{
         puts("\n");
         printMenuHeaderContinous(Typo);
@@ -1152,6 +1179,60 @@ int NavMenu(int argc, char *argv[]){
     return 0;
 }
 
-void saveIt(){
+
+int exit_n(int argc, char *argv[]){
+    exit(0);
+}
+
+int runsave(int argc,char *argv[]){
+
+    char *Buffer= malloc(sizeof(char)*1000);
+
+    system(CLEAR);
+    sprintf(Buffer,"Einen Moment , %d Datensätze werden gespeichert.",AnzahlKnoten);
+    printMenuHeader("Speichere Daten");
+    printMenuItem(Buffer);
+    printFooter();
+    puts("\n");
+
     saveStructToFile(ArrayHack->meineKnoten, AnzahlKnoten);
+
+    system(CLEAR);
+
+    sprintf(Buffer,"%d Datensätze wurden Erfolgreich gespeichert.",AnzahlKnoten);
+    printMenuHeader("Daten Erfolgreich Gespeichert");
+    printMenuItem(Buffer);
+    printFooter();
+    puts("\n");
+
+    free(Buffer);
+    exit(0);
+}
+
+int saveIt(int argc, char *argv[]){
+
+    if(DataChanged) {
+
+        system(CLEAR);
+
+        ResetAllCMDs();
+        SetMenuTitle("Wollen sie ihre Änderungen Speichern?");
+
+        AddCMD("y", "Ja Speichern", runsave);
+        AddCMD("n", "Nicht Speichern", exit_n);
+        AddCMD("ja", "Ja Speichern", runsave);
+        AddCMD("nein", "Nicht Speichern", exit_n);
+        AddCMD("yes", "Ja Speichern", runsave);
+        AddCMD("no", "Nicht Speichern", exit_n);
+        AddCMD("j", "Ja Speichern", runsave);
+        AddCMD("n", "Nicht Speichern", exit_n);
+
+        printMenuHeader("  Wollen sie ihre Änderungen Speichern?  ");
+        printMenuItem("  y oder n für Ja oder Nein  ");
+        printFooter();
+        return 0;
+    }else{
+        exit(0);
+    }
+
 }

@@ -181,10 +181,28 @@ void SetMenuTitle(char *title){
 }
 
 int I_Quit(int argc, char *argv[]){
-    saveIt();
     system(CLEAR);
-    exit(0);
+
+    ResetAllCMDs();
+
+    SetMenuTitle("Wirklich Beenden?");
+
+    AddCMD("y", "Ja Beenden", saveIt);
+    AddCMD("n", "Nicht Beenden", MainMenu);
+    AddCMD("ja", "Ja Beenden", saveIt);
+    AddCMD("nein", "Nicht Beenden", MainMenu);
+    AddCMD("yes", "Ja Beenden", saveIt);
+    AddCMD("no", "Nicht Beenden", MainMenu);
+    AddCMD("j", "Ja Beenden", saveIt);
+    AddCMD("n", "Nicht Beenden", MainMenu);
+
+    printMenuHeader("  Wollen sie das Programm wirklich Beenden?  ");
+    printMenuItem("  y oder n für Ja oder Nein  ");
+    printFooter();
+
 }
+
+
 int I_Clear(int argc, char *argv[]){
     system(CLEAR);
 }
