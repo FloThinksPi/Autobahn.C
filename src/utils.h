@@ -17,7 +17,8 @@ void ConfigureCMD();
 
 double get_time();
 int CountUTF8String(char *s);
-int QsortCompareKM(const void *s1, const void *s2);
+int QsortCompareNameKnoten(const void *s1, const void *s2);
+int QsortCompareKMKnoten(const void *s1, const void *s2);
 int QsortCompareName(const void *s1, const void *s2);
 int strcompCaseInsensitive(char const *a, char const *b);
 double my_round(double x, unsigned int digits);

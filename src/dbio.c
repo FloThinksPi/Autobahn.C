@@ -11,17 +11,16 @@
 #include "utils.h"
 
 #ifdef WIN32
-char* FILEPATH="data\\knoten.csv";
-#elif __linux
-char* FILEPATH="data/knoten.csv";
-#elif __APPLE__
-char* FILEPATH="data/knoten.csv";
+char* FILEPATH="knoten.csv";
+#else
+char* FILEPATH="knoten.csv";
 #endif
 
 const int ZeilenLeange=300;//Maximale länge einer zeile im dokument
-const int Datenleange=50;//Maximale länge eines Datensatzes in einer zeile ( durch kommas getrennter bereich)
 
 void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knoten2,double leange){
+
+    //Verknüpft Knoten1 mit Knoten2 mit leange als Länge , bidirektional d.h. in beide richtungen.
 
     int numWegezuKnoten1 = meineKnoten[Knoten1]->numWege;
     int numWegezuKnoten2 = meineKnoten[Knoten2]->numWege;
@@ -47,14 +46,14 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten[],int Knoten1,int Knote
 
 }
 
-int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicherplatz Arrayhack->meineknoten richtig belegt wird
+int getNumKnoten(){
 
-    //ZÄHLT ANZAHL ABFAHRTEN
+    //Öffnet Datei
     FILE *fp = fopen(FILEPATH, "r");
     if (fp == NULL) {
         return 0;
     }
-    //Datei zeilenweise lesen
+    //Datei zeilenweise lesen und hochzählen
     int countlines=0;
     int ch;
 
@@ -68,22 +67,29 @@ int getNumKnoten(){//Muss vor dem laden der daten geschegen , damit der speicher
     }
     fclose(fp);
 
+    //gezählte zeilen ausgeben = anzahl Datensätze
     return countlines;
 }
 
-void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){//TODO SPEED UP THIS FUNCTION
+void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){
 
-    for (int i = 0; i < AnzahlKnoten; ++i)
+    //Sortiert Daten nach Namen
+    qsort(meineKnoten, AnzahlKnoten, sizeof(struct Knoten*), QsortCompareNameKnoten);
+
+    //Geht Daten durch , vergleicht immer nächsten datensatz mit jetzigem auf gleichen namen und verknüpft diese zu einem Kreuz.
+    for (int i = 0; i < AnzahlKnoten-1; ++i)//Letztter punkt muss nicht verknüpft werden da es schon voher geschehen ist da immer i+1 verknüpft wird
     {
-        for (int j = i + 1; j < AnzahlKnoten; ++j)
-            if (strcmp(meineKnoten[i]->Name,meineKnoten[j]->Name)==0)
-            {
-                ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
+        if(meineKnoten[i]->isKreuz==0 && meineKnoten[i+1]->isKreuz==0){
+            if(strcmp(meineKnoten[i+1]->Name,meineKnoten[i]->Name)==0){
+                ErstelleWegBidirektional(meineKnoten, i, i+1, 0.00000001);
                 meineKnoten[i]->isKreuz=1;
-                meineKnoten[j]->isKreuz=1;
-                break;
+                meineKnoten[i+1]->isKreuz=1;
             }
+        }
     }
+
+    //Sortiert Wieder Nach AutobahnKilometer damit der Rest des prorgamms weiter funktioniert
+    qsort(meineKnoten, AnzahlKnoten, sizeof(struct Knoten*), QsortCompareKMKnoten);
 
 }
 

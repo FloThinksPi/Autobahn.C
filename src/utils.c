@@ -92,12 +92,20 @@ double get_time()
 #endif
 
 
-int QsortCompareKM(const void *s1, const void *s2) {
+int QsortCompareKMKnoten(const void *s1, const void *s2) {
     struct Knoten* K1 = *(struct Knoten **) s1;
     struct Knoten* K2 = *(struct Knoten **) s2;
 
     return (int) (K1->AutobahnKM - K2->AutobahnKM);
 }
+
+int QsortCompareNameKnoten(const void *s1, const void *s2) {
+    struct Knoten* K1 = *(struct Knoten **) s1;
+    struct Knoten* K2 = *(struct Knoten **) s2;
+
+    return (int) (strcmp(K1->Name, K2->Name));
+}
+
 
 int QsortCompareName(const void *s1, const void *s2) {
     struct  OutputBuffer* K1 = *(struct OutputBuffer **) s1;
