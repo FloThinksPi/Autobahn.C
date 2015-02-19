@@ -13,7 +13,7 @@
 #ifdef WIN32
 char* FILEPATH="knoten.csv";
 #else
-char* FILEPATH="knoten.csv";
+char* FILEPATH="knoten_viele.csv";
 #endif
 
 const int ZeilenLeange=300;//Maximale länge einer zeile im dokument
@@ -71,26 +71,64 @@ int getNumKnoten(){
     return countlines;
 }
 
-void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){
+void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){//TODO SPEED UP n² runtime
 
-    //Sortiert Daten nach Namen
-    qsort(meineKnoten, AnzahlKnoten, sizeof(struct Knoten*), QsortCompareNameKnoten);
-
-    //Geht Daten durch , vergleicht immer nächsten datensatz mit jetzigem auf gleichen namen und verknüpft diese zu einem Kreuz.
-    for (int i = 0; i < AnzahlKnoten-1; ++i)//Letztter punkt muss nicht verknüpft werden da es schon voher geschehen ist da immer i+1 verknüpft wird
+    for (int i = 0; i < AnzahlKnoten; ++i)
     {
-        if(meineKnoten[i]->isKreuz==0 && meineKnoten[i+1]->isKreuz==0){
-            if(strcmp(meineKnoten[i+1]->Name,meineKnoten[i]->Name)==0){
-                ErstelleWegBidirektional(meineKnoten, i, i+1, 0.00000001);
-                meineKnoten[i]->isKreuz=1;
-                meineKnoten[i+1]->isKreuz=1;
+
+        for (int j = i + 1; j < AnzahlKnoten; ++j) {
+            if (i == j)break;
+
+            if (strcmp(meineKnoten[i]->Name, meineKnoten[j]->Name) == 0) {
+                ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
+                meineKnoten[i]->isKreuz = 1;
+                meineKnoten[j]->isKreuz = 1;
+                break;
             }
         }
+
     }
+}
 
-    //Sortiert Wieder Nach AutobahnKilometer damit der Rest des prorgamms weiter funktioniert
-    qsort(meineKnoten, AnzahlKnoten, sizeof(struct Knoten*), QsortCompareKMKnoten);
+void OnlyREConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten){//TODO SPEED UP n² runtime
 
+    for (int i = 0; i < AnzahlKnoten; ++i)
+    {
+        if(meineKnoten[i]->isKreuz==1) {
+
+            for (int j = i + 1; j < AnzahlKnoten; ++j) {
+                if (i == j)break;
+
+                if (strcmp(meineKnoten[i]->Name, meineKnoten[j]->Name) == 0) {
+                    ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
+                    meineKnoten[i]->isKreuz = 1;
+                    meineKnoten[j]->isKreuz = 1;
+                    break;
+                }
+            }
+
+        }
+    }
+}
+
+void OnlyConnectEinKreuz(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilKreuz){//TODO SPEED UP n² runtime
+
+    for (int i = 0; i < AnzahlKnoten; ++i)
+    {
+        if(strcmp(meineKnoten[i]->Name, ZeilKreuz) == 0) {
+
+            for (int j = i + 1; j < AnzahlKnoten; ++j) {
+
+                if (strcmp(meineKnoten[i]->Name, meineKnoten[j]->Name) == 0) {
+                    ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
+                    meineKnoten[i]->isKreuz = 1;
+                    meineKnoten[j]->isKreuz = 1;
+                    break;
+                }
+            }
+
+        }
+    }
 }
 
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){

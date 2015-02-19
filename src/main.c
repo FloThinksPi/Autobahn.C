@@ -135,7 +135,7 @@ int Search(int argc, char *argv[]){
             printFooter();
             puts("\n");
 
-            OnlyConnectKreuze(ArrayHack->meineKnoten, AnzahlKnoten);
+            OnlyREConnectKreuze(ArrayHack->meineKnoten, AnzahlKnoten);
 
             needReload=0;
             needFullReload=1;
@@ -1049,6 +1049,8 @@ int New(int argc, char *argv[]){
             }
 
         }
+
+        OnlyConnectEinKreuz(ArrayHack->meineKnoten, AnzahlKnoten, argv[1]);
 
         free(buffer);
         free(buffer2);

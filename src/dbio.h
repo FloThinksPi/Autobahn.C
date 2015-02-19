@@ -26,6 +26,8 @@ char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
 int getNumKnoten();
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
 void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);
+void OnlyREConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);//Faster weil verknüpft nur alte Knoten neu
+void OnlyConnectEinKreuz(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilKreuz);
 
 //Datei Visualisierung
 void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
