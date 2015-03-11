@@ -13,7 +13,7 @@
 #ifdef WIN32
 char* FILEPATH="knoten.csv";
 #else
-char* FILEPATH="knoten_viele.csv";
+char* FILEPATH="knoten.csv";
 #endif
 
 const int ZeilenLeange=300;//Maximale länge einer zeile im dokument

@@ -70,6 +70,7 @@ int loaded=0;
 int needReload=0;
 int needFullReload=0;
 int DataChanged=0;
+int MAX_AutobahnNamenLeange=10;
 
 void chop(char *str) {
     size_t p=strlen(str);
@@ -78,7 +79,13 @@ void chop(char *str) {
 
 int FindWay(int argc, char *argv[]){
 
-    char *Typo="Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
+    char *Typo="    Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)]    ";
+
+    if(CountUTF8String(argv[1])>=MAX_AutobahnNamenLeange || CountUTF8String(argv[2])>=MAX_AutobahnNamenLeange){
+        printMenuHeader("Eingabe zu lang!");
+        printFooter();
+        return 1;
+    }
 
     if(argc>=3&&argc<=4) {
 
@@ -124,7 +131,11 @@ int Search(int argc, char *argv[]){
 
     if(argc>=2&&argc<=4) {
 
-
+        if(CountUTF8String(argv[1])>=MAX_AutobahnNamenLeange || CountUTF8String(argv[2])>=MAX_AutobahnNamenLeange|| CountUTF8String(argv[3])>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Eingabe zu lang!");
+            printFooter();
+            return 1;
+        }
 
         char *Buffer= malloc(sizeof(char)*1000);
         if(needReload) {
@@ -157,7 +168,13 @@ int Search(int argc, char *argv[]){
         char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
         int AutobahnGefunden=0;
         size_t optind;
-        for (optind = 0; optind < argc ; optind++) {
+
+        if(argv[1][0]=='-'&&argv[1][1]!='h'){
+            printMenuHeaderContinous(Typo);
+            return 1;
+        }
+
+        for (optind = 1; optind < argc ; optind++) {
             if(argv[optind][0] == '-') {
                 switch (argv[optind][1]) {
                     case 't':
@@ -189,7 +206,7 @@ int Search(int argc, char *argv[]){
                         return 1;
                     default:
                         printMenuHeaderContinous(Typo);
-                        return 0;
+                        return 1;
                 }
             }
         }
@@ -261,6 +278,12 @@ int Edit(int argc, char *argv[]){
         char *K2 = argv[2];
 
         chop(K2);
+
+        if(CountUTF8String(K1)>=MAX_AutobahnNamenLeange || CountUTF8String(K2)>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Autobahn Name zu lang!");
+            printFooter();
+            return 1;
+        }
 
         char* buffer= malloc(sizeof(char)*1000);
 
@@ -431,6 +454,13 @@ int Edit(int argc, char *argv[]){
         char *lastparam = argv[3];
         chop(lastparam);
 
+        if(CountUTF8String(argv[1])>=MAX_AutobahnNamenLeange || CountUTF8String(argv[2])>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Eingabe zu lang!");
+            printFooter();
+            return 1;
+        }
+
+
         char *buffer = malloc(sizeof(char) * 1000);
 
         for (int i = 0; i < CountUTF8String(argv[1]); i++) {
@@ -559,6 +589,12 @@ int Edit(int argc, char *argv[]){
         char *lastparam = argv[5];
         chop(lastparam);
 
+        if(CountUTF8String(argv[1])>=MAX_AutobahnNamenLeange || CountUTF8String(argv[2])>=MAX_AutobahnNamenLeange|| CountUTF8String(argv[4])>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Eingabe zu lang!");
+            printFooter();
+            return 1;
+        }
+
         char *buffer = malloc(sizeof(char) * 1000);
 
         for (int i = 0; i < CountUTF8String(argv[1]); i++) {
@@ -593,7 +629,7 @@ int Edit(int argc, char *argv[]){
 
         for (int i = 0; i < CountUTF8String(argv[4]); i++) {
 
-            if (isalnum((int) argv[2][i]) == 0 && argv[2][i] != '_' && argv[2][i] != '-' && argv[2][i] != '.') {
+            if (isalnum((int) argv[4][i]) == 0 && argv[4][i] != '_' && argv[4][i] != '-' && argv[4][i] != '.') {
 
                 sprintf(buffer, "  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen", argv[2][i]);
                 printMenuHeader(buffer);
@@ -777,7 +813,7 @@ int Edit(int argc, char *argv[]){
 
 int Delete(int argc, char *argv[]){
 
-    char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
+    char *Typo="          Usage: rm [KnotenName] [-h(Hilfe)]          ";
     if(argc==2) {
 
         char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
@@ -785,6 +821,18 @@ int Delete(int argc, char *argv[]){
         char *K1 = argv[1];
 
         chop(K1);
+
+        if(K1[0]=='-'&&K1[1]=='h'){
+            printMenuHeader("Hilfe: TODO");//TODO DELETE HELP SCHREIBEN
+            printFooter();
+            return 1;
+        }
+
+        if(CountUTF8String(K1)>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Eingabe zu lang!");
+            printFooter();
+            return 1;
+        }
 
         char* buffer= malloc(sizeof(char)*1000);
 
@@ -884,6 +932,12 @@ int New(int argc, char *argv[]){
 
         char *lastparam=argv[3];
         chop(lastparam);
+
+        if(CountUTF8String(argv[1])>=MAX_AutobahnNamenLeange || CountUTF8String(argv[2])>=MAX_AutobahnNamenLeange){
+            printMenuHeader("Eingabe Name zu lang!");
+            printFooter();
+            return 1;
+        }
 
         char *buffer = malloc(sizeof(char)*1000);
 
