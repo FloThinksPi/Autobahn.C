@@ -52,7 +52,7 @@ unsigned int levenshtein ( char *word1,  char *word2) {
             current = next;
         }
         /* keep the final cost at the bottom of the column */
-        v[len2] = next; 
+        v[len2] = next;
     }
     free(v);
     return next;
