@@ -92,21 +92,6 @@ double get_time()
 #endif
 
 
-int QsortCompareKMKnoten(const void *s1, const void *s2) {
-    struct Knoten* K1 = *(struct Knoten **) s1;
-    struct Knoten* K2 = *(struct Knoten **) s2;
-
-    return (int) (K1->AutobahnKM - K2->AutobahnKM);
-}
-
-int QsortCompareNameKnoten(const void *s1, const void *s2) {
-    struct Knoten* K1 = *(struct Knoten **) s1;
-    struct Knoten* K2 = *(struct Knoten **) s2;
-
-    return (int) (strcmp(K1->Name, K2->Name));
-}
-
-
 int QsortCompareName(const void *s1, const void *s2) {
     struct  OutputBuffer* K1 = *(struct OutputBuffer **) s1;
     struct OutputBuffer* K2 = *(struct OutputBuffer **) s2;
@@ -140,4 +125,21 @@ double my_round(double x, unsigned int digits) {
     else {
         return x;
     }
+}
+
+void chop(char *str) {
+    size_t p=strlen(str);
+    str[p-1] = '\0';
+}
+
+int isValidKnotenName(char *Name){
+
+}
+
+int isValidAutobahnName(char *Name){
+
+}
+
+int isValidAutobahnKM(double KM){
+
 }

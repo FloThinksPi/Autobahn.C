@@ -59,24 +59,20 @@ int main (int argc, char *argv[])
 
 int AnzahlKnoten;
 
-//Struct Hack dient um ein Globales undefiniert großes array zu schaffen , erst seit C99 Erlaubt.
+//Struct Hack dient um ein Globales undefiniert dynamisch großes array zu schaffen , erst seit C99 Erlaubt.
 struct UndefArrayHack {
-    int placeholder;
-    struct Knoten *meineKnoten[];
+    int placeholder;//Muss vorhanden sein
+    struct Knoten *meineKnoten[];//Dynamisch großes Array
 };
 
 struct UndefArrayHack *ArrayHack;
-int loaded=0;
-int needReload=0;
-int needFullReload=0;
-int DataChanged=0;
 
-void chop(char *str) {
-    size_t p=strlen(str);
-    str[p-1] = '\0';
-}
+int loaded=0;//Daten Geladen ?
+int needReload=0;//Müssen Daten (Teilweise) Neu geladen Werden?
+int needFullReload=0;//Müssen Daten Komplett neu Verarbeitet Werden?
+int DataChanged=0;//Hat sich die Datenbank Verändert?
 
-int FindWay(int argc, char *argv[]){
+int FindWay(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu getriggert wird === Navigationsbefehl
 
     char *Typo="Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
 
