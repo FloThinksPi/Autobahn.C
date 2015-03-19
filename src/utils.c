@@ -134,12 +134,84 @@ void chop(char *str) {
 
 int isValidKnotenName(char *Name){
 
+    char* buffer= malloc(sizeof(char)*1000);
+
+    for(int i=0;i< CountUTF8String(Name);i++){
+
+        if(isalnum((int)Name[i])==0 && Name[i]!='_' && Name[i]!='-' && Name[i]!='.'){
+
+            sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",Name[i]);
+            printMenuHeader(buffer);
+            printMenuItem("Erlaubte zeichen [A-Z] [a-z] [0-9] '_' '.' ");
+            printFooter();
+
+            free(buffer);
+            return 1;
+        }
+
+    }
+
+    free(buffer);
+
 }
 
 int isValidAutobahnName(char *Name){
 
+    char* buffer= malloc(sizeof(char)*1000);
+
+    for(int i=0;i< CountUTF8String(Name);i++){
+
+        if(isalnum((int)Name[i])==0 && Name[i]!='_' && Name[i]!='.'){
+
+            sprintf(buffer,"  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen",Name[i]);
+            printMenuHeader(buffer);
+            printMenuItem("Erlaubte zeichen [A-Z] [a-z] [0-9] '_' '.' ");
+            printFooter();
+
+            free(buffer);
+            return 1;
+        }
+
+    }
+
+    free(buffer);
+
 }
 
-int isValidAutobahnKM(double KM){
+int isValidAutobahnKM(char *KM){
+
+    char* buffer= malloc(sizeof(char)*1000);
+    double f = atof(KM);
+    sprintf(buffer, "%.2f", f);
+
+    while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {
+        if (buffer[strlen(buffer) - 1] == '.') {
+            chop(buffer);
+            break;
+        } else {
+            chop(buffer);
+        }
+
+    }
+
+    if (strcmp(buffer, KM) == 0) {
+
+        if (f >= 1000000000 || f <= -1000000000) {
+            puts("");
+            printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
+            printFooter();
+            free(buffer);
+            return 1;
+        }
+
+    } else {
+        puts("");
+        printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
+        printFooter();
+        free(buffer);
+        return 1;
+    }
+
+    free(buffer);
 
 }
