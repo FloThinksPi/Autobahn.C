@@ -237,6 +237,30 @@ void OnlyConnectEinKreuz(struct Knoten *meineKnoten[],int AnzahlKnoten,char *Zei
     }
 }
 
+void OnlyConnectEineAutobahn(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilAutobahn){//Verbindet Eine Ausfahrt mit einer gleichen Namens miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
+
+    for (int i = 0; i < AnzahlKnoten; ++i)
+    {
+        if(strcmp(meineKnoten[i]->AutobahnName, ZeilAutobahn) == 0) {
+
+            int lastNode=INT_MAX;
+
+            for(int u=0;u<AnzahlKnoten;u++){
+
+                if(strcmp(meineKnoten[u]->AutobahnName, ZeilAutobahn)==0){
+                    if(lastNode!=INT_MAX){
+                        ErstelleWegBidirektional(meineKnoten, lastNode, u, meineKnoten[u]->AutobahnKM - meineKnoten[lastNode]->AutobahnKM);
+                    }
+                    lastNode=u;
+                }
+
+            }
+
+        }
+    }
+}
+
+
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){//Verbindet alle Ausfahrten mit der Nächsten auf der Gleichen Autobahn , geht dann Autobahn für Autobahn durch , ergebniss = voneinander getrennte autobahnen , die Kreuze müssen separat verknüpft werden.
 
     //Voraussetzung ist ein nach Autobahnkm sortiertes Struct
@@ -250,12 +274,11 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){//Verbindet alle
     //Lese Welche Autobahenen es gibt
     char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
 
-    //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze.csv , sie haben am anfang nur zwei wege , also wie normale abfahrten
+    //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze, sie haben am anfang nur zwei wege , also wie normale abfahrten
     for(int x=1;x<=atoi(Autobahnen[0]);x++){
 
 
         int lastNode=INT_MAX;
-
 
         for(int u=0;u<AnzahlKnoten;u++){
 
@@ -272,7 +295,9 @@ void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten){//Verbindet alle
 
     OnlyConnectKreuze(meineKnoten, AnzahlKnoten);
 
-
+    int AnzAutobahnen=atoi(Autobahnen[0]);
+    for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
+    free(Autobahnen);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,7 +338,7 @@ int DeleteKnoten(struct Knoten *meineKnoten[], int AnzahlKnoten, int Ausfahrt){/
 int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM){ // Neuen Datensatz Erstellen
 
 
-    int zielSpeicher= INT_MAX;
+    int zielSpeicher = INT_MAX;
 
     for(int i=0;i<AnzahlKnoten;i++){
         if(meineKnoten[i]->AutobahnKM>AutobahnKM){
@@ -329,7 +354,7 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
         meineKnoten[i]->ID=i;
     }
 
-
+    //TODO FREE
 
     meineKnoten[zielSpeicher]=malloc(sizeof(struct Knoten));
     meineKnoten[zielSpeicher]->besucht= false;
@@ -356,9 +381,6 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
         meineKnoten[i]->numWege=0;
     }
 
-    //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
-    //ConnectData(meineKnoten, AnzahlKnoten+1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
-
     return AnzahlKnoten+1;
 }
 
@@ -370,10 +392,9 @@ int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* Aut
 
 char**GetAutobahnen(struct Knoten *meineKnoten[], int AnzahlKnoten) { // Gibt eine liste der existierenden Autobahnen zurück.
 
-
     //Durchsucht alle knoten , wenn die autobahn des knotens noch nicht in der liste zum ausgeben ist dann wird diese hinzugefügt.
 
-    char** Autobahnen = malloc(sizeof(char*)*AnzahlKnoten+1);//Es können maximal so viele autobahnen wie ausfahrten existieren.
+    char** Autobahnen = malloc(sizeof(char*)*(AnzahlKnoten+1));//Es können maximal so viele autobahnen wie ausfahrten existieren.
     int AnzahlAutobahnen=0;
 
     for(int i=0;i<AnzahlKnoten;i++){
@@ -385,7 +406,7 @@ char**GetAutobahnen(struct Knoten *meineKnoten[], int AnzahlKnoten) { // Gibt ei
         }
 
         if(inArray==0){
-            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (strlen(meineKnoten[i]->AutobahnName)+1));
+            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (strlen(meineKnoten[i]->AutobahnName))+1);
             memcpy(Autobahnen[AnzahlAutobahnen+1], meineKnoten[i]->AutobahnName, strlen(meineKnoten[i]->AutobahnName)+1);
             AnzahlAutobahnen++;
         }
@@ -395,7 +416,7 @@ char**GetAutobahnen(struct Knoten *meineKnoten[], int AnzahlKnoten) { // Gibt ei
     Autobahnen[0]=malloc(sizeof(char)*10);//Speichern anzahl autobahnen im ersten feld
     sprintf(Autobahnen[0],"%d",AnzahlAutobahnen);
 
-    Autobahnen = realloc(Autobahnen, sizeof(char*)*AnzahlAutobahnen+1);//Speicher verkleinern auf benötigten speicher
+    Autobahnen = realloc(Autobahnen, sizeof(char*)*(AnzahlAutobahnen+1));//Speicher verkleinern auf benötigten speicher
 
     return Autobahnen;
 }

@@ -14,6 +14,14 @@
 #define CLEAR "clear"
 #endif
 
+#include "dbio.h"
+
+//Struct Hack dient um ein Globales undefiniert dynamisch groﬂes array zu schaffen , erst seit C99 Erlaubt.
+struct UndefArrayHack {
+    int placeholder;//Muss vorhanden sein
+    struct Knoten *meineKnoten[];//Dynamisch groﬂes Array
+};
+
 int main (int argc, char *argv[]);
 
 

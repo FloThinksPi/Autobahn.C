@@ -127,7 +127,7 @@ double my_round(double x, unsigned int digits) {
     }
 }
 
-void chop(char *str) {
+void chop(char *str) {//Löscht letztes zeichen eines "Strings" , wird meist dazu benutzt um bei befehlen wie "edit ..." beim letzten parameter den zeilenumbruch zu löschen.
     size_t p=strlen(str);
     str[p-1] = '\0';
 }
@@ -135,6 +135,15 @@ void chop(char *str) {
 int isValidKnotenName(char *Name){
 
     char* buffer= malloc(sizeof(char)*1000);
+
+    if(isdigit(Name[0])){
+        puts(" ");
+        sprintf(buffer,"  Fehler , Der Ausfahrts Name muss mit einem Buchstaben beginnen");
+        printMenuHeader(buffer);
+
+        free(buffer);
+        return 1;
+    }
 
     for(int i=0;i< CountUTF8String(Name);i++){
 
@@ -158,6 +167,15 @@ int isValidKnotenName(char *Name){
 int isValidAutobahnName(char *Name){
 
     char* buffer= malloc(sizeof(char)*1000);
+
+    if(isdigit(Name[0])){
+        puts(" ");
+        sprintf(buffer,"  Fehler , Der Autobahn Name muss mit einem Buchstaben beginnen");
+        printMenuHeader(buffer);
+
+        free(buffer);
+        return 1;
+    }
 
     for(int i=0;i< CountUTF8String(Name);i++){
 
