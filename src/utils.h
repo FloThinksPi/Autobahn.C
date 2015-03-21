@@ -22,4 +22,8 @@ int strcompCaseInsensitive(char const *a, char const *b);
 double my_round(double x, unsigned int digits);
 void chop(char *str);
 
+int isValidKnotenName(char *Name);
+int isValidAutobahnName(char *Name);
+int isValidAutobahnKM(char *KM);
+
 #endif

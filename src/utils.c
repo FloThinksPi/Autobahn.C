@@ -138,9 +138,9 @@ int isValidKnotenName(char *Name){
 
     for(int i=0;i< CountUTF8String(Name);i++){
 
-        if(isalnum((int)Name[i])==0 && Name[i]!='_' && Name[i]!='-' && Name[i]!='.'){
+        if(isalnum((int)Name[i])==0 && Name[i]!='_' && Name[i]!='.'){
 
-            sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",Name[i]);
+            sprintf(buffer,"  Fehler , Der Ausfahrts Name enthält '%c' , ein Verbotenes Zeichen",Name[i]);
             printMenuHeader(buffer);
             printMenuItem("Erlaubte zeichen [A-Z] [a-z] [0-9] '_' '.' ");
             printFooter();
@@ -152,7 +152,7 @@ int isValidKnotenName(char *Name){
     }
 
     free(buffer);
-
+    return 0;
 }
 
 int isValidAutobahnName(char *Name){
@@ -175,7 +175,7 @@ int isValidAutobahnName(char *Name){
     }
 
     free(buffer);
-
+    return 0;
 }
 
 int isValidAutobahnKM(char *KM){
@@ -213,5 +213,5 @@ int isValidAutobahnKM(char *KM){
     }
 
     free(buffer);
-
+    return 0;
 }

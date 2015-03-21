@@ -19,14 +19,16 @@ struct OutputBuffer
 //FileIO
 int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
 void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten);
-
-//Datei Suche/Processing
-int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar);
-char** loadAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten);
 int getNumKnoten();
+
+//Daten Suche
+int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar);
+char**GetAutobahnen(struct Knoten *meineKnoten[], int AnzahlKnoten);
+
+//Daten Verarbeitung
 void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
 void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);
-void OnlyREConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);//Faster weil verknüpft nur alte Knoten neu
+void OnlyREConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);//Nur bereits existente Knoten Werden verknüpft
 void OnlyConnectEinKreuz(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilKreuz);
 
 //Datei Visualisierung

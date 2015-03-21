@@ -74,7 +74,7 @@ int DataChanged=0;//Hat sich die Datenbank Verändert?
 
 int FindWay(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu getriggert wird === Navigationsbefehl
 
-    char *Typo="Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)] \n";
+    char *Typo="   Usage: nav [StartAusfahrt] [ZielAusfahrt] [-h(hilfe)]   ";
 
     if(argc>=3&&argc<=4) {
 
@@ -85,11 +85,11 @@ int FindWay(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu 
                 case 'h':
                     hasparam=1;
                     puts("\n");
-                    printMenuItem(Typo);
+                    printMenuHeaderContinous(Typo);
                     break;
                 default:
                     puts("\n");
-                    printMenuItem(Typo);
+                    printMenuHeaderContinous(Typo);
             }
         }
 
@@ -100,6 +100,10 @@ int FindWay(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu 
             chop(K2);
         }
 
+        if(isValidKnotenName(K2))return 1;
+        if(isValidKnotenName(K1))return 1;
+
+
         int K1Nummer=findeKnotenByName(ArrayHack->meineKnoten,AnzahlKnoten,K1,1);
         int K2Nummer=findeKnotenByName(ArrayHack->meineKnoten,AnzahlKnoten,K2,1);
 
@@ -109,20 +113,22 @@ int FindWay(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu 
 
     }else{
         puts("\n");
-        printMenuItem(Typo);
+        printMenuHeaderContinous(Typo);
     }
 
 }
 
-int Search(int argc, char *argv[]){
 
-    char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
+int Search(int argc, char *argv[]){// LS befehl , zeigt ausfahrten bzw autobahnen.
+
+    char *Typo="   Usage: ls [KnotenName] [-tn(Optional)]   ";
 
     if(argc>=2&&argc<=4) {
 
 
 
         char *Buffer= malloc(sizeof(char)*1000);
+
         if(needReload) {
             system(CLEAR);
             sprintf(Buffer,"Einen Moment ,  Änderungen für %d Daten werden verarbeitet.",AnzahlKnoten);
@@ -150,7 +156,7 @@ int Search(int argc, char *argv[]){
         int textonly=0;
         int sortName=0;
 
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
         int AutobahnGefunden=0;
         size_t optind;
         for (optind = 0; optind < argc ; optind++) {
@@ -180,6 +186,9 @@ int Search(int argc, char *argv[]){
                         printMenuItem("Geben Sie ls [Stadt/Kreuzname] ein (z.B. 'ls Heilbronn'),");
                         printMenuItem("um die Autobahn auf der sich die Stadt oder das Kreuz befindet, anzeigen zu lassen.");
                         printMenuItem("Es werden alle Städte und Kreuze mit dem Abstand zum Anfang der Autobahn angezeigt.");
+                        printMenuItem("-t Zeigt die Autobahn in einer Tabelle (Kompakte Ansicht)");
+                        printMenuItem("-n Sortiert die Ausgabe nach Namen (Funktioniert nur mit -t)");
+                        printMenuItem("ls -a Zeigt alle Autobahnen die es gibt.");
                         printMenuItem("");
                         printFooter();
                         return 1;
@@ -193,7 +202,7 @@ int Search(int argc, char *argv[]){
         if(textonly==0 && sortName==1){
 
             puts("");
-            printMenuHeaderContinous("  Das sortieren Nach Namen Funtioniert nur im Textmodus (mit parameter -t )  ");
+            printMenuHeaderContinous("  Das sortieren Nach Namen Funtioniert nur im TabellenModus (mit parameter -t )  ");
 
             return 1;
         }
@@ -204,10 +213,9 @@ int Search(int argc, char *argv[]){
             chop(K1);
         }
 
+        if(isValidKnotenName(K1))return 1;
 
-
-
-        for(int x=1;x<=atoi(Autobahnen[0]);x++) {
+        for(int x=1;x<=atoi(Autobahnen[0]);x++) {//Finde Autobahn
 
             if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
                 AutobahnGefunden=1;
@@ -220,7 +228,7 @@ int Search(int argc, char *argv[]){
 
         }
 
-        if(!AutobahnGefunden) {
+        if(!AutobahnGefunden) {//Wenn die Autobahn nicht gefunden wurde suche ob es ein Knoten ist , wenn nicht
 
             int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1,1);
 
@@ -237,7 +245,6 @@ int Search(int argc, char *argv[]){
         }
 
 
-
     }else{
         puts("\n");
         printMenuHeaderContinous(Typo);
@@ -245,12 +252,14 @@ int Search(int argc, char *argv[]){
 
 }
 
-int Edit(int argc, char *argv[]){
+int Edit(int argc, char *argv[]){//Todo Help + Ausgabe + GEHT NICHT FIXEN
+
+    char *Typo="   Usage(Umbenennung(Auch Autobahnen)): edit [AlterName] [NeuerName]";
+    char *TypoA="   Usage(Ausfahrt):                     edit [KnotenName] [Autobahn] [KM]";
+    char *TypoK="   Usage(Kreuz):                        edit [KreuzName] [AutobahnName1] [KM1] [AutobahnName2] [KM2]";
 
 
-    char *Typo="          Usage: edit [KnotenName] [-tn(Optional)]          ";
-
-    if(argc==3) {
+    if(argc==3) {//Umbenennung (edit [AlterName] [NeuerName]) //TODO Umbenennung geht nicht
 
 
         char *K1 = argv[1];
@@ -260,46 +269,18 @@ int Edit(int argc, char *argv[]){
 
         char* buffer= malloc(sizeof(char)*1000);
 
-        for(int i=0;i< CountUTF8String(K1);i++){
-
-            if(isalnum((int)K1[i])==0 && K1[i]!='_' && K1[i]!='-' && K1[i]!='.'){
-
-                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        for(int i=0;i< CountUTF8String(K2);i++){
-
-            if(isalnum((int)K2[i])==0 && K2[i]!='_' && K2[i]!='-' && K2[i]!='.'){
-
-                sprintf(buffer,"  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen",argv[1][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
+        if(isValidKnotenName(K1)==0)return 1;
+        if(isValidKnotenName(K2)==0)return 1;
 
 
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
 
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
             if (strcompCaseInsensitive(K2, Autobahnen[x]) == 0) {
 
-
                 puts("");
-                sprintf(buffer,"  Fehler , Es gibt Bereits ein Autobahn mit gleichem Namen(%s)",K2);
+                sprintf(buffer,"  Fehler , Es gibt Bereits ein Autobahn mit gleichem Namen(%s) ",K2); //TODO Prüfen Auf Kreuze und Ausfahrten
                 printMenuHeader(buffer);
 
                 free(buffer);
@@ -307,8 +288,8 @@ int Edit(int argc, char *argv[]){
                 for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
                 free(Autobahnen);
                 return 1;
-            }
 
+            }
         }
 
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {
@@ -417,83 +398,19 @@ int Edit(int argc, char *argv[]){
 
         }
 
-
-
-
         free(buffer);
 
-    } else if(argc==4) {
+    } else if(argc==4) {//Ausfahrt Bearbeiten (edit [KnotenName] [Autobahn] [KM])
 
         char *lastparam = argv[3];
         chop(lastparam);
 
         char *buffer = malloc(sizeof(char) * 1000);
 
-        for (int i = 0; i < CountUTF8String(argv[1]); i++) {
-
-            if (isalnum((int) argv[1][i]) == 0 && argv[1][i] != '_' && argv[1][i] != '-' && argv[1][i] != '.') {
-
-                sprintf(buffer, "  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen", argv[1][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        for (int i = 0; i < CountUTF8String(argv[2]); i++) {
-
-            if (isalnum((int) argv[2][i]) == 0 && argv[2][i] != '_' && argv[2][i] != '-' && argv[2][i] != '.') {
-
-                sprintf(buffer, "  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen", argv[2][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        double f = atof(lastparam);
-        sprintf(buffer, "%.2f", f);
-
-        while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {
-            if (buffer[strlen(buffer) - 1] == '.') {
-                chop(buffer);
-                break;
-            } else {
-                chop(buffer);
-            }
-
-        }
-
-        if (strcmp(buffer, lastparam) == 0) {
-
-            if (f >= 1000000000 || f <= -1000000000) {
-                puts("");
-                printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
-                printMenuItem(Typo);
-                printFooter();
-                free(buffer);
-                return 1;
-            }
-
-        } else {
-            puts("");
-            printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
-            printMenuItem(Typo);
-            printFooter();
-            free(buffer);
-            return 1;
-        }
-
-
-
+        if(isValidKnotenName(argv[1])==0)return 1;
+        if(isValidAutobahnName(argv[2])==0)return 1;
+        if(isValidAutobahnKM(lastparam)==0)return 1;
+        double f=atof(lastparam);
 
         char *AutobahnBuffer = argv[2];
 
@@ -501,7 +418,7 @@ int Edit(int argc, char *argv[]){
         if(K1Nummer!= INT_MAX) {
             if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==0) {
 
-                char **Autobahnen = loadAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+                char **Autobahnen = GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
 
 
                 for (int x = 1; x <= atoi(Autobahnen[0]); x++) {
@@ -517,7 +434,7 @@ int Edit(int argc, char *argv[]){
                     if (ArrayHack->meineKnoten[i]->AutobahnKM == f && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer)==0) {
 
                         puts("");
-                        sprintf(buffer, "  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits AUsfahrt/Kreuz '%s' ", f, ArrayHack->meineKnoten[i]->AutobahnName, ArrayHack->meineKnoten[i]->Name);
+                        sprintf(buffer, "  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ", f, ArrayHack->meineKnoten[i]->AutobahnName, ArrayHack->meineKnoten[i]->Name);
                         printMenuHeaderContinous(buffer);
 
                         free(buffer);
@@ -550,144 +467,34 @@ int Edit(int argc, char *argv[]){
         }
 
         free(buffer);
-    }else if(argc==6){
+    }else if(argc==6){//Kreuz Bearbeiten (edit [KreuzName] [AutobahnName1] [KM1] [AutobahnName2] [KM2])
 
         char *lastparam = argv[5];
         chop(lastparam);
 
         char *buffer = malloc(sizeof(char) * 1000);
 
-        for (int i = 0; i < CountUTF8String(argv[1]); i++) {
+        if(isValidKnotenName(argv[1])==0)return 1;
+        if(isValidAutobahnName(argv[2])==0)return 1;
+        if(isValidAutobahnName(argv[4])==0)return 1;
 
-            if (isalnum((int) argv[1][i]) == 0 && argv[1][i] != '_' && argv[1][i] != '-' && argv[1][i] != '.') {
+        if(isValidAutobahnKM(argv[3])==0)return 1;
+        if(isValidAutobahnKM(lastparam)==0)return 1;
 
-                sprintf(buffer, "  Fehler , Der Ausfahrts/Kreuz Name enthält '%c' , ein Verbotenes Zeichen", argv[1][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        for (int i = 0; i < CountUTF8String(argv[2]); i++) {
-
-            if (isalnum((int) argv[2][i]) == 0 && argv[2][i] != '_' && argv[2][i] != '-' && argv[2][i] != '.') {
-
-                sprintf(buffer, "  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen", argv[2][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        for (int i = 0; i < CountUTF8String(argv[4]); i++) {
-
-            if (isalnum((int) argv[2][i]) == 0 && argv[2][i] != '_' && argv[2][i] != '-' && argv[2][i] != '.') {
-
-                sprintf(buffer, "  Fehler , Der Autobahn Name enthält '%c' , ein Verbotenes Zeichen", argv[2][i]);
-                printMenuHeader(buffer);
-                printMenuItem("Erlaubte zeichen [Aa-Bb] [0-9] '_' '-' '.' ");
-                printFooter();
-
-                free(buffer);
-                return 1;
-            }
-
-        }
-
-        double f = atof(argv[3]);
-        sprintf(buffer, "%.2f", f);
-
-        while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {
-            if (buffer[strlen(buffer) - 1] == '.') {
-                chop(buffer);
-                break;
-            } else {
-                chop(buffer);
-            }
-
-        }
-
-        if (strcmp(buffer, argv[3]) == 0) {
-
-            if (f >= 1000000000 || f <= -1000000000) {
-                puts("");
-                printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
-                printMenuItem(Typo);
-                printFooter();
-                free(buffer);
-                return 1;
-            }
-
-        } else {
-            puts("");
-            printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
-            printMenuItem(Typo);
-            printFooter();
-            free(buffer);
-            return 1;
-        }
-
-        double ff = atof(lastparam);
-        sprintf(buffer, "%.2f", ff);
-
-        while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {
-            if (buffer[strlen(buffer) - 1] == '.') {
-                chop(buffer);
-                break;
-            } else {
-                chop(buffer);
-            }
-
-        }
-
-        if (strcmp(buffer, lastparam) == 0) {
-
-            if (ff >= 1000000000 || ff <= -1000000000) {
-                puts("");
-                printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
-                printMenuItem(Typo);
-                printFooter();
-                free(buffer);
-                return 1;
-            }
-
-        } else {
-            puts("");
-            printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
-            printMenuItem(Typo);
-            printFooter();
-            free(buffer);
-            return 1;
-        }
-
-
-
+        double f=atof(argv[3]);
+        double ff=atof(lastparam);
 
         char *AutobahnBuffer1 = argv[2];
         char *AutobahnBuffer2 = argv[4];
 
-        char **Autobahnen = loadAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+        char **Autobahnen = GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
 
-
-        for (int x = 1; x <= atoi(Autobahnen[0]); x++) {
-
+        for (int x = 1; x <= atoi(Autobahnen[0]); x++) {//Klein Großschreibung anpassen
             if (strcompCaseInsensitive(argv[2], Autobahnen[x]) == 0) {
-
                 AutobahnBuffer1 = Autobahnen[x];
-
             }
             if (strcompCaseInsensitive(argv[4], Autobahnen[x]) == 0) {
-
                 AutobahnBuffer2 = Autobahnen[x];
-
             }
         }
 
@@ -698,15 +505,22 @@ int Edit(int argc, char *argv[]){
                 sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
                 printMenuHeaderContinous(buffer);
 
+                int AnzAutobahnen = atoi(Autobahnen[0]);
+                for (int x = 0; x <= AnzAutobahnen; x++) free(Autobahnen[x]);
+                free(Autobahnen);
                 free(buffer);
                 return 1;
             }
+
             if(ArrayHack->meineKnoten[i]->AutobahnKM==ff && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer2)==0){
 
                 puts("");
                 sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",ff,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
                 printMenuHeaderContinous(buffer);
 
+                int AnzAutobahnen = atoi(Autobahnen[0]);
+                for (int x = 0; x <= AnzAutobahnen; x++) free(Autobahnen[x]);
+                free(Autobahnen);
                 free(buffer);
                 return 1;
             }
@@ -715,9 +529,9 @@ int Edit(int argc, char *argv[]){
 
         int K1Nummer= findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, argv[1], 1);
 
-        if(K1Nummer!=INT_MAX) {
+        if(K1Nummer!=INT_MAX) {//Suche Kreuz
 
-            if (ArrayHack->meineKnoten[K1Nummer]->isKreuz==1) {
+            if (ArrayHack->meineKnoten[K1Nummer]->isKreuz==1) {//Ist kreuz oder Ausfahrt?
 
                 struct Knoten *Knoten1 = malloc(sizeof(struct Knoten));
                 Knoten1->ID=ArrayHack->meineKnoten[K1Nummer]->ID;
@@ -767,8 +581,7 @@ int Edit(int argc, char *argv[]){
         printMenuHeader(Typo);
     }
 
-
-    return 1;
+    return 0;
 }
 
 int Delete(int argc, char *argv[]){
@@ -776,7 +589,7 @@ int Delete(int argc, char *argv[]){
     char *Typo="          Usage: ls [KnotenName] [-tn(Optional)]          ";
     if(argc==2) {
 
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
 
         char *K1 = argv[1];
 
@@ -949,7 +762,7 @@ int New(int argc, char *argv[]){
 
        char *AutobahnBuffer=argv[2];
 
-        char** Autobahnen=loadAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+        char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
 
         for(int x=1;x<=atoi(Autobahnen[0]);x++) {
 
