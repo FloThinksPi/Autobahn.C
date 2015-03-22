@@ -341,7 +341,7 @@ int New(int argc, char *argv[]){
             needReload=1;
             DataChanged=1;
         }else{
-            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten+1));
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten));
             return 1;
         }
 

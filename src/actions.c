@@ -57,7 +57,9 @@ int SearchNormal(struct Knoten *meineKnoten,int AnzahlKnoten ,char *K1,int texto
         int K1Nummer = findeKnotenByName(meineKnoten, AnzahlKnoten, K1,1);
 
         if(textonly){
-            printAutobahnText(meineKnoten, AnzahlKnoten,meineKnoten[K1Nummer].AutobahnName, K1,sortName);
+            if (K1Nummer != INT_MAX) {
+                printAutobahnText(meineKnoten, AnzahlKnoten, meineKnoten[K1Nummer].AutobahnName, K1, sortName);
+            }
         }else{
 
             if (K1Nummer != INT_MAX) {
@@ -161,10 +163,6 @@ int NewKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname
 
     NeueAnzahlKnoten=NewAusfahrt(meineKnoten,AnzahlKnoten,Kname,Aname1,Akm1,0);
     NeueAnzahlKnoten=NewAusfahrt(meineKnoten,NeueAnzahlKnoten,Kname,Aname2,Akm2,1);
-
-    OnlyConnectEineAutobahn(meineKnoten,NeueAnzahlKnoten,Aname1);
-    OnlyConnectEineAutobahn(meineKnoten,NeueAnzahlKnoten,Aname2);
-    OnlyConnectEinKreuz(meineKnoten,NeueAnzahlKnoten,Kname);
 
     return NeueAnzahlKnoten;
 }
