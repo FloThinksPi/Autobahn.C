@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "printui.h"
+#include "../../src/utils.h"
 
 
 #ifdef _WIN32
@@ -36,11 +37,11 @@
 static const char *hc = "-";
 static const char *vc = "|";
 //EDGES
-static const char *lo = "|";
-static const char *ro = "|";
+static const char *lo = "|"; //links Oben
+static const char *ro = "|"; //Rechts Oben
 
-static const char *lu = "|";
-static const char *ru = "|";
+static const char *lu = "|"; //Links Unten
+static const char *ru = "|"; //Rechts Unten
 
 
 
@@ -49,11 +50,11 @@ static const char *ru = "|";
 static const char *hc = "┅";
 static const char *vc = "┋";
 //EDGES
-static const char *lo = "┏";
-static const char *ro = "┓";
+static const char *lo = "┏"; //links Oben
+static const char *ro = "┓"; //Rechts Oben
 
-static const char *lu = "┗";
-static const char *ru = "┛";
+static const char *lu = "┗"; //Links Unten
+static const char *ru = "┛"; //Rechts Unten
 #endif
 //Terminal Breite , terminal wird auf win32 und unix systemen resized siehe src/ConsoleAdaption
 static const int terminalWidth = 120;

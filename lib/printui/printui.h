@@ -16,23 +16,19 @@
 
 //X-Spaltige Tabelle Ausgeben ( numCols= Spaltenanzahl , gefolgt von genausovielen strings)
 //bsp. printTabelHeader(4,"1. Spalte","2. Spalte","3. Spalte","4.Spalte")
-void printTabelHeader(int numCols,...);
-void printTabelRow(char numCols,...);
-
+void printTabelHeader(int numCols,...);//Tabellenueberschrift
+void printTabelRow(char numCols,...);//TabellenZeile
 
 //Allgemeinen Footer ausgeben
-void printFooter();
-void printFooterText(char *S);
+void printFooter();//Endzeile
+void printFooterText(char *S);//Endzeile mit Text
 
 //Menu Ausgeben
-void printMenuHeader(char text[]);
-void printMenuHeaderContinous(char *text);
-void printMenuItem(char text[]);
+void printMenuHeader(char *text);//Menu ueberschrift
+void printMenuHeaderContinous(char *text);//Durchgehende Menuuberschrift(Ohne Rand)
+void printMenuItem(char *text);//Menu eintrag
 
-//Zählt Zeichen in einem String
-int CountUTF8String(char *s);
-
-//Gibt die Terminalbreite zurück die hier gewählt wird
+//Gibt die Terminalbreite zurück die hier gesetzt wird
 int getTerminalWidth();
 
 #endif

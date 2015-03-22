@@ -11,9 +11,9 @@
 #include "utils.h"
 
 #ifdef WIN32
-char* FILEPATH="knoten.csv";
+char* FILEPATH="knoten.csv";//Datenbankdatei Windows
 #else
-char* FILEPATH="knoten.csv";
+char* FILEPATH="knoten.csv";//Datenbankdatei UNIX && MAC
 #endif
 
 const int ZeilenLeange=300;//Maximale länge einer zeile im dokument
@@ -23,10 +23,10 @@ const int ZeilenLeange=300;//Maximale länge einer zeile im dokument
 ///////////////////////////////// FILE I/O //////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int getNumKnoten(){//Gibt die anzahl an datensätzen in der datei an
+int getNumKnoten(){//Gibt die anzahl an datensätzen in der datei an , wird benoetigt um zu wiessen wie viele knoten es gibt fur malloc
 
     //Öffnet Datei
-    FILE *fp = fopen(FILEPATH, "r");
+    FILE *fp = fopen(FILEPATH, "r");//read only
     if (fp == NULL) {
         return 0;
     }
@@ -46,26 +46,25 @@ int getNumKnoten(){//Gibt die anzahl an datensätzen in der datei an
 
     //gezählte zeilen ausgeben = anzahl Datensätze
     return countlines;
+
 }
 
 
-int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten){
+int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten){//liest Datei ein und schreibt daten ind zufor malloced meinKnoten
 
 
-    FILE *fp = fopen(FILEPATH, "r");
+    FILE *fp = fopen(FILEPATH, "r");//readonly
     char *line= malloc(sizeof(char)*(ZeilenLeange+1));
-
 
     char *Data;
     int i;
     for(i=0;i<AnzahlKnoten;i++) {
         if (fgets(line,ZeilenLeange,fp) == NULL) break;
 
-        //fgets(line,ZeilenLeange,fp);
-        Data=strtok(line,",");
+        Data=strtok(line,",");//trennzeichen
         int u=0;
         double dist;
-        //SpeicherPlatzt für eintrag reservieren und alle werte initialisieren damit es nichgt zu undef. verhalten kommt.
+        //alle werte initialisieren damit es nichgt zu undef. verhalten kommt.
         meineKnoten[i].besucht= false;
         meineKnoten[i].Name=NULL;
         meineKnoten[i].AutobahnName=NULL;
@@ -80,10 +79,8 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten){
         meineKnoten[i].knotenZurueck=NULL;
         meineKnoten[i].entfernungZumUrsprung=0;
 
+        //SpeicherPlatzt für eintrag reservieren und initialisieren
         while(1){
-
-
-
             switch(u) {
                 case 0: {
 
@@ -107,19 +104,16 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten){
                 default : break;
             }
 
-
             Data = strtok(NULL,",");
             u++;
             if(Data==0) break;
         }
     }
 
-    if(fp!=NULL){
+    if(fp!=NULL){//Datei schliesen
         fclose(fp);
     }
-
     free(line);
-
     //Bearbeitet nun die eingelesenen Daten (Ausfahrten Verknüpfen und danach Kreuze)
     ConnectData(meineKnoten,AnzahlKnoten);
 
@@ -129,14 +123,14 @@ int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten){
 
 void saveStructToFile(struct Knoten *meineKnoten,int AnzahlKnoten){//Speichert alle Daten in die DatenbankDatei , Überschreibt diese dabei Komplett.
 
-    FILE * file= fopen(FILEPATH,"w");
+    FILE * file= fopen(FILEPATH,"w");//write
     if (file != NULL) {
         for(int i=0;i<AnzahlKnoten-1;i++){
             fprintf(file,"%s,%s,%.2f\n",meineKnoten[i].Name,meineKnoten[i].AutobahnName,meineKnoten[i].AutobahnKM);
         }
         fprintf(file,"%s,%s,%.2f",meineKnoten[AnzahlKnoten-1].Name,meineKnoten[AnzahlKnoten-1].AutobahnName,meineKnoten[AnzahlKnoten-1].AutobahnKM);
         fclose(file);
-    }else{}//TODO EXIT MIT FEHLERMEDLING
+    }else{}
 
     return ;
 }
@@ -153,7 +147,6 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten,int Knoten1,int Knoten2
 
     int numWegezuKnoten1 = meineKnoten[Knoten1].numWege;
     int numWegezuKnoten2 = meineKnoten[Knoten2].numWege;
-
 
     struct Wege *W1 =  malloc(sizeof(struct Wege));
     struct Wege *W2 =  malloc(sizeof(struct Wege));
@@ -176,11 +169,10 @@ void ErstelleWegBidirektional(struct Knoten *meineKnoten,int Knoten1,int Knoten2
 }
 
 
-void OnlyConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet Alle Ausfahrten mit gleichem Namen miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
-
+void OnlyConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet Alle Knoten mit gleichem Namen miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
+    //Verbindung zwischen Kreuzen entsteht
     for (int i = 0; i < AnzahlKnoten; ++i)
     {
-
         for (int j = i + 1; j < AnzahlKnoten; ++j) {
             if (i == j)break;
 
@@ -192,70 +184,6 @@ void OnlyConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet 
             }
         }
 
-    }
-}
-
-void OnlyREConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet Alle Kreuze(Schon einmal durch OnlyConnectKreuze verbinden worden) mit gleichem Namen miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
-
-    for (int i = 0; i < AnzahlKnoten; ++i)
-    {
-        if(meineKnoten[i].isKreuz==1) {
-
-            for (int j = i + 1; j < AnzahlKnoten; ++j) {
-                if (i == j)break;
-
-                if (strcmp(meineKnoten[i].Name, meineKnoten[j].Name) == 0) {
-                    ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
-                    meineKnoten[i].isKreuz = 1;
-                    meineKnoten[j].isKreuz = 1;
-                    break;
-                }
-            }
-
-        }
-    }
-}
-
-void OnlyConnectEinKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilKreuz){//Verbindet Eine Ausfahrt mit einer gleichen Namens miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
-
-    for (int i = 0; i < AnzahlKnoten; ++i)
-    {
-        if(strcmp(meineKnoten[i].Name, ZeilKreuz) == 0) {
-
-            for (int j = i + 1; j < AnzahlKnoten; ++j) {
-
-                if (strcmp(meineKnoten[i].Name, meineKnoten[j].Name) == 0) {
-                    ErstelleWegBidirektional(meineKnoten, i, j, 0.00000001);
-                    meineKnoten[i].isKreuz = 1;
-                    meineKnoten[j].isKreuz = 1;
-                    break;
-                }
-            }
-
-        }
-    }
-}
-
-void OnlyConnectEineAutobahn(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilAutobahn){//Verbindet Eine Ausfahrt mit einer gleichen Namens miteinander mit kleinem weg(wird nicht angezeigt und wird Weggerundet)
-
-    for (int i = 0; i < AnzahlKnoten; ++i)
-    {
-        if(strcmp(meineKnoten[i].AutobahnName, ZeilAutobahn) == 0) {
-
-            int lastNode=INT_MAX;
-
-            for(int u=0;u<AnzahlKnoten;u++){
-
-                if(strcmp(meineKnoten[u].AutobahnName, ZeilAutobahn)==0){
-                    if(lastNode!=INT_MAX){
-                        ErstelleWegBidirektional(meineKnoten, lastNode, u, meineKnoten[u].AutobahnKM - meineKnoten[lastNode].AutobahnKM);
-                    }
-                    lastNode=u;
-                }
-
-            }
-
-        }
     }
 }
 
@@ -276,7 +204,6 @@ void ConnectData(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet alle A
     //Geht auobahn für autobahn durch und verbinden alle knoten eriner autobahn , auch die kreuze, sie haben am anfang nur zwei wege , also wie normale abfahrten
     for(int x=1;x<=atoi(Autobahnen[0]);x++){
 
-
         int lastNode=INT_MAX;
 
         for(int u=0;u<AnzahlKnoten;u++){
@@ -292,7 +219,7 @@ void ConnectData(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet alle A
 
     }
 
-    OnlyConnectKreuze(meineKnoten, AnzahlKnoten);
+    OnlyConnectKreuze(meineKnoten, AnzahlKnoten);// Verbindet Gleichnamige Knoten -> Kreuze bekommen verbindungen zu ihrem gegenstueck -> Autobahnen bekommen Verbindung
 
     int AnzAutobahnen=atoi(Autobahnen[0]);
     for(int x=0;x<=AnzAutobahnen;x++) free(Autobahnen[x]);
@@ -308,18 +235,17 @@ void ConnectData(struct Knoten *meineKnoten,int AnzahlKnoten){//Verbindet alle A
 
 int DeleteKnoten(struct Knoten *meineKnoten, int AnzahlKnoten, int Ausfahrt){//Löscht einen Dtaensatz
 
-    free(meineKnoten[Ausfahrt].Name);
+    free(meineKnoten[Ausfahrt].Name);//Char pointer free
     free(meineKnoten[Ausfahrt].AutobahnName);
     free(meineKnoten[Ausfahrt].knotenZurueck);
 
 
-
-    for(int i=Ausfahrt+1;i<AnzahlKnoten;i++){
+    for(int i=Ausfahrt+1;i<AnzahlKnoten;i++){//Alle werte ueber dem geloschten datensatz eins nach unten schieben
         meineKnoten[i-1]=meineKnoten[i];
         meineKnoten[i-1].ID=i-1;
     }
 
-    for(int i=0;i<AnzahlKnoten;i++){//Free(null) ist valid
+    for(int i=0;i<AnzahlKnoten;i++){//Alle Wege loschen da sie nichtmehr stimmen //Free(null) ist valid
         if(meineKnoten[i].Wege[0]!=NULL) free(meineKnoten[i].Wege[0]); meineKnoten[i].Wege[0]= NULL;
         if(meineKnoten[i].Wege[1]!=NULL) free(meineKnoten[i].Wege[1]); meineKnoten[i].Wege[1]= NULL;
         if(meineKnoten[i].Wege[2]!=NULL) free(meineKnoten[i].Wege[2]); meineKnoten[i].Wege[2]= NULL;
@@ -327,34 +253,28 @@ int DeleteKnoten(struct Knoten *meineKnoten, int AnzahlKnoten, int Ausfahrt){//L
         meineKnoten[i].numWege=0;
     }
 
-
-    //qsort(meineKnoten,AnzahlKnoten,sizeof(struct Knoten*),QsortCompareKM);
-    //ConnectData(meineKnoten, AnzahlKnoten-1);//Sortieren nicht nötig da die reihenfolge nicht geändert wird.
-
     return AnzahlKnoten-1;
 }
 
-int NewKnoten(struct Knoten *meineKnoten,int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM){ // Neuen Datensatz Erstellen
-
+int NewKnoten(struct Knoten *meineKnoten,int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM){ // Neuen Datensatz Erstellen (Realloc muss schon ausgefuhrt worden sein)
 
     int zielSpeicher = INT_MAX;
 
-    for(int i=0;i<AnzahlKnoten;i++){
+    for(int i=0;i<AnzahlKnoten;i++){// Stelle zum einfuegen suchen damit es nach Km aufsteigend geordnet bleibt
         if(meineKnoten[i].AutobahnKM>AutobahnKM){
             zielSpeicher=i;
             break;
         }
     }
 
-    if(zielSpeicher== INT_MAX)zielSpeicher=AnzahlKnoten;
+    if(zielSpeicher==INT_MAX)zielSpeicher=AnzahlKnoten;// Wenn es der letzte speicherplatz ist
 
-    for(int i=AnzahlKnoten;i>zielSpeicher;i--){
+    for(int i=AnzahlKnoten;i>zielSpeicher;i--){//Daten eins nach oben schieben damit platz fur den neuen knoten am gewunschten platz entsteht
         meineKnoten[i]=meineKnoten[i-1];
         meineKnoten[i].ID=i;
     }
 
-    //TODO FREE
-
+    //Initalisieren + Werte Setzen
     meineKnoten[zielSpeicher].besucht= false;
     meineKnoten[zielSpeicher].Name=strdup(Name);
     meineKnoten[zielSpeicher].AutobahnName=strdup(AutobahnName);
@@ -371,7 +291,7 @@ int NewKnoten(struct Knoten *meineKnoten,int AnzahlKnoten,char* Name,char* Autob
 
 
 
-    for(int i=0;i<AnzahlKnoten;i++){//Free(null) ist valid
+    for(int i=0;i<AnzahlKnoten;i++){//Alle Wege loschen da sie vieleicht stimmen //Free(null) ist valid
         if(meineKnoten[i].Wege[0]!=NULL) free(meineKnoten[i].Wege[0]); meineKnoten[i].Wege[0]= NULL;
         if(meineKnoten[i].Wege[1]!=NULL) free(meineKnoten[i].Wege[1]); meineKnoten[i].Wege[1]= NULL;
         if(meineKnoten[i].Wege[2]!=NULL) free(meineKnoten[i].Wege[2]); meineKnoten[i].Wege[2]= NULL;
@@ -379,7 +299,7 @@ int NewKnoten(struct Knoten *meineKnoten,int AnzahlKnoten,char* Name,char* Autob
         meineKnoten[i].numWege=0;
     }
 
-    return AnzahlKnoten+1;
+    return AnzahlKnoten+1;//Anzahl Knoten zuruckgeben
 }
 
 
@@ -440,8 +360,6 @@ int FindSimilarNode(struct Knoten *meineKnoten,int AnzahlKnoten,char *KnotenName
             printMenuItem(meineKnoten[i].Name);
         }
 
-
-
     }
     if(p==0){
         puts("\n");
@@ -465,7 +383,7 @@ int findeKnotenByName(struct Knoten *meineKnoten,int AnzahlKnoten,char *KnotenNa
 
     }
 
-    if(FindSimmilar){
+    if(FindSimmilar){//findet anliche Knoten durch leivenshtein z.b. beim vertippen
         FindSimilarNode(meineKnoten, AnzahlKnoten, KnotenName);
     }
 
@@ -860,6 +778,5 @@ void printAutobahnText(struct Knoten *meineKnoten, int AnzahlKnoten, char *Autob
 
     //Aufräumen
     free(Buffer);
-
 
 }

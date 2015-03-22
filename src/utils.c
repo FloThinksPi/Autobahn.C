@@ -10,7 +10,7 @@
 
 #include <windows.h>
 
-double get_time()
+double get_time()// Zeit messen
 {
     LARGE_INTEGER t, f;
     QueryPerformanceCounter(&t);
@@ -21,7 +21,7 @@ double get_time()
 
 const char *skipParam=" \\CMDknowsUTF8";
 
-void RestartInUtf8Cmd(){
+void RestartInUtf8Cmd(){//Regestry zum Consolen neustart anlegen (damit UTF8 geht)
 
     char buffer[MAX_PATH];//always use MAX_PATH for filepaths
     GetModuleFileName(NULL,buffer,sizeof(buffer));
@@ -42,7 +42,7 @@ void RestartInUtf8Cmd(){
 
 }
 
-void ConfigureCMD(){
+void ConfigureCMD(){//Grose und Codepage festlegen
 
 
     int width;
@@ -92,15 +92,15 @@ double get_time()
 #endif
 
 
-int QsortCompareName(const void *s1, const void *s2) {
+int QsortCompareName(const void *s1, const void *s2) {// Qsort Funktion zum Namen sortieren der Ausfahrten und Kreuze
     struct  OutputBuffer* K1 = *(struct OutputBuffer **) s1;
     struct OutputBuffer* K2 = *(struct OutputBuffer **) s2;
 
     return (strcmp(K1->TextName, K2->TextName));
 }
 
-//Zähler muss UTF-8 Konform sein wegen umlauten u.ä ,da funtion in der standartlib dies nichtkann nund umlaute etc. nicht mitzählt
-int CountUTF8String(char *s) {
+
+int CountUTF8String(char *s) {//Zähler kann UTF-8 umlauten u.ä ,da strlen manchmal salsch zählt.
     int i = 0, j = 0;
     while (s[i]) {
         if ((s[i] & 0xc0) != 0x80) j++;
@@ -109,8 +109,7 @@ int CountUTF8String(char *s) {
     return j;
 }
 
-int strcompCaseInsensitive(char const *a, char const *b)
-{
+int strcompCaseInsensitive(char const *a, char const *b){// Sind 2 Strings gleich (nicht auf GroßKlein achten)
     for (;; a++, b++) {
         int d = tolower(*a) - tolower(*b);
         if (d != 0 || !*a)
@@ -118,7 +117,7 @@ int strcompCaseInsensitive(char const *a, char const *b)
     }
 }
 
-double my_round(double x, unsigned int digits) {
+double my_round(double x, unsigned int digits) {//Eigene Round fuunktion (math.h fuerhte zu absturz)
     if (digits > 0) {
         return my_round(x*10.0, digits-1)/10.0;
     }
@@ -132,7 +131,7 @@ void chop(char *str) {//Löscht letztes zeichen eines "Strings" , wird meist daz
     str[p-1] = '\0';
 }
 
-int isValidKnotenName(char *Name){
+int isValidKnotenName(char *Name){// Ist der Knotenname Erlaubt(von den zeichen her)
 
     char* buffer= malloc(sizeof(char)*1000);
 
@@ -164,7 +163,7 @@ int isValidKnotenName(char *Name){
     return 0;
 }
 
-int isValidAutobahnName(char *Name){
+int isValidAutobahnName(char *Name){// Ist der Autobahnname Erlaubt(von den zeichen her)
 
     char* buffer= malloc(sizeof(char)*1000);
 
@@ -196,25 +195,24 @@ int isValidAutobahnName(char *Name){
     return 0;
 }
 
-int isValidAutobahnKM(char *KM){
+int isValidAutobahnKM(char *KM){// Ist AutobahnKM eine Gueltige zahl(z.b. 9stellen 2nachkommastellen)
 
     char* buffer= malloc(sizeof(char)*1000);
     double f = atof(KM);
     sprintf(buffer, "%.2f", f);
 
-    while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {
+    while (buffer[strlen(buffer) - 1] == '0' || buffer[strlen(buffer) - 1] == '.') {//Loescht zuviele 0-en
         if (buffer[strlen(buffer) - 1] == '.') {
             chop(buffer);
             break;
         } else {
             chop(buffer);
         }
-
     }
 
-    if (strcmp(buffer, KM) == 0) {
+    if (strcmp(buffer, KM) == 0) {//Sind Buchstaben drin oder weicht die zahl ab von Atof
 
-        if (f >= 1000000000 || f <= -1000000000) {
+        if (f >= 1000000000 || f <= -1000000000) {//Maximal und minimal Groese
             puts("");
             printMenuHeader("Fehler , AutobahnKM dürfen maximal 9 stellig mit 2 Nachkommastellen sein");
             printFooter();
@@ -224,7 +222,7 @@ int isValidAutobahnKM(char *KM){
 
     } else {
         puts("");
-        printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl[Maximal 9 stellig mit 2 Nachkommastellen]");
+        printMenuHeader("Fehler , AutobahnKM ist keine Gültige Zahl [Kommazeichen ist ein Punkt z.b 12.32]");
         printFooter();
         free(buffer);
         return 1;

@@ -45,9 +45,6 @@ char**GetAutobahnen(struct Knoten *meineKnoten, int AnzahlKnoten);
 //Daten Verarbeitung
 void ConnectData(struct Knoten *meineKnoten,int AnzahlKnoten);
 void OnlyConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten);
-void OnlyREConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten);//Nur bereits existente Knoten Werden verknüpft
-void OnlyConnectEinKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilKreuz);
-void OnlyConnectEineAutobahn(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilAutobahn);
 
 //Datei Visualisierung
 void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);

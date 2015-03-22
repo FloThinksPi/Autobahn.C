@@ -1,6 +1,3 @@
-// A C / C++ program for Dijkstra's single source shortest path algorithm.
-// The program is for adjacency matrix representation of the graph
-
 #include <stdio.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -15,154 +12,130 @@
 //Anzahl der Knoten
 int AnzahlKnoten = 0;
 
-double gibWegLaenge(struct Knoten *meineKnoten,int u,int v){
-
+double gibWegLaenge(struct Knoten *meineKnoten,int u,int v){//Gibt den Wert des Wegs von u->v bzw meineKnoten[u]->meineKnoten[v]
     int i=0;
     while(i < meineKnoten[u].numWege){
-
-
         if(meineKnoten[u].Wege[i]->nach->ID==meineKnoten[v].ID){
             return meineKnoten[u].Wege[i]->laenge;
         }
-
         i++;
-
     }
-
-    return 0;
+    return 0;//Kein Weg gefunden
 }
 
 
 
-//Errechnet den am kürzesten entfernten nächsten knoten aus allen noch nicht besuchten knoten.
-//Wählt somit den "Weg" dergegangen wird.
-int minDistance(struct Knoten *meineKnoten)
-{
-    // Initialize min value
-    double min = INT_MAX;
+int minDistance(struct Knoten *meineKnoten){//Errechnet den am kürzesten entfernten nächsten knoten aus allen noch nicht besuchten knoten. //Wählt somit den "Weg" dergegangen wird.
+
+    double min = INT_MAX;//Initialisiere min mit Maximalwert (Jeder weg ist kleiner sein)
     int min_index = 0;
 
-    for (int v = 0; v < AnzahlKnoten; v++) {
+    for (int v = 0; v < AnzahlKnoten; v++) {//Wahlt den Knoten aus der die kleinste entfernung zum startknotenn hat
         if (meineKnoten[v].besucht == false && meineKnoten[v].entfernungZumUrsprung <= min) {
             min = meineKnoten[v].entfernungZumUrsprung;
             min_index = v;
         }
-
     }
-
-    return min_index;
+    return min_index;//Return den besten naechsten Knoten
 }
 
 
-//Hier wird der Algorythmus gestartet und die gegangenen Wege Gespeichert.
-void dijkstra(struct Knoten *meineKnoten, int src)
+void dijkstra(struct Knoten *meineKnoten, int src)//Hier wird der Algorythmus gestartet und die gegangenen Wege Gespeichert.
 {
-
-
     //Entfernung = 0 da der startknoten zu sich selbst nicht entfernt ist
     meineKnoten[src].entfernungZumUrsprung = 0;
 
-    // Find shortest path for all vertices (V-1 Möglich da der letzte wert automatisch fest steht , aber nicht gemacht da sonst der letzte wert nicht ausgegeben wird)
-    for (int count = 0; count < AnzahlKnoten-1; count++)
-    {
+    for (int count = 0; count < AnzahlKnoten-1; count++){//Kuerzesten Pfad finden
+
         int u=0;
 
-        //U = immer src beim ersten mal , weitere info siehe funktion
+        //U = immer src beim ersten mal , findet besten neachsten knoten, siehe funktionskommentare
         u = minDistance(meineKnoten);
 
-        // Mark the picked vertex as processed
+        // Den gewahlten Knoten als besucht markieren
         meineKnoten[u].besucht = true;
 
-
-
-        // Update dist value of the adjacent vertices of the picked vertex.
+        // Entfernungen zum Ursprung neu Errechnen
         for (int v = 0; v < AnzahlKnoten; v++) {
 
-            // Update dist[v] only if is not in sptSet, there is an edge from
-            // u to v, and total weight of path from src to  v through u is
-            // smaller than current value of dist[v]
+            // Entfernung zum Ursprung Errechnen wenn
+            // 1. Zwischen U und V eine verbindung besteht
+            // 2. V noch nicht Besucht Wurde
+            // 3. Der Weg von V ueber U zum Ursprung kleiner ist als der von V zum Ursprung
 
-            if(!meineKnoten[v].besucht && gibWegLaenge(meineKnoten,u,v) && meineKnoten[u].entfernungZumUrsprung != INT_MAX
-                    && meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v) < meineKnoten[v].entfernungZumUrsprung){
-                meineKnoten[v].entfernungZumUrsprung = meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v);
-                meineKnoten[v].knotenZurueck=&meineKnoten[u];
+            if(!meineKnoten[v].besucht && gibWegLaenge(meineKnoten,u,v) && meineKnoten[u].entfernungZumUrsprung != INT_MAX &&  meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v) < meineKnoten[v].entfernungZumUrsprung){
+                meineKnoten[v].entfernungZumUrsprung = meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v);//Benachbarte Knoten bekommen Weg zum Ursprung
+                meineKnoten[v].knotenZurueck=&meineKnoten[u];//Vorherige Knoten wird gespeichert zum Backtracing -> Ausgabe
             }
-
-
         }
-
-
-
     }
-
-
 
 }
 
+int printPathToTarget(struct Knoten *meineKnoten,int StartKnoten,int Endknoten,double StartZeit){//Gibt gegangenen Weg aus
 
-// Gibt Alle möglichen Ziele mit gegangenem Weg aus
-int printPathToTarget(struct Knoten *meineKnoten,int StartKnoten,int Endknoten,double StartZeit)
-{
+    char* BewegungsArray[AnzahlKnoten];//Weg wird mit lastnode zuruckverfolgt , deshalb muss die Ausgabe gedreht werden damit nicht das ende zuerst kommt sondern der Anfang , der "gedrehte" weg wird hier gespeichert
 
-    char* BewegungsArray[AnzahlKnoten];
-
-    char* buffer = malloc(sizeof(char)*200);
+    char* buffer = malloc(sizeof(char)*1000);// Zwischenspeicer
 
 
-    for (int i = 0; i < AnzahlKnoten; i++) {
-        if (meineKnoten[i].ID == Endknoten) {
-
+    for (int i = 0; i < AnzahlKnoten; i++){
+        if (meineKnoten[i].ID == Endknoten){//ENDKNOTEN Finden
             int v = i;
             int AnzahlBewegungen = 0;
 
-
+            ////Zurueckgelegten Weg (Trace) in Bewegungsarray speichern///////
             while (meineKnoten[v].knotenZurueck!=NULL) {
 
-                if (gibWegLaenge(meineKnoten, v, meineKnoten[v].knotenZurueck->ID)>0.001) {
+                if (gibWegLaenge(meineKnoten, v, meineKnoten[v].knotenZurueck->ID)>0.001) {//Kreuzuebergange haben den weg 0.00001 werden somit ignoriert in der ausgabe (z.b. K1_2(A1) ---0.00001km--> K1_2(A2) wird ignoriert)
 
                     sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v].knotenZurueck->ID));
 
-                    BewegungsArray[AnzahlBewegungen * 3]=strdup(meineKnoten[v].knotenZurueck->Name);
-                    BewegungsArray[AnzahlBewegungen * 3 + 1]=strdup(buffer);
-                    BewegungsArray[AnzahlBewegungen * 3 + 2]=strdup(meineKnoten[v].Name);
+                    BewegungsArray[AnzahlBewegungen * 3]=strdup(meineKnoten[v].knotenZurueck->Name);//Ausgangspunkt der "Bewegung" -> Jeder 3. wert (0,3,6,...)
+                    BewegungsArray[AnzahlBewegungen * 3 + 1]=strdup(buffer);//Entfernung der "Bewegung"                            -> Jeder 3.+1 Wert (1,4,7...)
+                    BewegungsArray[AnzahlBewegungen * 3 + 2]=strdup(meineKnoten[v].Name);//Endpunkt der "Bewegung"                 -> Jeder 3.+2 Wert (2,5,8,..)
 
-                    v = meineKnoten[v].knotenZurueck->ID;
+                    v = meineKnoten[v].knotenZurueck->ID;//Einen Knoten Weiter (zuruck)gehen im nachsten durchlauf
                     AnzahlBewegungen++;
-                }else{
+                }else{// falls es ein Kreuzuebergang ist eifach weiter gehen ohne ausgabe zu generieren
                     v = meineKnoten[v].knotenZurueck->ID;
                 }
-
-
             }
+            /////////////////////////////////////////////////////////////////
 
 
+            //////////////////Bewegungsarray Rueckwarts Lesen und Ausgeben -> resultiert in richtiger logischer Reihenfolge///////////////////////////
+            if (meineKnoten[i].ID != meineKnoten[StartKnoten].ID) {//Wenn Start!=Endknoten
 
-            if (meineKnoten[i].ID != meineKnoten[StartKnoten].ID) {
-                if (meineKnoten[i].entfernungZumUrsprung == INT_MAX) {
+                if (meineKnoten[i].entfernungZumUrsprung == INT_MAX) {//Wenn Kein Weg gefunden
                     puts("\n");
                     sprintf(buffer, "  \"%s\" ist von \"%s\" aus nicht Erreichbar  ", meineKnoten[i].Name, meineKnoten[StartKnoten].Name);
                     printMenuHeaderContinous(buffer);
                     puts("\n");
-                } else {
+
+                } else {//Weg gefunden , ausgabe beginnen
+
+                    //Ueberschrift
                     puts("\n");
                     sprintf(buffer, "  Weg von \"%s\" nach \"%s\"  ", meineKnoten[StartKnoten].Name, meineKnoten[i].Name);
                     printMenuHeader(buffer);
                     printMenuItem("");
 
+                    //BEWEGUNGSARRAY Rueckwarts Ausgeben
                     printTabelHeader(3, " Von ", " Strecke ", " Nach ");
                     for (int x = AnzahlBewegungen - 1; x >= 0; x--) {
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
+                    //Endzeile
                     sprintf(buffer, " | Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden | ", meineKnoten[i].entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
                     printFooterText(buffer);
                     puts("\n");
                 }
-
-
             }
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            break;
+            break; // Ausgabe erfolgte , Engknoten wurde gefunden , eine weitere suche nach endknoten macht keinen sinn
         }
 
 
@@ -171,15 +144,14 @@ int printPathToTarget(struct Knoten *meineKnoten,int StartKnoten,int Endknoten,d
     return 1;
 }
 
-//Finden und ausgabe des weges zwischen a und b
+//Finden und ausgabe des weges zwischen a und b , bereitet den Deijkstra vor und managed die berechnung und ausgabe.
 int findeWeg(struct Knoten *meineKnoten,int AnzahlNodes,int StartKnoten,int ZielKnoten)
 {
 
-    double StartZeit = get_time();
+    double StartZeit = get_time();//Zeitmessung
 
     //Anzahl an Knoten wird festgelegt
     AnzahlKnoten=AnzahlNodes;
-
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){
