@@ -1,21 +1,11 @@
-Autobahn.C
+﻿Autobahn.C
 ==========
 Projetarbeit erstes Semester Informatik
 
-Compile With
-```
--std=gnu99    
--O3           //Optional for More Speed
-```
-Works on UNIX and Windows with GCC and MinGW
 
-Die ausführbare Datei muss sich im gelichen ordner befinden wie knoten.csv , wenn nicht vorhanden wird sie beim sauberen verlassen (exit im programm eingeben) neu angelegt mit den daten die neu eingegeben wurden.
-
-Durch umbenennen der Dateien können mehrere Datenbanken erstellt und genutzt werden , die jeweils Aktiv gewünschte einfach zu knoten.csv umbenennen.
+Weitere Informationen in README.pdf
 
 
-Jeglicher externer Code enthält eine Lizens des Authors im gleichen ordner wie der Code.
-Jeder Code ohne beiliegende Lizens von dritten im selben Ordner ist Selbstgeschrieben.
 
 The MIT License (MIT)
 ==========
