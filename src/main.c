@@ -59,8 +59,6 @@ int main (int argc, char *argv[])
 
 
 int AnzahlKnoten;
-
-
 struct Knoten *meineKnoten;
 
 int loaded=0;//Daten Geladen ?

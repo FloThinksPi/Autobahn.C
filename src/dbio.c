@@ -404,7 +404,7 @@ char**GetAutobahnen(struct Knoten *meineKnoten, int AnzahlKnoten) { // Gibt eine
         }
 
         if(inArray==0){
-            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)* (strlen(meineKnoten[i].AutobahnName))+1);
+            Autobahnen[AnzahlAutobahnen+1]=malloc(sizeof(char)*(strlen(meineKnoten[i].AutobahnName)+1));
             memcpy(Autobahnen[AnzahlAutobahnen+1], meineKnoten[i].AutobahnName, strlen(meineKnoten[i].AutobahnName)+1);
             AnzahlAutobahnen++;
         }
@@ -485,8 +485,7 @@ void printAutobahnRow(char *S,int TotalSize){//Ausgabe Hilfefunktion
 
     size_t size_S=strlen(S);
     int size_n= CountUTF8String(S);
-    char *Buffer=malloc(sizeof(char)*(TotalSize+1));
-
+    char *Buffer= malloc(sizeof(char)*(TotalSize)+1);
     memcpy(Buffer, S, size_S);
 
     int u;
@@ -507,7 +506,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *Aut
     SearchBuffer.ID=INT_MAX;
 
     struct Knoten *meineGefiltertenKnoten;
-    meineGefiltertenKnoten=malloc(sizeof(struct Knoten*)*AnzahlKnoten);
+    meineGefiltertenKnoten=malloc(sizeof(struct Knoten)*AnzahlKnoten);
 
     //Ausfahrten und Kreuze Errechnen
     int i;
@@ -700,7 +699,7 @@ void printAutobahnText(struct Knoten *meineKnoten, int AnzahlKnoten, char *Autob
     SearchBuffer.ID=INT_MAX;
 
     struct Knoten *meineGefiltertenKnoten;
-    meineGefiltertenKnoten=malloc(sizeof(struct Knoten*)*AnzahlKnoten);
+    meineGefiltertenKnoten=malloc(sizeof(struct Knoten)*AnzahlKnoten);
 
 
     //Ausfahrten und Kreuze Errechnen

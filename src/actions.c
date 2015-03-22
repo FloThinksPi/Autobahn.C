@@ -101,7 +101,7 @@ int SearchAutobahnen(struct Knoten *meineKnoten,int AnzahlKnoten){// Zeigt alle 
 
 int NewAusfahrt(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname,char *Akm,int DoubleNameAllowed){
 
-    char *AutobahnBuffer;
+    char *AutobahnBuffer=Aname;
     char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
     int NeueAnzahlKnoten=INT_MAX;
 
@@ -127,7 +127,7 @@ int NewAusfahrt(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *An
 
     }
 
-    meineKnoten = realloc(meineKnoten, sizeof(struct Knoten*)*(AnzahlKnoten+1));
+    meineKnoten = realloc(meineKnoten, sizeof(struct Knoten)*(AnzahlKnoten+1));
     NeueAnzahlKnoten=NewKnoten(meineKnoten, AnzahlKnoten, Kname, AutobahnBuffer, f);
 
 
@@ -316,13 +316,13 @@ int Remove(struct Knoten *meineKnoten,int AnzahlKnoten,char *K1){
                         AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, z);
                         AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, findeKnotenByName(meineKnoten, AnzahlKnoten, KreuzName,0));
 
-                        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
+                        //meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
                         free(KreuzName);
 
                     }else{
                         AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, z);
-                        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
+                       // meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
                     }
                 }
@@ -343,16 +343,16 @@ int Remove(struct Knoten *meineKnoten,int AnzahlKnoten,char *K1){
             //Erst l�schen dannach nach dem 2. knoten des kreuzes suchen und dies auch l�schen
 
             AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, K1Nummer);
-            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
+            //meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
             AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, findeKnotenByName(meineKnoten, AnzahlKnoten, K1,1));
-            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
+            //meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
             goto ReturnSuccess;
 
         }else{
             AnzahlKnoten = DeleteKnoten(meineKnoten, AnzahlKnoten, K1Nummer);
-            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
+            //meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
             goto ReturnSuccess;
         }
