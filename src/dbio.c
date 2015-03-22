@@ -489,7 +489,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *Aut
 
 
 
-        sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s . %s",meineGefiltertenKnoten[0].Name,meineGefiltertenKnoten[0].AutobahnKM,meineGefiltertenKnoten[0].AutobahnName,Buffer2);
+        sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[0].Name,meineGefiltertenKnoten[0].AutobahnKM,meineGefiltertenKnoten[0].AutobahnName,Buffer2);
         printAutobahnRow(Buffer, TotalSize);
 
 
@@ -525,7 +525,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *Aut
                 }
             }
 
-            sprintf(Buffer,"=  |  #  |  =    Kreuz  %s(%.2f Km) --- %s . %s",meineGefiltertenKnoten[x].Name,meineGefiltertenKnoten[x].AutobahnKM,meineGefiltertenKnoten[x].AutobahnName,Buffer2);
+            sprintf(Buffer,"=  |  #  |  =    Kreuz  %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[x].Name,meineGefiltertenKnoten[x].AutobahnKM,meineGefiltertenKnoten[x].AutobahnName,Buffer2);
             printAutobahnRow(Buffer, TotalSize);
 
             printAutobahnRow(" \\ |  #  | /", TotalSize);
@@ -574,7 +574,7 @@ void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *Aut
                 }
             }
 
-            sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s . %s",meineGefiltertenKnoten[x].Name,meineGefiltertenKnoten[x].AutobahnKM,meineGefiltertenKnoten[x].AutobahnName,Buffer2);
+            sprintf(Buffer,"Kreuz %s(%.2f Km) --- %s -> %s",meineGefiltertenKnoten[x].Name,meineGefiltertenKnoten[x].AutobahnKM,meineGefiltertenKnoten[x].AutobahnName,Buffer2);
             printAutobahnRow(Buffer, TotalSize);
 
 
@@ -688,7 +688,7 @@ void printAutobahnText(struct Knoten *meineKnoten, int AnzahlKnoten, char *Autob
                     }
                 }
 
-                sprintf(Buffer, "%s (%s . %s)", meineGefiltertenKnoten[x].Name, meineGefiltertenKnoten[x].AutobahnName, Buffer2);
+                sprintf(Buffer, "%s (%s -> %s)", meineGefiltertenKnoten[x].Name, meineGefiltertenKnoten[x].AutobahnName, Buffer2);
                 char *TmpKM = malloc(sizeof(char) * 1000);
                 sprintf(TmpKM, "%f", meineGefiltertenKnoten[x].AutobahnKM);
 
@@ -738,7 +738,7 @@ void printAutobahnText(struct Knoten *meineKnoten, int AnzahlKnoten, char *Autob
                     }
                 }
 
-                sprintf(Buffer, "\"%s\" Kreuz von %s . %s", meineGefiltertenKnoten[x].Name, meineGefiltertenKnoten[x].AutobahnName, Buffer2);
+                sprintf(Buffer, "\"%s\" Kreuz von %s -> %s", meineGefiltertenKnoten[x].Name, meineGefiltertenKnoten[x].AutobahnName, Buffer2);
                 char *TmpKM = malloc(sizeof(char) * 1000);
                 sprintf(TmpKM, "%f", meineGefiltertenKnoten[x].AutobahnKM);
                 printTabelRow(2, Buffer, TmpKM);
