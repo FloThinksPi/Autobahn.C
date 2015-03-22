@@ -287,6 +287,7 @@ int Delete(int argc, char *argv[]){
 
             if(ReturnValue!=INT_MAX){
                 AnzahlKnoten=ReturnValue;
+                meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten));
                 needReload=1;
                 DataChanged=1;
             }else{return 1;}
@@ -313,14 +314,17 @@ int New(int argc, char *argv[]){
         chop(lastparam);
 
 
-
+        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten+1));
         int ReturnValue = NewAusfahrt( meineKnoten,AnzahlKnoten,argv[1],argv[2],lastparam,0);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
             needReload=1;
             DataChanged=1;
-        }else{return 1;}
+        }else{
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten));
+            return 1;
+        }
 
         return 0;
 
@@ -329,13 +333,17 @@ int New(int argc, char *argv[]){
         char *lastparam=argv[5];
         chop(lastparam);
 
+        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten+2));
         int ReturnValue = NewKreuz( meineKnoten,AnzahlKnoten,argv[1],argv[2],argv[3],argv[4],lastparam);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
             needReload=1;
             DataChanged=1;
-        }else{return 1;}
+        }else{
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten)*(AnzahlKnoten+1));
+            return 1;
+        }
 
         return 0;
 
