@@ -29,17 +29,13 @@ int main (int argc, char *argv[])
 {
     if(argv[1]!=NULL){
         if(strcmp(argv[1],skipParameter)){
-          // RestartInUtf8Cmd();
-           ConfigureCMD();
-            StartupMenu(0,NULL);
+           RestartInUtf8Cmd();
         }else{
             ConfigureCMD();
             StartupMenu(0,NULL);
         }
     }else{
-    //RestartInUtf8Cmd();
-       ConfigureCMD();
-        StartupMenu(0,NULL);
+    RestartInUtf8Cmd();
     }
 
   return 0;
