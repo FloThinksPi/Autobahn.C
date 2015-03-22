@@ -34,27 +34,27 @@ struct Wege {
 };
 
 //FileIO
-int loadDatabaseFiletoStruct(struct Knoten*[],int AnzahlKnoten);
-void saveStructToFile(struct Knoten *meineKnoten[],int AnzahlKnoten);
+int loadDatabaseFiletoStruct(struct Knoten *meineKnoten,int AnzahlKnoten);
+void saveStructToFile(struct Knoten *meineKnoten,int AnzahlKnoten);
 int getNumKnoten();
 
 //Daten Suche
-int findeKnotenByName(struct Knoten *meineKnoten[],int AnzahlKnoten,char *KnotenName,int FindSimmilar);
-char**GetAutobahnen(struct Knoten *meineKnoten[], int AnzahlKnoten);
+int findeKnotenByName(struct Knoten *meineKnoten,int AnzahlKnoten,char *KnotenName,int FindSimmilar);
+char**GetAutobahnen(struct Knoten *meineKnoten, int AnzahlKnoten);
 
 //Daten Verarbeitung
-void ConnectData(struct Knoten *meineKnoten[],int AnzahlKnoten);
-void OnlyConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);
-void OnlyREConnectKreuze(struct Knoten *meineKnoten[],int AnzahlKnoten);//Nur bereits existente Knoten Werden verknüpft
-void OnlyConnectEinKreuz(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilKreuz);
-void OnlyConnectEineAutobahn(struct Knoten *meineKnoten[],int AnzahlKnoten,char *ZeilAutobahn);
+void ConnectData(struct Knoten *meineKnoten,int AnzahlKnoten);
+void OnlyConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten);
+void OnlyREConnectKreuze(struct Knoten *meineKnoten,int AnzahlKnoten);//Nur bereits existente Knoten Werden verknüpft
+void OnlyConnectEinKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilKreuz);
+void OnlyConnectEineAutobahn(struct Knoten *meineKnoten,int AnzahlKnoten,char *ZeilAutobahn);
 
 //Datei Visualisierung
-void printAutobahnVisual(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
-void printAutobahnText(struct Knoten *meineKnoten[], int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
+void printAutobahnVisual(struct Knoten *meineKnoten, int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
+void printAutobahnText(struct Knoten *meineKnoten, int AnzahlKnoten, char *AutobahnName, char *Suchbegriff,int SortierModus);
 
 //BearbeitungsFunktionen
-int DeleteKnoten(struct Knoten *meineKnoten[], int Anzahlknoten, int AusfahrtIDinStruct);//muss beim löschen von Kreuzen 2 mal Aufgerufen und löscht damit beide enden eines kreuzes
-int NewKnoten(struct Knoten *meineKnoten[],int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM);
+int DeleteKnoten(struct Knoten *meineKnoten, int Anzahlknoten, int AusfahrtIDinStruct);//muss beim löschen von Kreuzen 2 mal Aufgerufen und löscht damit beide enden eines kreuzes
+int NewKnoten(struct Knoten *meineKnoten,int AnzahlKnoten,char* Name,char* AutobahnName,double AutobahnKM);
 
 #endif

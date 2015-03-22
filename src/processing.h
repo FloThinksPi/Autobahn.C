@@ -11,6 +11,6 @@
 #include <stdbool.h>
 #include "dbio.h"
 
-int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten);
+int findeWeg(struct Knoten *meineKnoten,int AnzahlNodes,int StartKnoten,int ZielKnoten);
 
 #endif

@@ -61,7 +61,7 @@ int main (int argc, char *argv[])
 int AnzahlKnoten;
 
 
-struct UndefArrayHack *ArrayHack;
+struct Knoten *meineKnoten;
 
 int loaded=0;//Daten Geladen ?
 int needReload=0;//Müssen Daten (Teilweise) Neu geladen Werden?
@@ -77,7 +77,7 @@ int Navigate(int argc, char *argv[]){//Funktion die durch Nav im Navigationsmenu
         char *K2 = argv[2];
         chop(K2);//Zeilenumbruch beim letzten Parameter entfernen
 
-        Nav(ArrayHack->meineKnoten,AnzahlKnoten,argv[1],K2);
+        Nav(meineKnoten,AnzahlKnoten,argv[1],K2);
 
     }else if(argc==2){//Hilfe (nav -h)
         if(argv[1][0]=='-' && argv[1][1]=='h'){//TODO -hs -hallo -hafaf sind noch möglich
@@ -113,8 +113,8 @@ int Search(int argc, char *argv[]){// LS befehl , zeigt ausfahrten bzw autobahne
             printFooter();
             puts("\n");
 
-            ConnectData(ArrayHack->meineKnoten,AnzahlKnoten);
-            //OnlyConnectKreuze(ArrayHack->meineKnoten, AnzahlKnoten);
+            ConnectData(meineKnoten,AnzahlKnoten);
+            //OnlyConnectKreuze( meineKnoten->meineKnoten, AnzahlKnoten);
 
             needReload=0;
             needFullReload=1;
@@ -149,7 +149,7 @@ int Search(int argc, char *argv[]){// LS befehl , zeigt ausfahrten bzw autobahne
                         break;
                     case 'a':
 
-                        SearchAutobahnen(ArrayHack->meineKnoten,AnzahlKnoten);
+                        SearchAutobahnen( meineKnoten,AnzahlKnoten);
 
                         return 0;
                     case 'h':
@@ -184,7 +184,7 @@ int Search(int argc, char *argv[]){// LS befehl , zeigt ausfahrten bzw autobahne
             chop(K1);
         }
 
-        SearchNormal(ArrayHack->meineKnoten,AnzahlKnoten,K1,textonly,sortName);
+        SearchNormal( meineKnoten,AnzahlKnoten,K1,textonly,sortName);
 
     }else{
         puts("\n");
@@ -222,7 +222,7 @@ int Edit(int argc, char *argv[]){
         char *K2 = argv[2];
         chop(K2);
 
-        int ReturnValue = EditName(ArrayHack,AnzahlKnoten,K1,K2);
+        int ReturnValue = EditName( meineKnoten,AnzahlKnoten,K1,K2);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
@@ -235,7 +235,7 @@ int Edit(int argc, char *argv[]){
         char *lastparam = argv[3];
         chop(lastparam);
 
-        int ReturnValue=EditAusfahrt(ArrayHack,AnzahlKnoten,argv[1],argv[2],lastparam);
+        int ReturnValue=EditAusfahrt( meineKnoten,AnzahlKnoten,argv[1],argv[2],lastparam);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
@@ -249,7 +249,7 @@ int Edit(int argc, char *argv[]){
         char *lastparam = argv[5];
         chop(lastparam);
 
-        int ReturnValue=EditKreuz(ArrayHack,AnzahlKnoten,argv[1],argv[2],argv[3],argv[4],lastparam);
+        int ReturnValue=EditKreuz( meineKnoten,AnzahlKnoten,argv[1],argv[2],argv[3],argv[4],lastparam);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
@@ -285,7 +285,7 @@ int Delete(int argc, char *argv[]){
             char *K1 = argv[1];
             chop(K1);
 
-            int ReturnValue=Remove(ArrayHack,AnzahlKnoten,K1);
+            int ReturnValue=Remove( meineKnoten,AnzahlKnoten,K1);
 
             if(ReturnValue!=INT_MAX){
                 AnzahlKnoten=ReturnValue;
@@ -316,7 +316,7 @@ int New(int argc, char *argv[]){
 
 
 
-        int ReturnValue = NewAusfahrt(ArrayHack,AnzahlKnoten,argv[1],argv[2],lastparam,0);
+        int ReturnValue = NewAusfahrt( meineKnoten,AnzahlKnoten,argv[1],argv[2],lastparam,0);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
@@ -331,7 +331,7 @@ int New(int argc, char *argv[]){
         char *lastparam=argv[5];
         chop(lastparam);
 
-        int ReturnValue = NewKreuz(ArrayHack,AnzahlKnoten,argv[1],argv[2],argv[3],argv[4],lastparam);
+        int ReturnValue = NewKreuz( meineKnoten,AnzahlKnoten,argv[1],argv[2],argv[3],argv[4],lastparam);
 
         if(ReturnValue!=INT_MAX){
             AnzahlKnoten=ReturnValue;
@@ -402,9 +402,11 @@ int MainMenu(int argc, char *argv[]){
         printMenuItem(Buffer);
         printFooter();
         puts("\n");
-        ArrayHack = malloc(sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+        
+        
+        meineKnoten = malloc(sizeof(struct Knoten)*AnzahlKnoten);
 
-        loadDatabaseFiletoStruct(ArrayHack->meineKnoten,AnzahlKnoten);
+        loadDatabaseFiletoStruct(meineKnoten,AnzahlKnoten);
         loaded=1;
 
         system(CLEAR);
@@ -422,7 +424,7 @@ int MainMenu(int argc, char *argv[]){
         printFooter();
         puts("\n");
 
-        ConnectData(ArrayHack->meineKnoten, AnzahlKnoten);
+        ConnectData( meineKnoten, AnzahlKnoten);
 
         needReload=0;
         needFullReload=0;
@@ -505,7 +507,7 @@ int runsave(int argc,char *argv[]){
     printFooter();
     puts("\n");
 
-    saveStructToFile(ArrayHack->meineKnoten, AnzahlKnoten);
+    saveStructToFile( meineKnoten, AnzahlKnoten);
 
     system(CLEAR);
 

@@ -18,7 +18,7 @@
 //////////////////////////////////////  Read Only Operations  /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-int Nav(struct Knoten *meineKnoten[], int AnzahlKnoten ,char *K1 ,char *K2){ //Findet Weg von 2 Knoten (K1 und K2), überprüft ob die übergebenen Knoten Valid sind. löst dann den Deijkstra aus.
+int Nav(struct Knoten *meineKnoten, int AnzahlKnoten ,char *K1 ,char *K2){ //Findet Weg von 2 Knoten (K1 und K2), ï¿½berprï¿½ft ob die ï¿½bergebenen Knoten Valid sind. lï¿½st dann den Deijkstra aus.
 
     if(isValidKnotenName(K2))return 1;
     if(isValidKnotenName(K1))return 1;
@@ -32,7 +32,7 @@ int Nav(struct Knoten *meineKnoten[], int AnzahlKnoten ,char *K1 ,char *K2){ //F
 
 }
 
-int SearchNormal(struct Knoten *meineKnoten[],int AnzahlKnoten ,char *K1,int textonly,int sortName){
+int SearchNormal(struct Knoten *meineKnoten,int AnzahlKnoten ,char *K1,int textonly,int sortName){
 
     char** Autobahnen = GetAutobahnen(meineKnoten, AnzahlKnoten);//free Attobahn nicht vergessen
     int AutobahnGefunden=0;
@@ -57,11 +57,11 @@ int SearchNormal(struct Knoten *meineKnoten[],int AnzahlKnoten ,char *K1,int tex
         int K1Nummer = findeKnotenByName(meineKnoten, AnzahlKnoten, K1,1);
 
         if(textonly){
-            printAutobahnText(meineKnoten, AnzahlKnoten,meineKnoten[K1Nummer]->AutobahnName, K1,sortName);
+            printAutobahnText(meineKnoten, AnzahlKnoten,meineKnoten[K1Nummer].AutobahnName, K1,sortName);
         }else{
 
             if (K1Nummer != INT_MAX) {
-                printAutobahnVisual(meineKnoten, AnzahlKnoten,meineKnoten[K1Nummer]->AutobahnName, K1,sortName);
+                printAutobahnVisual(meineKnoten, AnzahlKnoten,meineKnoten[K1Nummer].AutobahnName, K1,sortName);
             }
 
         }
@@ -75,7 +75,7 @@ int SearchNormal(struct Knoten *meineKnoten[],int AnzahlKnoten ,char *K1,int tex
 
 }
 
-int SearchAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten){// Zeigt alle Autobahnen an
+int SearchAutobahnen(struct Knoten *meineKnoten,int AnzahlKnoten){// Zeigt alle Autobahnen an
 
     char** Autobahnen = GetAutobahnen(meineKnoten, AnzahlKnoten);//free Attobahn nicht vergessen
 
@@ -94,15 +94,15 @@ int SearchAutobahnen(struct Knoten *meineKnoten[],int AnzahlKnoten){// Zeigt all
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////  Datensätze Verändern  /////////////////////////////////////
+//////////////////////////////////////  Datensï¿½tze Verï¿½ndern  /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////  Daten Erstellen   /////////////////////////////////////////
 
-int NewAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char *Aname,char *Akm,int DoubleNameAllowed){
+int NewAusfahrt(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname,char *Akm,int DoubleNameAllowed){
 
     char *AutobahnBuffer;
-    char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+    char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
     int NeueAnzahlKnoten=INT_MAX;
 
     if(isValidKnotenName(Kname))goto ReturnError;
@@ -114,7 +114,7 @@ int NewAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,ch
     int AnzAutobahnen;
 
 
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname,Akm,DoubleNameAllowed))goto ReturnError;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname,Akm,DoubleNameAllowed))goto ReturnError;
 
 
     for(int x=1;x<=atoi(Autobahnen[0]);x++) {
@@ -127,10 +127,9 @@ int NewAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,ch
 
     }
 
-    ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
-    ArrayHack = realloc(ArrayHack, sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*(AnzahlKnoten+1));
-    NeueAnzahlKnoten=NewKnoten(ArrayHack->meineKnoten, AnzahlKnoten, Kname, AutobahnBuffer, f);
-    struct Knoten *meinKnoten=ArrayHack->meineKnoten[0];
+    meineKnoten = realloc(meineKnoten, sizeof(struct Knoten*)*(AnzahlKnoten+1));
+    NeueAnzahlKnoten=NewKnoten(meineKnoten, AnzahlKnoten, Kname, AutobahnBuffer, f);
+
 
     goto ReturnSuccess;
 
@@ -149,7 +148,7 @@ int NewAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,ch
         return NeueAnzahlKnoten;
 }
 
-int NewKreuz(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char *Aname1,char *Akm1,char *Aname2,char *Akm2){
+int NewKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname1,char *Akm1,char *Aname2,char *Akm2){
 
     int NeueAnzahlKnoten=0;
 
@@ -158,31 +157,31 @@ int NewKreuz(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char 
     if(isValidAutobahnName(Aname2))return INT_MAX;
     if(isValidAutobahnKM(Akm1))return INT_MAX;
     if(isValidAutobahnKM(Akm2))return INT_MAX;
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname1,Akm1,0))return INT_MAX;
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname2,Akm2,0))return INT_MAX;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname1,Akm1,0))return INT_MAX;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname2,Akm2,0))return INT_MAX;
 
-    NeueAnzahlKnoten=NewAusfahrt(ArrayHack,AnzahlKnoten,Kname,Aname1,Akm1,0);
-    NeueAnzahlKnoten=NewAusfahrt(ArrayHack,NeueAnzahlKnoten,Kname,Aname2,Akm2,1);
+    NeueAnzahlKnoten=NewAusfahrt(meineKnoten,AnzahlKnoten,Kname,Aname1,Akm1,0);
+    NeueAnzahlKnoten=NewAusfahrt(meineKnoten,NeueAnzahlKnoten,Kname,Aname2,Akm2,1);
 
-    OnlyConnectEineAutobahn(ArrayHack->meineKnoten,NeueAnzahlKnoten,Aname1);
-    OnlyConnectEineAutobahn(ArrayHack->meineKnoten,NeueAnzahlKnoten,Aname2);
-    OnlyConnectEinKreuz(ArrayHack->meineKnoten,NeueAnzahlKnoten,Kname);
+    OnlyConnectEineAutobahn(meineKnoten,NeueAnzahlKnoten,Aname1);
+    OnlyConnectEineAutobahn(meineKnoten,NeueAnzahlKnoten,Aname2);
+    OnlyConnectEinKreuz(meineKnoten,NeueAnzahlKnoten,Kname);
 
     return NeueAnzahlKnoten;
 }
 
 //////////////////////////////////////  Daten Bearbeiten  /////////////////////////////////////////
 
-int EditName(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Name,char *NeuName){
+int EditName(struct Knoten *meineKnoten,int AnzahlKnoten,char *Name,char *NeuName){
 
-    char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+    char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
     int AnzAutobahnen;
     int SucessAutobahn=0;
 
     if(isValidKnotenName(Name) && isValidAutobahnName(Name))goto ReturnError;
     if(isValidKnotenName(NeuName) && isValidAutobahnName(NeuName))goto ReturnError;
 
-    if (isNewInValid(ArrayHack, AnzahlKnoten, NeuName,"Er-Fund-En","99.999", 0))goto ReturnError;
+    if (isNewInValid(meineKnoten, AnzahlKnoten, NeuName,"Er-Fund-En","99.999", 0))goto ReturnError;
 
 
     //Falls es eine Autobahn ist
@@ -191,11 +190,11 @@ int EditName(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Name,char *
         if (strcompCaseInsensitive(Name, Autobahnen[x]) == 0) {
 
             for(int z=0;z<AnzahlKnoten;z++){
-                if(strcompCaseInsensitive(Autobahnen[x],ArrayHack->meineKnoten[z]->AutobahnName)==0){
+                if(strcompCaseInsensitive(Autobahnen[x],meineKnoten[z].AutobahnName)==0){
 
                     SucessAutobahn=1;
-                    free(ArrayHack->meineKnoten[z]->AutobahnName);
-                    ArrayHack->meineKnoten[z]->AutobahnName=strdup(NeuName);
+                    free(meineKnoten[z].AutobahnName);
+                    meineKnoten[z].AutobahnName=strdup(NeuName);
 
                 }
             }
@@ -207,10 +206,10 @@ int EditName(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Name,char *
 
     //Falls es ein Knoten(Kreuz oder Aussfahrt ist)
     for(int z=0;z<AnzahlKnoten;z++){
-        if(strcompCaseInsensitive(Name,ArrayHack->meineKnoten[z]->Name)==0){
+        if(strcompCaseInsensitive(Name,meineKnoten[z].Name)==0){
 
-            free(ArrayHack->meineKnoten[z]->Name);
-            ArrayHack->meineKnoten[z]->Name=strdup(NeuName);
+            free(meineKnoten[z].Name);
+            meineKnoten[z].Name=strdup(NeuName);
 
         }
     }
@@ -230,20 +229,20 @@ int EditName(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Name,char *
         return AnzahlKnoten;
 }
 
-int EditAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char *Aname,char *Akm){
+int EditAusfahrt(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname,char *Akm){
 
     int NeueAnzahlKnoten=AnzahlKnoten;
 
     if(isValidKnotenName(Kname))goto ReturnError;
     if(isValidAutobahnName(Aname))goto ReturnError;
     if(isValidAutobahnKM(Akm))goto ReturnError;
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname,Akm,1))goto ReturnError;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname,Akm,1))goto ReturnError;
 
-    int ReturnValue=Remove(ArrayHack,AnzahlKnoten,Kname);
+    int ReturnValue=Remove(meineKnoten,AnzahlKnoten,Kname);
 
     if(ReturnValue!=INT_MAX){
         NeueAnzahlKnoten=ReturnValue;
-        NeueAnzahlKnoten=NewAusfahrt(ArrayHack,NeueAnzahlKnoten,Kname,Aname,Akm,0);
+        NeueAnzahlKnoten=NewAusfahrt(meineKnoten,NeueAnzahlKnoten,Kname,Aname,Akm,0);
         goto ReturnSuccess;
 
     }else{
@@ -260,7 +259,7 @@ int EditAusfahrt(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,c
         return NeueAnzahlKnoten;
 }
 
-int EditKreuz(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char *Aname1,char *Akm1,char *Aname2,char *Akm2){
+int EditKreuz(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname1,char *Akm1,char *Aname2,char *Akm2){
 
 
 
@@ -269,14 +268,14 @@ int EditKreuz(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char
     if(isValidAutobahnKM(Akm1))goto ReturnError;
     if(isValidAutobahnName(Aname2))goto ReturnError;
     if(isValidAutobahnKM(Akm2))goto ReturnError;
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname1,Akm1,1))goto ReturnError;
-    if(isNewInValid(ArrayHack,AnzahlKnoten,Kname,Aname2,Akm2,1))goto ReturnError;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname1,Akm1,1))goto ReturnError;
+    if(isNewInValid(meineKnoten,AnzahlKnoten,Kname,Aname2,Akm2,1))goto ReturnError;
 
-    int ReturnValue=Remove(ArrayHack,AnzahlKnoten,Kname);
+    int ReturnValue=Remove(meineKnoten,AnzahlKnoten,Kname);
 
     if(ReturnValue!=INT_MAX){
         AnzahlKnoten=ReturnValue;
-        NewKreuz(ArrayHack,AnzahlKnoten,Kname,Aname1,Akm1,Aname2,Akm2);
+        NewKreuz(meineKnoten,AnzahlKnoten,Kname,Aname1,Akm1,Aname2,Akm2);
         goto ReturnSuccess;
 
     }else{
@@ -294,11 +293,11 @@ int EditKreuz(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char
     return AnzahlKnoten;
 }
 
-//////////////////////////////////////  Daten Löschen   /////////////////////////////////////////
+//////////////////////////////////////  Daten Lï¿½schen   /////////////////////////////////////////
 
-int Remove(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *K1){
+int Remove(struct Knoten *meineKnoten,int AnzahlKnoten,char *K1){
 
-    char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+    char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
     int AnzAutobahnen;
 
     if(isValidAutobahnName(K1) && isValidKnotenName(K1)) goto ReturnError;
@@ -308,22 +307,22 @@ int Remove(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *K1){
         if (strcompCaseInsensitive(K1, Autobahnen[x]) == 0) {
 
             for(int z=0;z<AnzahlKnoten;z++){
-                if(strcompCaseInsensitive(Autobahnen[x],ArrayHack->meineKnoten[z]->AutobahnName)==0){
-                    if(ArrayHack->meineKnoten[z]->isKreuz==1){
-                        //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+                if(strcompCaseInsensitive(Autobahnen[x],meineKnoten[z].AutobahnName)==0){
+                    if(meineKnoten[z].isKreuz==1){
+                        //Erst lï¿½schen dannach nach dem 2. knoten des kreuzes suchen und dies auch lï¿½schen
 
-                        char *KreuzName= strdup(ArrayHack->meineKnoten[z]->Name);
+                        char *KreuzName= strdup(meineKnoten[z].Name);
 
-                        AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
-                        AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, KreuzName,0));
+                        AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, z);
+                        AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, findeKnotenByName(meineKnoten, AnzahlKnoten, KreuzName,0));
 
-                        ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+                        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
                         free(KreuzName);
 
                     }else{
-                        AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, z);
-                        ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+                        AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, z);
+                        meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
                     }
                 }
@@ -336,24 +335,24 @@ int Remove(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *K1){
     }
 
 
-    int K1Nummer = findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1,1);
+    int K1Nummer = findeKnotenByName(meineKnoten, AnzahlKnoten, K1,1);
 
     if (K1Nummer != INT_MAX) {
 
-        if(ArrayHack->meineKnoten[K1Nummer]->isKreuz==1){
-            //Erst löschen dannach nach dem 2. knoten des kreuzes suchen und dies auch löschen
+        if(meineKnoten[K1Nummer].isKreuz==1){
+            //Erst lï¿½schen dannach nach dem 2. knoten des kreuzes suchen und dies auch lï¿½schen
 
-            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
-            ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+            AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, K1Nummer);
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
-            AnzahlKnoten= DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, K1,1));
-            ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+            AnzahlKnoten= DeleteKnoten(meineKnoten, AnzahlKnoten, findeKnotenByName(meineKnoten, AnzahlKnoten, K1,1));
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
             goto ReturnSuccess;
 
         }else{
-            AnzahlKnoten = DeleteKnoten(ArrayHack->meineKnoten, AnzahlKnoten, K1Nummer);
-            ArrayHack = realloc(ArrayHack,sizeof(struct UndefArrayHack)+sizeof(struct Knoten*)*AnzahlKnoten);
+            AnzahlKnoten = DeleteKnoten(meineKnoten, AnzahlKnoten, K1Nummer);
+            meineKnoten = realloc(meineKnoten,sizeof(struct Knoten*)*AnzahlKnoten);
 
             goto ReturnSuccess;
         }
@@ -379,10 +378,10 @@ int Remove(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *K1){
 
 ///////////////////////////////////////////////// ZUSATZFUNKTIONEN /////////////////////////////////////////////////////
 
-int isNewInValid(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,char *Aname,char *Akm,int DoubleNameAllowed){//Zeigt ob NewAusfahrt() fehlschlagen würde aufgrund von schon existierenden Autobahnen , Knote, etc..
+int isNewInValid(struct Knoten *meineKnoten,int AnzahlKnoten,char *Kname,char *Aname,char *Akm,int DoubleNameAllowed){//Zeigt ob NewAusfahrt() fehlschlagen wï¿½rde aufgrund von schon existierenden Autobahnen , Knote, etc..
 
     char *AutobahnBuffer=Aname;
-    char** Autobahnen= GetAutobahnen(ArrayHack->meineKnoten, AnzahlKnoten);
+    char** Autobahnen= GetAutobahnen(meineKnoten, AnzahlKnoten);
     char *buffer = malloc(sizeof(char)*1000);
     int AnzAutobahnen;
     double f = atof(Akm);
@@ -392,7 +391,7 @@ int isNewInValid(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,c
         if (strcompCaseInsensitive(Kname, Autobahnen[x]) == 0) {
 
             puts("");
-            sprintf(buffer,"  Fehler , Es gibt Bereits ein Autobahn die so heist wie die gewünschte Ausfahrt/Kreuz(%s)",Kname);
+            sprintf(buffer,"  Fehler , Es gibt Bereits ein Autobahn die so heist wie die gewï¿½nschte Ausfahrt/Kreuz(%s)",Kname);
             printMenuHeader(buffer);
 
             goto ReturnError;
@@ -401,7 +400,7 @@ int isNewInValid(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,c
     }
 
 
-    if(findeKnotenByName(ArrayHack->meineKnoten, AnzahlKnoten, Kname, 0) == INT_MAX){
+    if(findeKnotenByName(meineKnoten, AnzahlKnoten, Kname, 0) == INT_MAX){
 
     }else if(DoubleNameAllowed==0){
         puts("");
@@ -412,10 +411,10 @@ int isNewInValid(struct UndefArrayHack *ArrayHack,int AnzahlKnoten,char *Kname,c
     }
 
     for(int i=0;i<AnzahlKnoten;i++){
-        if(ArrayHack->meineKnoten[i]->AutobahnKM==f && strcompCaseInsensitive(ArrayHack->meineKnoten[i]->AutobahnName,AutobahnBuffer)==0 ){
+        if(meineKnoten[i].AutobahnKM==f && strcompCaseInsensitive(meineKnoten[i].AutobahnName,AutobahnBuffer)==0 ){
 
             puts("");
-            sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",f,ArrayHack->meineKnoten[i]->AutobahnName,ArrayHack->meineKnoten[i]->Name);
+            sprintf(buffer,"  Fehler , Bei Km '%.2f' auf Autobahn '%s' ist bereits Ausfahrt/Kreuz '%s' ",f,meineKnoten[i].AutobahnName,meineKnoten[i].Name);
             printMenuHeaderContinous(buffer);
 
             goto ReturnError;

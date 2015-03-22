@@ -15,14 +15,14 @@
 //Anzahl der Knoten
 int AnzahlKnoten = 0;
 
-double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
+double gibWegLaenge(struct Knoten *meineKnoten,int u,int v){
 
     int i=0;
-    while(i < meineKnoten[u]->numWege){
+    while(i < meineKnoten[u].numWege){
 
 
-        if(meineKnoten[u]->Wege[i]->nach->ID==meineKnoten[v]->ID){
-            return meineKnoten[u]->Wege[i]->laenge;
+        if(meineKnoten[u].Wege[i]->nach->ID==meineKnoten[v].ID){
+            return meineKnoten[u].Wege[i]->laenge;
         }
 
         i++;
@@ -36,15 +36,15 @@ double gibWegLaenge(struct Knoten *meineKnoten[],int u,int v){
 
 //Errechnet den am kürzesten entfernten nächsten knoten aus allen noch nicht besuchten knoten.
 //Wählt somit den "Weg" dergegangen wird.
-int minDistance(struct Knoten *meineKnoten[])
+int minDistance(struct Knoten *meineKnoten)
 {
     // Initialize min value
     double min = INT_MAX;
     int min_index = 0;
 
     for (int v = 0; v < AnzahlKnoten; v++) {
-        if (meineKnoten[v]->besucht == false && meineKnoten[v]->entfernungZumUrsprung <= min) {
-            min = meineKnoten[v]->entfernungZumUrsprung;
+        if (meineKnoten[v].besucht == false && meineKnoten[v].entfernungZumUrsprung <= min) {
+            min = meineKnoten[v].entfernungZumUrsprung;
             min_index = v;
         }
 
@@ -55,12 +55,12 @@ int minDistance(struct Knoten *meineKnoten[])
 
 
 //Hier wird der Algorythmus gestartet und die gegangenen Wege Gespeichert.
-void dijkstra(struct Knoten *meineKnoten[], int src)
+void dijkstra(struct Knoten *meineKnoten, int src)
 {
 
 
     //Entfernung = 0 da der startknoten zu sich selbst nicht entfernt ist
-    meineKnoten[src]->entfernungZumUrsprung = 0;
+    meineKnoten[src].entfernungZumUrsprung = 0;
 
     // Find shortest path for all vertices (V-1 Möglich da der letzte wert automatisch fest steht , aber nicht gemacht da sonst der letzte wert nicht ausgegeben wird)
     for (int count = 0; count < AnzahlKnoten-1; count++)
@@ -71,7 +71,7 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
         u = minDistance(meineKnoten);
 
         // Mark the picked vertex as processed
-        meineKnoten[u]->besucht = true;
+        meineKnoten[u].besucht = true;
 
 
 
@@ -82,10 +82,10 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
             // u to v, and total weight of path from src to  v through u is
             // smaller than current value of dist[v]
 
-            if(!meineKnoten[v]->besucht && gibWegLaenge(meineKnoten,u,v) && meineKnoten[u]->entfernungZumUrsprung != INT_MAX
-                    && meineKnoten[u]->entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v) < meineKnoten[v]->entfernungZumUrsprung){
-                meineKnoten[v]->entfernungZumUrsprung = meineKnoten[u]->entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v);
-                meineKnoten[v]->knotenZurueck=meineKnoten[u];
+            if(!meineKnoten[v].besucht && gibWegLaenge(meineKnoten,u,v) && meineKnoten[u].entfernungZumUrsprung != INT_MAX
+                    && meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v) < meineKnoten[v].entfernungZumUrsprung){
+                meineKnoten[v].entfernungZumUrsprung = meineKnoten[u].entfernungZumUrsprung + gibWegLaenge(meineKnoten,u,v);
+                meineKnoten[v].knotenZurueck=&meineKnoten[u];
             }
 
 
@@ -101,7 +101,7 @@ void dijkstra(struct Knoten *meineKnoten[], int src)
 
 
 // Gibt Alle möglichen Ziele mit gegangenem Weg aus
-int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten,double StartZeit)
+int printPathToTarget(struct Knoten *meineKnoten,int StartKnoten,int Endknoten,double StartZeit)
 {
 
     char* BewegungsArray[AnzahlKnoten];
@@ -110,26 +110,26 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
     for (int i = 0; i < AnzahlKnoten; i++) {
-        if (meineKnoten[i]->ID == Endknoten) {
+        if (meineKnoten[i].ID == Endknoten) {
 
             int v = i;
             int AnzahlBewegungen = 0;
 
 
-            while (meineKnoten[v]->knotenZurueck!=NULL) {
+            while (meineKnoten[v].knotenZurueck!=NULL) {
 
-                if (gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID)>0.001) {
+                if (gibWegLaenge(meineKnoten, v, meineKnoten[v].knotenZurueck->ID)>0.001) {
 
-                    sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v]->knotenZurueck->ID));
+                    sprintf(buffer, "------(%4.2f Km)----->", gibWegLaenge(meineKnoten, v, meineKnoten[v].knotenZurueck->ID));
 
-                    BewegungsArray[AnzahlBewegungen * 3]=strdup(meineKnoten[v]->knotenZurueck->Name);
+                    BewegungsArray[AnzahlBewegungen * 3]=strdup(meineKnoten[v].knotenZurueck->Name);
                     BewegungsArray[AnzahlBewegungen * 3 + 1]=strdup(buffer);
-                    BewegungsArray[AnzahlBewegungen * 3 + 2]=strdup(meineKnoten[v]->Name);
+                    BewegungsArray[AnzahlBewegungen * 3 + 2]=strdup(meineKnoten[v].Name);
 
-                    v = meineKnoten[v]->knotenZurueck->ID;
+                    v = meineKnoten[v].knotenZurueck->ID;
                     AnzahlBewegungen++;
                 }else{
-                    v = meineKnoten[v]->knotenZurueck->ID;
+                    v = meineKnoten[v].knotenZurueck->ID;
                 }
 
 
@@ -137,15 +137,15 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 
 
 
-            if (meineKnoten[i]->ID != meineKnoten[StartKnoten]->ID) {
-                if (meineKnoten[i]->entfernungZumUrsprung == INT_MAX) {
+            if (meineKnoten[i].ID != meineKnoten[StartKnoten].ID) {
+                if (meineKnoten[i].entfernungZumUrsprung == INT_MAX) {
                     puts("\n");
-                    sprintf(buffer, "  \"%s\" ist von \"%s\" aus nicht Erreichbar  ", meineKnoten[i]->Name, meineKnoten[StartKnoten]->Name);
+                    sprintf(buffer, "  \"%s\" ist von \"%s\" aus nicht Erreichbar  ", meineKnoten[i].Name, meineKnoten[StartKnoten].Name);
                     printMenuHeaderContinous(buffer);
                     puts("\n");
                 } else {
                     puts("\n");
-                    sprintf(buffer, "  Weg von \"%s\" nach \"%s\"  ", meineKnoten[StartKnoten]->Name, meineKnoten[i]->Name);
+                    sprintf(buffer, "  Weg von \"%s\" nach \"%s\"  ", meineKnoten[StartKnoten].Name, meineKnoten[i].Name);
                     printMenuHeader(buffer);
                     printMenuItem("");
 
@@ -154,7 +154,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
                         printTabelRow(3, BewegungsArray[x * 3], BewegungsArray[x * 3 + 1], BewegungsArray[x * 3 + 2]);
                     }
 
-                    sprintf(buffer, " | Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden | ", meineKnoten[i]->entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
+                    sprintf(buffer, " | Gesamt: %0.2f Km | Über %d Knoten | Berechnet in %f Sekunden | ", meineKnoten[i].entfernungZumUrsprung,AnzahlBewegungen-1, get_time()-StartZeit);
                     printFooterText(buffer);
                     puts("\n");
                 }
@@ -172,7 +172,7 @@ int printPathToTarget(struct Knoten *meineKnoten[],int StartKnoten,int Endknoten
 }
 
 //Finden und ausgabe des weges zwischen a und b
-int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int ZielKnoten)
+int findeWeg(struct Knoten *meineKnoten,int AnzahlNodes,int StartKnoten,int ZielKnoten)
 {
 
     double StartZeit = get_time();
@@ -183,7 +183,7 @@ int findeWeg(struct Knoten *meineKnoten[],int AnzahlNodes,int StartKnoten,int Zi
 
     //Werte werden Initialisiert im KnotenArray , Dies muss vor dem erstellen der wege passieren da Numwege initialisiert wird.
     for (int i = 0; i < AnzahlKnoten; i++){
-        meineKnoten[i]->entfernungZumUrsprung = INT_MAX , meineKnoten[i]->besucht = false ,  meineKnoten[i]->knotenZurueck=NULL;
+        meineKnoten[i].entfernungZumUrsprung = INT_MAX , meineKnoten[i].besucht = false ,  meineKnoten[i].knotenZurueck=NULL;
     }
 
 
