@@ -1,10 +1,10 @@
-﻿Autobahn.C
+﻿Highway navigation in C
 ==========
+Unfortunally this was all written in german so yeay, you´ll have to ask me :P
+
 Projetarbeit erstes Semester Informatik
 
-
 Weitere Informationen in README.pdf
-
 
 BSD 2-clause “Simplified” License
 ==========
